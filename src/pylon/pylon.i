@@ -658,6 +658,7 @@ ADD_PROP_GET(PylonDataComponent, TimeStamp)
 ADD_PROP_GET(PylonDataComponent, Array)
 ADD_PROP_GET(PylonDataComponent, ImageFormat)
 #endif
+%include "SfncVersion.i"
 
 ADD_PROP_GET(GrabResult, ErrorDescription)
 ADD_PROP_GET(GrabResult, ErrorCode)
