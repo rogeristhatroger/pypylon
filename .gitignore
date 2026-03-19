@@ -47,3 +47,4 @@ pylon*/
 
 # Local development files
 conan_package/
+/.venv/

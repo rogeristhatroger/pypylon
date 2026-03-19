@@ -634,6 +634,7 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "PylonImage.i"
 %include "_ImageFormatConverterParams.i"
 %include "ImageFormatConverter.i"
+
 #ifdef HAVE_PYLON_GUI
 %include "PylonGUI.i"
 #endif
@@ -658,6 +659,7 @@ ADD_PROP_GET(PylonDataComponent, TimeStamp)
 ADD_PROP_GET(PylonDataComponent, Array)
 ADD_PROP_GET(PylonDataComponent, ImageFormat)
 #endif
+%include "DeviceClass.i"
 %include "SfncVersion.i"
 
 ADD_PROP_GET(GrabResult, ErrorDescription)
