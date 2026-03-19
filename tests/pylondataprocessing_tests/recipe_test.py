@@ -103,7 +103,8 @@ class RecipeTestSuite(PylonDataProcessingTestCase):
         self.assertFalse(testee.ContainsParameter("ImageLoading/@vTool/TestNotThere"))
         allParameterNames = testee.GetAllParameterNames()
         self.assertTrue("ImageLoading/@vTool/SourcePath" in allParameterNames)
-        testee.GetParameter("ImageLoading/@vTool/SourcePath").SetValue(thisdir);
+        testee.GetParameter("ImageLoading/@vTool/SourcePath").SetValue(thisdir)
+        self.assertIsInstance(testee.GetParameter("ImageLoading/@vTool/SourcePath"), pylon.StringParameter)
         #
         # check get output names
         outputNameList = testee.GetOutputNames()

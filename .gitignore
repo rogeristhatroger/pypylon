@@ -42,9 +42,6 @@ wheelhouse
 # macOS
 .DS_Store
 
-# Ignore pylon installer
-pylon*/
-
 # Local development files
 conan_package/
 /.venv/
