@@ -1,5 +1,5 @@
 # Ignore SWIG generates
-generated/
+generated*/
 
 # Ignore build/dist tree
 /build*
@@ -50,3 +50,5 @@ conan_package/
 # Local Cursor rules (do not commit; use Cursor Settings > Rules for AI for machine-specific rules)
 .cursorrules
 .cursor/rules/
+/.pytest_cache/
+/NodeMap.pfs
