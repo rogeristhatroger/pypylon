@@ -48,24 +48,36 @@
     {
         $self->GetOutputNames(result);
     }
-    
+
     void GetAllParameterNames(StringList_t& result)
     {
         result = $self->GetParameters().GetAllParameterNames();
     }
-    
+
     bool ContainsParameter(const Pylon::String_t& fullname)
     {
         bool result = $self->GetParameters().Contains(fullname);
         return result;
     }
 
-    GenApi::INode* GetParameter(const Pylon::String_t& fullname)
+    %nothread GetParameter;
+    PyObject* GetParameter(const Pylon::String_t& fullname)
     {
-        GenApi::INode* pNode = $self->GetParameters().Get(fullname).GetNode();
-        return pNode;
+        using namespace GenApi;
+        INode* pNode = $self->GetParameters().Get(fullname).GetNode();
+        if (!pNode)
+        {
+            GENICAM_NAMESPACE::LogicalErrorException except(
+                "Parameter not existing",
+                __FILE__,
+                __LINE__
+                );
+            TranslateGenicamException(&except);
+            return NULL;
+        }
+        return _DataprocNodeToParameter(pNode);
     }
-    
+
     void RegisterOutputObserver2(const StringList_t& outputFullNames, IOutputObserver* pObserver, ERegistrationMode mode, intptr_t userProvidedId = 0)
     {
         $self->RegisterOutputObserver(outputFullNames, pObserver, mode, userProvidedId);

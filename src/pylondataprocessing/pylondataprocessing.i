@@ -282,6 +282,69 @@ def needs_numpy(func):
 
 ////////////////////////////////////////////////////////////////////////////////
 //
+// Helper: dispatch an INode* to the matching Pylon::C*Parameter PyObject*.
+// Declared as %inline so $descriptor() is resolved by SWIG in this module
+// (where all SWIGTYPE_p_Pylon__C*Parameter indices are defined).
+// Called from Recipe::GetParameter's %extend body.
+//
+%inline %{
+static PyObject* _DataprocNodeToParameter(GENAPI_NAMESPACE::INode* node_ptr)
+{
+    if (!node_ptr) { Py_RETURN_NONE; }
+    PyObject* result = NULL;
+    switch (node_ptr->GetPrincipalInterfaceType())
+    {
+        case GENAPI_NAMESPACE::intfIInteger:
+        {
+            Pylon::CIntegerParameter *p = new Pylon::CIntegerParameter(node_ptr);
+            result = SWIG_NewPointerObj(p, SWIGTYPE_p_Pylon__CIntegerParameter, SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfIBoolean:
+        {
+            Pylon::CBooleanParameter *p = new Pylon::CBooleanParameter(node_ptr);
+            result = SWIG_NewPointerObj(p, SWIGTYPE_p_Pylon__CBooleanParameter, SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfICommand:
+        {
+            Pylon::CCommandParameter *p = new Pylon::CCommandParameter(node_ptr);
+            result = SWIG_NewPointerObj(p, SWIGTYPE_p_Pylon__CCommandParameter, SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfIFloat:
+        {
+            Pylon::CFloatParameter *p = new Pylon::CFloatParameter(node_ptr);
+            result = SWIG_NewPointerObj(p, SWIGTYPE_p_Pylon__CFloatParameter, SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfIString:
+        {
+            Pylon::CStringParameter *p = new Pylon::CStringParameter(node_ptr);
+            result = SWIG_NewPointerObj(p, SWIGTYPE_p_Pylon__CStringParameter, SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfIRegister:
+        {
+            Pylon::CArrayParameter *p = new Pylon::CArrayParameter(node_ptr);
+            result = SWIG_NewPointerObj(p, SWIGTYPE_p_Pylon__CArrayParameter, SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfIEnumeration:
+        {
+            Pylon::CEnumParameter *p = new Pylon::CEnumParameter(node_ptr);
+            result = SWIG_NewPointerObj(p, SWIGTYPE_p_Pylon__CEnumParameter, SWIG_POINTER_OWN);
+            break;
+        }
+        default:
+            Py_RETURN_NONE;
+    }
+    return result;
+}
+%}
+
+////////////////////////////////////////////////////////////////////////////////
+//
 // bool typecheck: Whenever a Python argument is used in a typecheck (resolving
 // overloaded functions), we want to enforce that the user has to supply a
 // 'real' Python bool object. Otherwise almost any other Python type would

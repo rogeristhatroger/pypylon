@@ -118,6 +118,8 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GenApi/EventAdapterGeneric.h>
 #include <GenApi/EventAdapterGEV.h>
 #include "genicam/PyPortImpl.h"
+#include <GenApi/IDeviceInfo.h>
+#include "pylon/INodeMapWrapper.h"
 
 #ifdef _MSC_VER  // MSVC
 #  pragma warning(pop)
@@ -129,6 +131,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef _PYTHON_COMPILER
 
 using namespace Pylon;
+using namespace GENAPI_NAMESPACE; // for usage in generated code of EnumParameter.i
 
 static PyObject* _genicam_translate = NULL;
 
@@ -377,6 +380,333 @@ def needs_numpy(func):
 //// fetch genicam definitions ////
 ///////////////////////////////////
 %import "../genicam/genicam.i"
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Override the genicam INode* factory typemap so that GetNode() (and the other
+// nodemap lookup methods) return Pylon::C*Parameter objects instead of raw
+// genicam interface types when called from the pylon module.
+//
+// Covered node interface types and their Pylon wrappers:
+//   intfIInteger     -> Pylon::CIntegerParameter
+//   intfIBoolean     -> Pylon::CBooleanParameter
+//   intfICommand     -> Pylon::CCommandParameter
+//   intfIFloat       -> Pylon::CFloatParameter
+//   intfIString      -> Pylon::CStringParameter
+//   intfIRegister    -> Pylon::CArrayParameter
+//   intfIEnumeration -> Pylon::CEnumParameter
+//
+// Nodes with no Pylon *Parameter equivalent (intfIValue, intfICategory,
+// intfIPort, intfIBase, intfIEnumEntry) fall back to the genicam types.
+//
+%typemap(out) GENAPI_NAMESPACE::INode* Pylon::INodeMapWrapper::GetNode
+%{
+    {
+        if (0 == $1)
+        {
+            GENICAM_NAMESPACE::LogicalErrorException except(
+                "Node not existing",
+                __FILE__,
+                __LINE__
+                );
+            TranslateGenicamException(&except);
+            SWIG_fail;
+        }
+        else
+        {
+            switch ($1->GetPrincipalInterfaceType())
+            {
+                case intfIInteger:
+                {
+                    Pylon::CIntegerParameter *p = new Pylon::CIntegerParameter($1);
+                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CIntegerParameter*), SWIG_POINTER_OWN);
+                    break;
+                }
+                case intfIBoolean:
+                {
+                    Pylon::CBooleanParameter *p = new Pylon::CBooleanParameter($1);
+                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CBooleanParameter*), SWIG_POINTER_OWN);
+                    break;
+                }
+                case intfICommand:
+                {
+                    Pylon::CCommandParameter *p = new Pylon::CCommandParameter($1);
+                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CCommandParameter*), SWIG_POINTER_OWN);
+                    break;
+                }
+                case intfIFloat:
+                {
+                    Pylon::CFloatParameter *p = new Pylon::CFloatParameter($1);
+                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CFloatParameter*), SWIG_POINTER_OWN);
+                    break;
+                }
+                case intfIString:
+                {
+                    Pylon::CStringParameter *p = new Pylon::CStringParameter($1);
+                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CStringParameter*), SWIG_POINTER_OWN);
+                    break;
+                }
+                case intfIRegister:
+                {
+                    Pylon::CArrayParameter *p = new Pylon::CArrayParameter($1);
+                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CArrayParameter*), SWIG_POINTER_OWN);
+                    break;
+                }
+                case intfIEnumeration:
+                {
+                    Pylon::CEnumParameter *p = new Pylon::CEnumParameter($1);
+                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CEnumParameter*), SWIG_POINTER_OWN);
+                    break;
+                }
+                default:
+                {
+                    // intfIValue, intfICategory, intfIPort, intfIBase,
+                    // intfIEnumEntry: fall back to genicam interface types.
+                    swig_type_info *fallback_type = 0;
+                    void *fallback_ptr = 0;
+                    switch ($1->GetPrincipalInterfaceType())
+                    {
+                        case intfIValue:
+                            fallback_type = $descriptor(GENAPI_NAMESPACE::IValue*);
+                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IValue*>($1);
+                            break;
+                        case intfICategory:
+                            fallback_type = $descriptor(GENAPI_NAMESPACE::ICategory*);
+                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::ICategory*>($1);
+                            break;
+                        case intfIEnumEntry:
+                            fallback_type = $descriptor(GENAPI_NAMESPACE::IEnumEntry*);
+                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IEnumEntry*>($1);
+                            break;
+                        case intfIPort:
+                            fallback_type = $descriptor(GENAPI_NAMESPACE::IPort*);
+                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IPort*>($1);
+                            break;
+                        case intfIBase:
+                            fallback_type = $descriptor(GENAPI_NAMESPACE::IBase*);
+                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IBase*>($1);
+                            break;
+                        default:
+                            fallback_type = $descriptor(GENAPI_NAMESPACE::IValue*);
+                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IValue*>($1);
+                            break;
+                    }
+                    $result = SWIG_NewPointerObj(fallback_ptr, fallback_type, $owner);
+                    break;
+                }
+            }
+        }
+    }
+%}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Helper macro: dispatch one INode* to the matching Pylon::C*Parameter type,
+// or fall back to the genicam interface type for nodes without a Parameter
+// equivalent.  Used by the NodeList_t and FeatureList_t argout overrides below.
+//
+// Arguments:
+//   node_ptr  - a local INode* variable
+//   out_item  - the PyObject* that receives the new reference
+//
+%define PYLON_NODE_TO_PARAMETER(node_ptr, out_item)
+    switch ((node_ptr)->GetPrincipalInterfaceType())
+    {
+        case intfIInteger:
+        {
+            Pylon::CIntegerParameter *p = new Pylon::CIntegerParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CIntegerParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case intfIBoolean:
+        {
+            Pylon::CBooleanParameter *p = new Pylon::CBooleanParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CBooleanParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case intfICommand:
+        {
+            Pylon::CCommandParameter *p = new Pylon::CCommandParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CCommandParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case intfIFloat:
+        {
+            Pylon::CFloatParameter *p = new Pylon::CFloatParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CFloatParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case intfIString:
+        {
+            Pylon::CStringParameter *p = new Pylon::CStringParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CStringParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case intfIRegister:
+        {
+            Pylon::CArrayParameter *p = new Pylon::CArrayParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CArrayParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case intfIEnumeration:
+        {
+            Pylon::CEnumParameter *p = new Pylon::CEnumParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CEnumParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case intfIValue:
+        {
+            out_item = SWIG_NewPointerObj(
+                dynamic_cast<GENAPI_NAMESPACE::IValue*>(node_ptr),
+                $descriptor(GENAPI_NAMESPACE::IValue*), 0);
+            break;
+        }
+        case intfICategory:
+        {
+            out_item = SWIG_NewPointerObj(
+                dynamic_cast<GENAPI_NAMESPACE::ICategory*>(node_ptr),
+                $descriptor(GENAPI_NAMESPACE::ICategory*), 0);
+            break;
+        }
+        case intfIEnumEntry:
+        {
+            out_item = SWIG_NewPointerObj(
+                dynamic_cast<GENAPI_NAMESPACE::IEnumEntry*>(node_ptr),
+                $descriptor(GENAPI_NAMESPACE::IEnumEntry*), 0);
+            break;
+        }
+        case intfIPort:
+        {
+            out_item = SWIG_NewPointerObj(
+                dynamic_cast<GENAPI_NAMESPACE::IPort*>(node_ptr),
+                $descriptor(GENAPI_NAMESPACE::IPort*), 0);
+            break;
+        }
+        case intfIBase:
+        {
+            out_item = SWIG_NewPointerObj(
+                dynamic_cast<GENAPI_NAMESPACE::IBase*>(node_ptr),
+                $descriptor(GENAPI_NAMESPACE::IBase*), 0);
+            break;
+        }
+        default:
+        {
+            out_item = SWIG_NewPointerObj(
+                dynamic_cast<GENAPI_NAMESPACE::IValue*>(node_ptr),
+                $descriptor(GENAPI_NAMESPACE::IValue*), 0);
+            break;
+        }
+    }
+%enddef
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Override NodeList_t argout: GetNodes() returns a tuple of Pylon::C*Parameter.
+//
+%typemap(argout) GENAPI_NAMESPACE::NodeList_t & {
+    PyObject *o = PyTuple_New($1->size());
+    for (unsigned int i = 0; i < $1->size(); i++) {
+        PyObject *o_item = 0;
+        GENAPI_NAMESPACE::INode *n = (*$1)[i];
+        PYLON_NODE_TO_PARAMETER(n, o_item)
+        PyTuple_SetItem(o, i, o_item);
+    }
+    $result = SWIG_AppendOutput($result, o);
+    delete $1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Override FeatureList_t argout: GetFeatures() returns a tuple of Pylon::C*Parameter.
+// Elements are IValue* so we dynamic_cast to INode* first.
+//
+%typemap(argout) GENAPI_NAMESPACE::FeatureList_t & {
+    PyObject *o = PyTuple_New($1->size());
+    for (unsigned int i = 0; i < $1->size(); i++) {
+        PyObject *o_item = 0;
+        GENAPI_NAMESPACE::INode *n = dynamic_cast<GENAPI_NAMESPACE::INode*>((*$1)[i]);
+        PYLON_NODE_TO_PARAMETER(n, o_item)
+        PyTuple_SetItem(o, i, o_item);
+    }
+    $result = SWIG_AppendOutput($result, o);
+    delete $1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Expose INodeMapWrapper to SWIG so that $descriptor(Pylon::INodeMapWrapper*)
+// resolves correctly and the method-qualified typemap for GetNode fires.
+%include "INodeMapWrapper.i"
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Wrap every returned INodeMap* in an INodeMapWrapper so that subsequent
+// typemaps (GetNode, GetNodes, GetFeatures) map INode* to Pylon::C*Parameter.
+//
+// The wrapper is heap-allocated and owned by Python (SWIG_POINTER_OWN).
+//
+%typemap(out) GENAPI_NAMESPACE::INodeMap*,
+              GENAPI_NAMESPACE::INodeMap&
+%{
+    $result = SWIG_NewPointerObj(
+        new Pylon::INodeMapWrapper($1),
+        $descriptor(Pylon::INodeMapWrapper*),
+        SWIG_POINTER_OWN
+    );
+%}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Python helper: ToParameter(val)
+//
+// Accepts any genicam interface object (IInteger, IBoolean, ICommand, IFloat,
+// IString, IRegister, IEnumeration, INode, IValue) and wraps it in the
+// corresponding Pylon::C*Parameter.  Any object that is not a recognised
+// genicam type is returned unchanged, so callers can pass any value safely.
+//
+%pythoncode %{
+def ToParameter(val):
+    """Convert a genicam interface object to the matching Pylon *Parameter type.
+
+    Recognised conversions:
+        genicam.IInteger     -> pylon.IntegerParameter
+        genicam.IBoolean     -> pylon.BooleanParameter
+        genicam.ICommand     -> pylon.CommandParameter
+        genicam.IFloat       -> pylon.FloatParameter
+        genicam.IString      -> pylon.StringParameter
+        genicam.IRegister    -> pylon.ArrayParameter
+        genicam.IEnumeration -> pylon.EnumParameter
+        genicam.INode        -> (dispatched via GetPrincipalInterfaceType())
+        genicam.IValue       -> (dispatched via GetNode() and implicit downcasting)
+
+    All other objects are returned unmodified.
+    """
+    from pypylon import genicam as _genicam
+    # IValue: get the underlying node first so we can inspect the interface type
+    if isinstance(val, _genicam.IValue):
+        val = val.GetNode()
+
+    # INode: dispatch on the principal interface type
+    if isinstance(val, _genicam.INode):
+        t = val.GetPrincipalInterfaceType()
+        if t == _genicam.intfIInteger:
+            return IntegerParameter(val)
+        elif t == _genicam.intfIBoolean:
+            return BooleanParameter(val)
+        elif t == _genicam.intfICommand:
+            return CommandParameter(val)
+        elif t == _genicam.intfIFloat:
+            return FloatParameter(val)
+        elif t == _genicam.intfIString:
+            return StringParameter(val)
+        elif t == _genicam.intfIRegister:
+            return ArrayParameter(val)
+        elif t == _genicam.intfIEnumeration:
+            return EnumParameter(val)
+
+    return val
+%}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -634,7 +964,14 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "PylonImage.i"
 %include "_ImageFormatConverterParams.i"
 %include "ImageFormatConverter.i"
-
+%include "Parameter.i"
+%include "IntegerParameter.i"
+%include "CommandParameter.i"
+%include "StringParameter.i"
+%include "FloatParameter.i"
+%include "BooleanParameter.i"
+%include "EnumParameter.i"
+%include "ArrayParameter.i"
 #ifdef HAVE_PYLON_GUI
 %include "PylonGUI.i"
 #endif
