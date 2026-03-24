@@ -1,13 +1,13 @@
 namespace GENAPI_NAMESPACE {
     class IDeviceInfo;
 }
-%extend GENAPI_NAMESPACE::INodeMapWrapper {
+%extend Pylon::INodeMapWrapper {
     PROP_GET(DeviceName)
     //! gets the interface of the DeviceInfo
-    IDeviceInfo *GetDeviceInfo()
+    GENAPI_NAMESPACE::IDeviceInfo *GetDeviceInfo()
     {
         IDeviceInfo *p_di;
-        p_di = dynamic_cast<IDeviceInfo*>($self);
+        p_di = dynamic_cast<GENAPI_NAMESPACE::IDeviceInfo*>($self);
         if (NULL == p_di)
             throw LOGICAL_ERROR_EXCEPTION( "Nodemap has no deviceinfo" );
         return p_di;
