@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """\
 This sample illustrates how to grab and process images using InstantCamera.
 

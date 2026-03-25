@@ -45,3 +45,8 @@ wheelhouse
 # Local development files
 conan_package/
 /.venv/
+
+
+# Local Cursor rules (do not commit; use Cursor Settings > Rules for AI for machine-specific rules)
+.cursorrules
+.cursor/rules/
