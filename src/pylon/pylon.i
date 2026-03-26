@@ -998,6 +998,7 @@ ADD_PROP_GET(PylonDataComponent, ImageFormat)
 #endif
 %include "DeviceClass.i"
 %include "SfncVersion.i"
+%include "ConfigurationHelper.i"
 
 ADD_PROP_GET(GrabResult, ErrorDescription)
 ADD_PROP_GET(GrabResult, ErrorCode)
