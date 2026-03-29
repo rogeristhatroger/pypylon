@@ -36,7 +36,7 @@ namespace GENAPI_NAMESPACE
     %nodefaultctor INodeMap;
     class INodeMap;
     class PyNodeCallback;
-	
+    
     //*************************************************************
     // INode interface
     //*************************************************************
@@ -46,8 +46,8 @@ namespace GENAPI_NAMESPACE
     \ingroup GenApi_PublicInterface
     */
     class INode  : virtual public IBase
-    {	
-	public:
+    {    
+    public:
         //! Get node name
         virtual GENICAM_NAMESPACE::gcstring GetName(bool FullQualified=false) const =  0;
         PROP_GET(Name)
@@ -100,14 +100,14 @@ namespace GENAPI_NAMESPACE
         \param LinkType The link type
         */
         virtual void GetChildren(GENAPI_NAMESPACE::NodeList_t &Children, ELinkType LinkType=ctReadingChildren) const =  0;
-	PROP_GET(Children)
+    PROP_GET(Children)
 
         /*!
         \brief Gets all nodes this node is directly depending on
         \param[out] Parents List of parent nodes
         */
         virtual void GetParents(GENAPI_NAMESPACE::NodeList_t &Parents) const = 0;
-	PROP_GET(Parents)
+    PROP_GET(Parents)
 
         //! Register change callback
         /*! Takes ownership of the PyNodeCallback object */
@@ -121,30 +121,30 @@ namespace GENAPI_NAMESPACE
 
         //! Retrieves the central node map
         virtual INodeMap* GetNodeMap() const = 0;
-	PROP_GET(NodeMap)
+    PROP_GET(NodeMap)
 
         //! Get the EventId of the node
         virtual GENICAM_NAMESPACE::gcstring GetEventID() const =  0;
-	PROP_GET(EventID)
+    PROP_GET(EventID)
 
         //! True if the node is streamable
         virtual bool IsStreamable() const =  0;
 
         //! Returns a list of the names all properties set during initialization
         virtual void GetPropertyNames(StringList_t &PropertyNames) const =  0;
-	PROP_GET(PropertyNames)
+    PROP_GET(PropertyNames)
 
         
-	%extend {
+    %extend {
         //! Retrieves a property plus an additional attribute by name
         /*! If a property has multiple values/attribute they come with Tabs as delimiters */
         virtual void GetProperty(const GENICAM_NAMESPACE::gcstring& PropertyName, GENICAM_NAMESPACE::gcstring& ValueStr, GENICAM_NAMESPACE::gcstring& AttributeStr) 
-		{
+        {
             bool result = $self->GetProperty(PropertyName, ValueStr, AttributeStr);
             if (!result)
                 throw LOGICAL_ERROR_EXCEPTION( "property does not exit" );
         };
-		}
+        }
         //! Imposes an access mode to the natural access mode of the node
         virtual void ImposeAccessMode(EAccessMode ImposedAccessMode) =  0;
 
@@ -153,43 +153,43 @@ namespace GENAPI_NAMESPACE
 
         //! Retrieves the a node which describes the same feature in a different way
         virtual INode* GetAlias() const = 0;
-	PROP_GET(Alias)
+    PROP_GET(Alias)
 
         //! Retrieves the a node which describes the same feature so that it can be casted
         virtual INode* GetCastAlias() const = 0;
-	PROP_GET(CastAlias)
+    PROP_GET(CastAlias)
 
         //! Gets a URL pointing to the documentation of that feature
         virtual GENICAM_NAMESPACE::gcstring GetDocuURL() const =  0;
-	PROP_GET(DocuURL)
+    PROP_GET(DocuURL)
 
         //! True if the node should not be used any more
         virtual bool IsDeprecated() const =  0;
 
         //! Get the type of the main interface of a node
         virtual EInterfaceType GetPrincipalInterfaceType() const = 0;
-	PROP_GET(PrincipalInterfaceType)
+    PROP_GET(PrincipalInterfaceType)
 
-	
+    
         //! True if the node can be reached via category nodes from a category node named "Root"
         virtual bool IsFeature() const =  0;
 
-	%extend{
+    %extend{
         //! true iff this feature selects a group of features
         virtual bool IsSelector() const {
-				return dynamic_cast<const ISelector*>($self)->IsSelector();
-		}
+                return dynamic_cast<const ISelector*>($self)->IsSelector();
+        }
 
         //! retrieve the group of selected features
         virtual void GetSelectedFeatures( GENAPI_NAMESPACE::FeatureList_t& thelist) const{
-				return dynamic_cast<const ISelector*>($self)->GetSelectedFeatures( thelist);
-		}
+                return dynamic_cast<const ISelector*>($self)->GetSelectedFeatures( thelist);
+        }
 
         //! retrieve the group of features selecting this node
         virtual void GetSelectingFeatures( GENAPI_NAMESPACE::FeatureList_t& thelist) const {
-				return dynamic_cast<const ISelector*>($self)->GetSelectingFeatures( thelist);
-		}
-		}
+                return dynamic_cast<const ISelector*>($self)->GetSelectingFeatures( thelist);
+        }
+        }
 
 
     };
@@ -238,7 +238,7 @@ namespace GENAPI_NAMESPACE
     inline ECachingMode Combine(ECachingMode Peter, ECachingMode Paul);
 
     
-	
+    
     
 }
 

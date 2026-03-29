@@ -1,0 +1,76 @@
+//-----------------------------------------------------------------------------
+//  Basler pypylon SDK
+//  http://www.baslerweb.com
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+//  This file is generated automatically
+//  Do not modify!
+//-----------------------------------------------------------------------------
+%pythoncode %{
+
+_STREAM_PARAMETERS = {
+    "AccessMode": pypylon.genicam.intfIEnumeration,
+    "AutoPacketSize": pypylon.genicam.intfIBoolean,
+    "DestinationAddr": pypylon.genicam.intfIString,
+    "DestinationPort": pypylon.genicam.intfIInteger,
+    "EnableGenDC": pypylon.genicam.intfIBoolean,
+    "EnableMultiPart": pypylon.genicam.intfIBoolean,
+    "EnableRDMA": pypylon.genicam.intfIBoolean,
+    "EnableResend": pypylon.genicam.intfIBoolean,
+    "FirewallTraversalInterval": pypylon.genicam.intfIInteger,
+    "FrameRetention": pypylon.genicam.intfIInteger,
+    "MaxBufferSize": pypylon.genicam.intfIInteger,
+    "MaxNumBuffer": pypylon.genicam.intfIInteger,
+    "MaxTransferSize": pypylon.genicam.intfIInteger,
+    "MaximumNumberResendRequests": pypylon.genicam.intfIInteger,
+    "NumMaxQueuedUrbs": pypylon.genicam.intfIInteger,
+    "PacketTimeout": pypylon.genicam.intfIInteger,
+    "PayloadSize": pypylon.genicam.intfIInteger,
+    "ProbePacketSize": pypylon.genicam.intfICommand,
+    "ReceiveThreadPriority": pypylon.genicam.intfIInteger,
+    "ReceiveThreadPriorityOverride": pypylon.genicam.intfIBoolean,
+    "ReceiveWindowSize": pypylon.genicam.intfIInteger,
+    "ResendRequestBatching": pypylon.genicam.intfIInteger,
+    "ResendRequestResponseTimeout": pypylon.genicam.intfIInteger,
+    "ResendRequestThreshold": pypylon.genicam.intfIInteger,
+    "ResendTimeout": pypylon.genicam.intfIInteger,
+    "SocketBufferSize": pypylon.genicam.intfIInteger,
+    "Statistic_Buffer_Underrun_Count": pypylon.genicam.intfIInteger,
+    "Statistic_Failed_Buffer_Count": pypylon.genicam.intfIInteger,
+    "Statistic_Failed_Packet_Count": pypylon.genicam.intfIInteger,
+    "Statistic_Last_Block_Id": pypylon.genicam.intfIInteger,
+    "Statistic_Last_Failed_Buffer_Status": pypylon.genicam.intfIInteger,
+    "Statistic_Last_Failed_Buffer_Status_Text": pypylon.genicam.intfIString,
+    "Statistic_Missed_Frame_Count": pypylon.genicam.intfIInteger,
+    "Statistic_Out_Of_Memory_Error_Count": pypylon.genicam.intfIInteger,
+    "Statistic_Resend_Packet_Count": pypylon.genicam.intfIInteger,
+    "Statistic_Resend_Request_Count": pypylon.genicam.intfIInteger,
+    "Statistic_Resynchronization_Count": pypylon.genicam.intfIInteger,
+    "Statistic_Total_Buffer_Count": pypylon.genicam.intfIInteger,
+    "Statistic_Total_Packet_Count": pypylon.genicam.intfIInteger,
+    "Status": pypylon.genicam.intfIEnumeration,
+    "StreamAnnounceBufferMinimum": pypylon.genicam.intfIInteger,
+    "StreamAnnouncedBufferCount": pypylon.genicam.intfIInteger,
+    "StreamBufferAlignment": pypylon.genicam.intfIInteger,
+    "StreamBufferHandlingMode": pypylon.genicam.intfIEnumeration,
+    "StreamChunkCountMaximum": pypylon.genicam.intfIInteger,
+    "StreamDeliveredFrameCount": pypylon.genicam.intfIInteger,
+    "StreamID": pypylon.genicam.intfIString,
+    "StreamInputBufferCount": pypylon.genicam.intfIInteger,
+    "StreamIsGrabbing": pypylon.genicam.intfIBoolean,
+    "StreamLostFrameCount": pypylon.genicam.intfIInteger,
+    "StreamOutputBufferCount": pypylon.genicam.intfIInteger,
+    "StreamStartedFrameCount": pypylon.genicam.intfIInteger,
+    "StreamType": pypylon.genicam.intfIEnumeration,
+    "TransferLoopThreadPriority": pypylon.genicam.intfIInteger,
+    "TransmissionType": pypylon.genicam.intfIEnumeration,
+    "Type": pypylon.genicam.intfIEnumeration,
+    "TypeIsGigEAcceleratorAvailable": pypylon.genicam.intfIInteger,
+    "TypeIsRDMADriverAvailable": pypylon.genicam.intfIInteger,
+    "TypeIsSocketDriverAvailable": pypylon.genicam.intfIInteger,
+    "TypeIsWindowsFilterDriverAvailable": pypylon.genicam.intfIInteger,
+    "TypeIsWindowsIntelPerformanceDriverAvailable": pypylon.genicam.intfIInteger,
+    "UseExtendedIdIfAvailable": pypylon.genicam.intfIBoolean,
+}
+%}

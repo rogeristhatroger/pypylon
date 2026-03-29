@@ -80,7 +80,7 @@
 
 %rename (EnumParameter) Pylon::CEnumParameter;
 #define GenICam GENICAM_NAMESPACE
-%ignore Pylon::IEnumerationEx;
+%rename(_IEnumerationEx) Pylon::IEnumerationEx;
 %ignore Pylon::CEnumParameter::Table_t;
 %ignore Pylon::CEnumParameter::TableItem_t;
 %ignore Pylon::CEnumParameter::CEnumParameter(GENAPI_NAMESPACE::INodeMap &,char const *);

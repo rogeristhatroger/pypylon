@@ -677,6 +677,18 @@ class IntegerParameterTestSuite(PylonParameterTestCase):
         p_ro = pylon.IntegerParameter(self.nodemap, "TestIntRO")
         self.assertEqual(str(p_ro), "1500")
 
+    # ------------------------------------------------------------------
+    # Compatibility with genicam
+    # ------------------------------------------------------------------
+
+    def test_genicam_compatibility(self):
+        """Parameter can be used wherever genicam interfaces are expected."""
+        p = pylon.IntegerParameter(self.nodemap, "TestInt")
+        self.assertIsInstance(p, genicam.IInteger)
+        self.assertIsInstance(p, genicam.IValue)
+        self.assertTrue(genicam.IsReadable(p))
+        self.assertTrue(genicam.IsWritable(p))
+
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

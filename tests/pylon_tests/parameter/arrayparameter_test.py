@@ -464,6 +464,17 @@ class ArrayParameterTestSuite(PylonParameterTestCase):
         self.assertNotEqual("<not found>", s)
         self.assertNotEqual("<not readable>", s)
 
+    # ------------------------------------------------------------------
+    # Compatibility with genicam
+    # ------------------------------------------------------------------
+    def test_genicam_compatibility(self):
+        """Parameter can be used wherever genicam interfaces are expected."""
+        p = pylon.ArrayParameter(self.nodemap, "RegisterA")
+        self.assertIsInstance(p, genicam.IRegister)
+        self.assertIsInstance(p, genicam.IValue)
+        self.assertTrue(genicam.IsReadable(p))
+        self.assertTrue(genicam.IsWritable(p))
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

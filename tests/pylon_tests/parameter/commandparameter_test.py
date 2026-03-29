@@ -339,6 +339,18 @@ class CommandParameterTestSuite(PylonParameterTestCase):
         p_ro = pylon.CommandParameter(self.nodemap, "TestCommandRO")
         self.assertEqual(str(p_ro), "0")
 
+    # ------------------------------------------------------------------
+    # Compatibility with genicam
+    # ------------------------------------------------------------------
+
+    def test_genicam_compatibility(self):
+        """Parameter can be used wherever genicam interfaces are expected."""
+        p = pylon.CommandParameter(self.nodemap, "TestCommand")
+        self.assertIsInstance(p, genicam.ICommand)
+        self.assertIsInstance(p, genicam.IValue)
+        self.assertTrue(genicam.IsReadable(p))
+        self.assertTrue(genicam.IsWritable(p))
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

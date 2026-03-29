@@ -271,6 +271,405 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
 
         camera.Close()
 
+    # ------------------------------------------------------------------
+    # Tests for GetNodeMapType() / NodeMapType property
+    # ------------------------------------------------------------------
+
+    def test_getnodemap_type_camera(self):
+        """GetNodeMap() wrapper reports NodeMapType_Camera"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+        self.assertEqual(nm.GetNodeMapType(), pylon.NodeMapType_Camera)
+        camera.Close()
+
+    def test_nodemap_type_property_camera(self):
+        """NodeMapType property equals NodeMapType_Camera for the camera nodemap"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetNodeMap().NodeMapType, pylon.NodeMapType_Camera)
+        camera.Close()
+
+    def test_getnodemap_type_stream_grabber(self):
+        """GetStreamGrabberNodeMap() wrapper reports NodeMapType_StreamGrabber"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetStreamGrabberNodeMap().GetNodeMapType(), pylon.NodeMapType_StreamGrabber)
+        camera.Close()
+
+    def test_nodemap_type_property_stream_grabber(self):
+        """NodeMapType property equals NodeMapType_StreamGrabber"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetStreamGrabberNodeMap().NodeMapType, pylon.NodeMapType_StreamGrabber)
+        camera.Close()
+
+    def test_getnodemap_type_transport_layer(self):
+        """GetTLNodeMap() wrapper reports NodeMapType_DeviceTransportLayer"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetTLNodeMap().GetNodeMapType(), pylon.NodeMapType_DeviceTransportLayer)
+        camera.Close()
+
+    def test_nodemap_type_property_transport_layer(self):
+        """NodeMapType property equals NodeMapType_DeviceTransportLayer"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetTLNodeMap().NodeMapType, pylon.NodeMapType_DeviceTransportLayer)
+        camera.Close()
+
+    def test_getnodemap_type_event_grabber(self):
+        """GetEventGrabberNodeMap() wrapper reports NodeMapType_EventGrabber"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetEventGrabberNodeMap().GetNodeMapType(), pylon.NodeMapType_EventGrabber)
+        camera.Close()
+
+    def test_nodemap_type_property_event_grabber(self):
+        """NodeMapType property equals NodeMapType_EventGrabber"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetEventGrabberNodeMap().NodeMapType, pylon.NodeMapType_EventGrabber)
+        camera.Close()
+
+    def test_getnodemap_type_instant_camera(self):
+        """GetInstantCameraNodeMap() wrapper reports NodeMapType_InstantCamera"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetInstantCameraNodeMap().GetNodeMapType(), pylon.NodeMapType_InstantCamera)
+        camera.Close()
+
+    def test_nodemap_type_property_instant_camera(self):
+        """NodeMapType property equals NodeMapType_InstantCamera"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetInstantCameraNodeMap().NodeMapType, pylon.NodeMapType_InstantCamera)
+        camera.Close()
+
+    def test_getnodemap_type_image_format_converter(self):
+        """ImageFormatConverter nodemap wrapper reports NodeMapType_ImageFormatConverter"""
+        converter = pylon.ImageFormatConverter()
+        self.assertEqual(converter.GetNodeMap().GetNodeMapType(), pylon.NodeMapType_ImageFormatConverter)
+
+    def test_nodemap_type_property_image_format_converter(self):
+        """NodeMapType property equals NodeMapType_ImageFormatConverter"""
+        converter = pylon.ImageFormatConverter()
+        self.assertEqual(converter.GetNodeMap().NodeMapType, pylon.NodeMapType_ImageFormatConverter)
+
+    def test_getnodemap_type_chunk_data(self):
+        """ChunkDataNodeMap wrapper reports NodeMapType_ChunkData"""
+        camera = self.create_first()
+        camera.Open()
+        result = camera.GrabOne(1000)
+        self.assertEqual(result.GetChunkDataNodeMap().GetNodeMapType(), pylon.NodeMapType_ChunkData)
+        camera.Close()
+
+    def test_nodemap_type_property_chunk_data(self):
+        """NodeMapType property equals NodeMapType_ChunkData for chunk-data nodemap"""
+        camera = self.create_first()
+        camera.Open()
+        result = camera.GrabOne(1000)
+        self.assertEqual(result.ChunkDataNodeMap.NodeMapType, pylon.NodeMapType_ChunkData)
+        camera.Close()
+
+    # ------------------------------------------------------------------
+    # Tests for GetNodeMapTypeString() / NodeMapTypeString property
+    # ------------------------------------------------------------------
+
+    def test_getnodemap_type_string_camera(self):
+        """GetNodeMapTypeString() returns 'Camera' for the camera nodemap"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetNodeMap().GetNodeMapTypeString(), "Camera")
+        camera.Close()
+
+    def test_nodemap_type_string_property_camera(self):
+        """NodeMapTypeString property returns 'Camera'"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetNodeMap().NodeMapTypeString, "Camera")
+        camera.Close()
+
+    def test_getnodemap_type_string_stream_grabber(self):
+        """GetNodeMapTypeString() returns 'StreamGrabber'"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetStreamGrabberNodeMap().GetNodeMapTypeString(), "StreamGrabber")
+        camera.Close()
+
+    def test_nodemap_type_string_property_stream_grabber(self):
+        """NodeMapTypeString property returns 'StreamGrabber'"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetStreamGrabberNodeMap().NodeMapTypeString, "StreamGrabber")
+        camera.Close()
+
+    def test_getnodemap_type_string_transport_layer(self):
+        """GetNodeMapTypeString() returns 'DeviceTransportLayer'"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetTLNodeMap().GetNodeMapTypeString(), "DeviceTransportLayer")
+        camera.Close()
+
+    def test_nodemap_type_string_property_transport_layer(self):
+        """NodeMapTypeString property returns 'DeviceTransportLayer'"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetTLNodeMap().NodeMapTypeString, "DeviceTransportLayer")
+        camera.Close()
+
+    def test_getnodemap_type_string_event_grabber(self):
+        """GetNodeMapTypeString() returns 'EventGrabber'"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetEventGrabberNodeMap().GetNodeMapTypeString(), "EventGrabber")
+        camera.Close()
+
+    def test_nodemap_type_string_property_event_grabber(self):
+        """NodeMapTypeString property returns 'EventGrabber'"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetEventGrabberNodeMap().NodeMapTypeString, "EventGrabber")
+        camera.Close()
+
+    def test_getnodemap_type_string_instant_camera(self):
+        """GetNodeMapTypeString() returns 'InstantCamera'"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetInstantCameraNodeMap().GetNodeMapTypeString(), "InstantCamera")
+        camera.Close()
+
+    def test_nodemap_type_string_property_instant_camera(self):
+        """NodeMapTypeString property returns 'InstantCamera'"""
+        camera = self.create_first()
+        camera.Open()
+        self.assertEqual(camera.GetInstantCameraNodeMap().NodeMapTypeString, "InstantCamera")
+        camera.Close()
+
+    def test_getnodemap_type_string_image_format_converter(self):
+        """GetNodeMapTypeString() returns 'ImageFormatConverter'"""
+        converter = pylon.ImageFormatConverter()
+        self.assertEqual(converter.GetNodeMap().GetNodeMapTypeString(), "ImageFormatConverter")
+
+    def test_nodemap_type_string_property_image_format_converter(self):
+        """NodeMapTypeString property returns 'ImageFormatConverter'"""
+        converter = pylon.ImageFormatConverter()
+        self.assertEqual(converter.GetNodeMap().NodeMapTypeString, "ImageFormatConverter")
+
+    def test_getnodemap_type_string_chunk_data(self):
+        """GetNodeMapTypeString() returns 'ChunkData'"""
+        camera = self.create_first()
+        camera.Open()
+        result = camera.GrabOne(1000)
+        self.assertEqual(result.GetChunkDataNodeMap().GetNodeMapTypeString(), "ChunkData")
+        camera.Close()
+
+    def test_nodemap_type_string_property_chunk_data(self):
+        """NodeMapTypeString property returns 'ChunkData'"""
+        camera = self.create_first()
+        camera.Open()
+        result = camera.GrabOne(1000)
+        self.assertEqual(result.ChunkDataNodeMap.NodeMapTypeString, "ChunkData")
+        camera.Close()
+
+    # ------------------------------------------------------------------
+    # Tests for GetNode(name, throwIfNotFound=True/False)
+    # ------------------------------------------------------------------
+
+    def test_getnode_with_throw_true_raises_on_unknown_node(self):
+        """GetNode(name, True) raises LogicalErrorException for an unknown node name"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+        with self.assertRaises(genicam.LogicalErrorException):
+            nm.GetNode("ThisNodeDoesNotExist_XYZ", True)
+        camera.Close()
+
+    def test_getnode_with_throw_false_returns_invalid_on_unknown_node(self):
+        """GetNode(name, False) returns an unattached (invalid) parameter instead of raising"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+        node = nm.GetNode("ThisNodeDoesNotExist_XYZ", False)
+        self.assertIsNotNone(node)
+        self.assertFalse(node.IsValid())
+        self.assertIsInstance(node, pylon.Parameter)  # Should still be a Parameter object, just unattached/invalid
+        camera.Close()
+
+    def test_getnode_default_throws_on_unknown_node(self):
+        """GetNode(name) (default throwIfNotFound=True) raises for an unknown node"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+        with self.assertRaises(genicam.LogicalErrorException):
+            nm.GetNode("ThisNodeDoesNotExist_XYZ")
+        camera.Close()
+
+    def test_getnode_with_throw_true_returns_valid_node(self):
+        """GetNode(name, True) returns a valid node for a known name"""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.GetNodeMap().GetNode("GainRaw", True)
+        self.assertIsInstance(node, pylon.IntegerParameter)
+        self.assertTrue(node.IsValid())
+        camera.Close()
+
+    def test_getnode_with_throw_false_returns_valid_node(self):
+        """GetNode(name, False) returns a valid node for a known name"""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.GetNodeMap().GetNode("GainRaw", False)
+        self.assertIsInstance(node, pylon.IntegerParameter)
+        self.assertTrue(node.IsValid())
+        camera.Close()
+
+    def test_getnode_error_message_contains_nodemap_type(self):
+        """LogicalErrorException message from GetNode includes the nodemap type string"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+        try:
+            nm.GetNode("NoSuchNode_ABC", True)
+            self.fail("Expected LogicalErrorException was not raised")
+        except genicam.LogicalErrorException as e:
+            self.assertIn("Camera", str(e))
+        camera.Close()
+
+    # ------------------------------------------------------------------
+    # Tests for _LookupParameter fallback into the known-parameter lists
+    # ------------------------------------------------------------------
+
+    def test_lookup_unknown_parameter_raises_logical_error(self):
+        """Accessing a completely unknown attribute raises LogicalErrorException"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+        with self.assertRaises(genicam.LogicalErrorException):
+            _ = nm.CompletelyUnknownParameter_XYZ
+        camera.Close()
+
+    @staticmethod
+    def _node_exists_in_raw_nodemap(raw_nm, name):
+        """Return True if the raw genicam INodeMap contains a node with the given name."""
+        try:
+            raw_nm.GetNode(name)
+            return True
+        except genicam.LogicalErrorException:
+            return False
+
+    def _find_absent_parameter(self, raw_nm, param_dict, intf_type):
+        """Return the first name in param_dict with the given intf_type that is absent
+        from raw_nm, or None if every listed name is present."""
+        return next(
+            (n for n, t in param_dict.items()
+             if t == intf_type and not self._node_exists_in_raw_nodemap(raw_nm, n)),
+            None,
+        )
+
+    def test_lookup_known_camera_integer_returns_empty_integer_parameter(self):
+        """A known camera Integer parameter that is absent from the live nodemap returns
+        an empty (unattached) IntegerParameter from the static lookup table."""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+        absent_name = self._find_absent_parameter(nm._Get(), pylon._CAMERA_PARAMETERS, genicam.intfIInteger)
+        if absent_name is None:
+            self.skipTest("No absent Integer camera parameter found in emulator")
+        param = getattr(nm, absent_name)
+        self.assertIsInstance(param, pylon.IntegerParameter)
+        self.assertFalse(param.IsValid())
+        camera.Close()
+
+    def test_lookup_known_camera_boolean_returns_empty_boolean_parameter(self):
+        """Absent but listed Boolean camera parameter -> BooleanParameter (unattached)"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+        absent_name = self._find_absent_parameter(nm._Get(), pylon._CAMERA_PARAMETERS, genicam.intfIBoolean)
+        if absent_name is None:
+            self.skipTest("No absent Boolean camera parameter found in emulator")
+        param = getattr(nm, absent_name)
+        self.assertIsInstance(param, pylon.BooleanParameter)
+        self.assertFalse(param.IsValid())
+        camera.Close()
+
+    def test_lookup_known_camera_float_returns_empty_float_parameter(self):
+        """Absent but listed Float camera parameter -> FloatParameter (unattached)"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+        absent_name = self._find_absent_parameter(nm._Get(), pylon._CAMERA_PARAMETERS, genicam.intfIFloat)
+        if absent_name is None:
+            self.skipTest("No absent Float camera parameter found in emulator")
+        param = getattr(nm, absent_name)
+        self.assertIsInstance(param, pylon.FloatParameter)
+        self.assertFalse(param.IsValid())
+        camera.Close()
+
+    def test_lookup_known_camera_enum_returns_empty_enum_parameter(self):
+        """Absent but listed Enumeration camera parameter -> EnumParameter (unattached)"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+        absent_name = self._find_absent_parameter(nm._Get(), pylon._CAMERA_PARAMETERS, genicam.intfIEnumeration)
+        if absent_name is None:
+            self.skipTest("No absent Enumeration camera parameter found in emulator")
+        param = getattr(nm, absent_name)
+        self.assertIsInstance(param, pylon.EnumParameter)
+        self.assertFalse(param.IsValid())
+        camera.Close()
+
+    def test_lookup_known_stream_integer_returns_empty_integer_parameter(self):
+        """Absent but listed Integer stream parameter -> IntegerParameter (unattached)"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetStreamGrabberNodeMap()
+        absent_name = self._find_absent_parameter(nm._Get(), pylon._STREAM_PARAMETERS, genicam.intfIInteger)
+        if absent_name is None:
+            self.skipTest("No absent Integer stream parameter found in emulator")
+        param = getattr(nm, absent_name)
+        self.assertIsInstance(param, pylon.IntegerParameter)
+        self.assertFalse(param.IsValid())
+        camera.Close()
+
+    def test_lookup_known_tl_integer_returns_empty_integer_parameter(self):
+        """Absent but listed Integer TL parameter -> IntegerParameter (unattached)"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetTLNodeMap()
+        absent_name = self._find_absent_parameter(nm._Get(), pylon._TRANSPORT_LAYER_PARAMETERS, genicam.intfIInteger)
+        if absent_name is None:
+            self.skipTest("No absent Integer TL parameter found in emulator")
+        param = getattr(nm, absent_name)
+        self.assertIsInstance(param, pylon.IntegerParameter)
+        self.assertFalse(param.IsValid())
+        camera.Close()
+
+    def test_lookup_known_event_grabber_integer_returns_empty_integer_parameter(self):
+        """Absent but listed Integer event-grabber parameter -> IntegerParameter (unattached)"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetEventGrabberNodeMap()
+        absent_name = self._find_absent_parameter(nm._Get(), pylon._EVENT_GRABBER_PARAMETERS, genicam.intfIInteger)
+        if absent_name is None:
+            self.skipTest("No absent Integer event-grabber parameter found in emulator")
+        param = getattr(nm, absent_name)
+        self.assertIsInstance(param, pylon.IntegerParameter)
+        self.assertFalse(param.IsValid())
+        camera.Close()
+
+    def test_lookup_error_message_includes_nodemap_type_string(self):
+        """LogicalErrorException from _LookupParameter contains the nodemap type string"""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+        try:
+            _ = nm.CompletelyUnknownAttribute_ZZZZ
+            self.fail("Expected LogicalErrorException was not raised")
+        except genicam.LogicalErrorException as e:
+            self.assertIn("Camera", str(e))
+        camera.Close()
+
     def test_to_parameter(self):
         """Test ToParameter() on a raw genicam INodeMap (not wrapped by INodeMapWrapper) does NOT"""
         camera = self.create_first()

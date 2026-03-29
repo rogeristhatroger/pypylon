@@ -2,7 +2,7 @@
 %nodefaultdtor GENAPI_NAMESPACE::IFloat;
 namespace GENAPI_NAMESPACE {
     class IInteger;
-	class IEnumeration;
+    class IEnumeration;
 }
 %extend GENAPI_NAMESPACE::IFloat {
     //! gets the interface of an integer alias node.

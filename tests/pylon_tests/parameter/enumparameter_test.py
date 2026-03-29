@@ -628,6 +628,18 @@ class EnumParameterTestSuite(PylonParameterTestCase):
         p = pylon.EnumParameter(self.nodemap, "TestEnumerationRW")
         self.assertIsInstance(p.IsValueCacheValid(), bool)
 
+    # ------------------------------------------------------------------
+    # Compatibility with genicam
+    # ------------------------------------------------------------------
+
+    def test_genicam_compatibility(self):
+        """Parameter can be used wherever genicam interfaces are expected."""
+        p = pylon.EnumParameter(self.nodemap, "TestEnumerationRW")
+        self.assertIsInstance(p, genicam.IEnumeration)
+        self.assertIsInstance(p, genicam.IValue)
+        self.assertTrue(genicam.IsReadable(p))
+        self.assertTrue(genicam.IsWritable(p))
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

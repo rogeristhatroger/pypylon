@@ -23,11 +23,11 @@
     Pylon::DataProcessing::CVariant getValue(const Pylon::String_t& key)
     {
         Pylon::DataProcessing::CVariant v = $self->operator[](key);
-		return v;
+        return v;
     }
-	
-	void setValue(const Pylon::String_t& key, Pylon::DataProcessing::CVariant& v)
+    
+    void setValue(const Pylon::String_t& key, Pylon::DataProcessing::CVariant& v)
     {
-		$self->operator[](key) = v;
+        $self->operator[](key) = v;
     }
 }

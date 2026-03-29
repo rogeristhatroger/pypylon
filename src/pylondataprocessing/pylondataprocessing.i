@@ -46,7 +46,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // allow debug builds of genicam wrapper against release build of python
 # ifdef _DEBUG
-#	ifdef _MSC_VER
+#    ifdef _MSC_VER
 // Include these low level headers before undefing _DEBUG. Otherwise when doing
 // a debug build against a release build of python the compiler will end up
 // including these low level headers without DEBUG enabled, causing it to try

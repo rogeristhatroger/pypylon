@@ -201,7 +201,7 @@
 }
 
 // Ignore original overloads for functions with void* in their signature.
-%ignore SetCompressionDescriptor;
+%ignore SetCompressionDescriptor( const void* pCompressionDescriptor, size_t sizeCompressionDescriptor );
 %ignore GetCompressionInfo;
 %ignore ComputeCompressionDescriptorHash;
 %ignore GetCompressionDescriptorHash;

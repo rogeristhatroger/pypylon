@@ -46,7 +46,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // allow debug builds of genicam wrapper against release build of python
 # ifdef _DEBUG
-#	ifdef _MSC_VER
+#    ifdef _MSC_VER
 // Include these low level headers before undefing _DEBUG. Otherwise when doing
 // a debug build against a release build of python the compiler will end up
 // including these low level headers without DEBUG enabled, causing it to try
@@ -131,7 +131,6 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef _PYTHON_COMPILER
 
 using namespace Pylon;
-using namespace GENAPI_NAMESPACE; // for usage in generated code of EnumParameter.i
 
 static PyObject* _genicam_translate = NULL;
 
@@ -399,60 +398,56 @@ def needs_numpy(func):
 // Nodes with no Pylon *Parameter equivalent (intfIValue, intfICategory,
 // intfIPort, intfIBase, intfIEnumEntry) fall back to the genicam types.
 //
-%typemap(out) GENAPI_NAMESPACE::INode* Pylon::INodeMapWrapper::GetNode
+%typemap(out) GENAPI_NAMESPACE::INode* Pylon::INodeMapWrapper::GetNode2,
+              GENAPI_NAMESPACE::INode* Pylon::INodeMapWrapper::GetNode
 %{
     {
         if (0 == $1)
         {
-            GENICAM_NAMESPACE::LogicalErrorException except(
-                "Node not existing",
-                __FILE__,
-                __LINE__
-                );
-            TranslateGenicamException(&except);
-            SWIG_fail;
+            Pylon::CParameter *p = new Pylon::CParameter($1);
+            $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CParameter*), SWIG_POINTER_OWN);
         }
         else
         {
             switch ($1->GetPrincipalInterfaceType())
             {
-                case intfIInteger:
+                case GENAPI_NAMESPACE::intfIInteger:
                 {
                     Pylon::CIntegerParameter *p = new Pylon::CIntegerParameter($1);
                     $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CIntegerParameter*), SWIG_POINTER_OWN);
                     break;
                 }
-                case intfIBoolean:
+                case GENAPI_NAMESPACE::intfIBoolean:
                 {
                     Pylon::CBooleanParameter *p = new Pylon::CBooleanParameter($1);
                     $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CBooleanParameter*), SWIG_POINTER_OWN);
                     break;
                 }
-                case intfICommand:
+                case GENAPI_NAMESPACE::intfICommand:
                 {
                     Pylon::CCommandParameter *p = new Pylon::CCommandParameter($1);
                     $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CCommandParameter*), SWIG_POINTER_OWN);
                     break;
                 }
-                case intfIFloat:
+                case GENAPI_NAMESPACE::intfIFloat:
                 {
                     Pylon::CFloatParameter *p = new Pylon::CFloatParameter($1);
                     $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CFloatParameter*), SWIG_POINTER_OWN);
                     break;
                 }
-                case intfIString:
+                case GENAPI_NAMESPACE::intfIString:
                 {
                     Pylon::CStringParameter *p = new Pylon::CStringParameter($1);
                     $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CStringParameter*), SWIG_POINTER_OWN);
                     break;
                 }
-                case intfIRegister:
+                case GENAPI_NAMESPACE::intfIRegister:
                 {
                     Pylon::CArrayParameter *p = new Pylon::CArrayParameter($1);
                     $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CArrayParameter*), SWIG_POINTER_OWN);
                     break;
                 }
-                case intfIEnumeration:
+                case GENAPI_NAMESPACE::intfIEnumeration:
                 {
                     Pylon::CEnumParameter *p = new Pylon::CEnumParameter($1);
                     $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CEnumParameter*), SWIG_POINTER_OWN);
@@ -466,23 +461,23 @@ def needs_numpy(func):
                     void *fallback_ptr = 0;
                     switch ($1->GetPrincipalInterfaceType())
                     {
-                        case intfIValue:
+                        case GENAPI_NAMESPACE::intfIValue:
                             fallback_type = $descriptor(GENAPI_NAMESPACE::IValue*);
                             fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IValue*>($1);
                             break;
-                        case intfICategory:
+                        case GENAPI_NAMESPACE::intfICategory:
                             fallback_type = $descriptor(GENAPI_NAMESPACE::ICategory*);
                             fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::ICategory*>($1);
                             break;
-                        case intfIEnumEntry:
+                        case GENAPI_NAMESPACE::intfIEnumEntry:
                             fallback_type = $descriptor(GENAPI_NAMESPACE::IEnumEntry*);
                             fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IEnumEntry*>($1);
                             break;
-                        case intfIPort:
+                        case GENAPI_NAMESPACE::intfIPort:
                             fallback_type = $descriptor(GENAPI_NAMESPACE::IPort*);
                             fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IPort*>($1);
                             break;
-                        case intfIBase:
+                        case GENAPI_NAMESPACE::intfIBase:
                             fallback_type = $descriptor(GENAPI_NAMESPACE::IBase*);
                             fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IBase*>($1);
                             break;
@@ -513,77 +508,77 @@ def needs_numpy(func):
 %define PYLON_NODE_TO_PARAMETER(node_ptr, out_item)
     switch ((node_ptr)->GetPrincipalInterfaceType())
     {
-        case intfIInteger:
+        case GENAPI_NAMESPACE::intfIInteger:
         {
             Pylon::CIntegerParameter *p = new Pylon::CIntegerParameter(node_ptr);
             out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CIntegerParameter*), SWIG_POINTER_OWN);
             break;
         }
-        case intfIBoolean:
+        case GENAPI_NAMESPACE::intfIBoolean:
         {
             Pylon::CBooleanParameter *p = new Pylon::CBooleanParameter(node_ptr);
             out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CBooleanParameter*), SWIG_POINTER_OWN);
             break;
         }
-        case intfICommand:
+        case GENAPI_NAMESPACE::intfICommand:
         {
             Pylon::CCommandParameter *p = new Pylon::CCommandParameter(node_ptr);
             out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CCommandParameter*), SWIG_POINTER_OWN);
             break;
         }
-        case intfIFloat:
+        case GENAPI_NAMESPACE::intfIFloat:
         {
             Pylon::CFloatParameter *p = new Pylon::CFloatParameter(node_ptr);
             out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CFloatParameter*), SWIG_POINTER_OWN);
             break;
         }
-        case intfIString:
+        case GENAPI_NAMESPACE::intfIString:
         {
             Pylon::CStringParameter *p = new Pylon::CStringParameter(node_ptr);
             out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CStringParameter*), SWIG_POINTER_OWN);
             break;
         }
-        case intfIRegister:
+        case GENAPI_NAMESPACE::intfIRegister:
         {
             Pylon::CArrayParameter *p = new Pylon::CArrayParameter(node_ptr);
             out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CArrayParameter*), SWIG_POINTER_OWN);
             break;
         }
-        case intfIEnumeration:
+        case GENAPI_NAMESPACE::intfIEnumeration:
         {
             Pylon::CEnumParameter *p = new Pylon::CEnumParameter(node_ptr);
             out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CEnumParameter*), SWIG_POINTER_OWN);
             break;
         }
-        case intfIValue:
+        case GENAPI_NAMESPACE::intfIValue:
         {
             out_item = SWIG_NewPointerObj(
                 dynamic_cast<GENAPI_NAMESPACE::IValue*>(node_ptr),
                 $descriptor(GENAPI_NAMESPACE::IValue*), 0);
             break;
         }
-        case intfICategory:
+        case GENAPI_NAMESPACE::intfICategory:
         {
             out_item = SWIG_NewPointerObj(
                 dynamic_cast<GENAPI_NAMESPACE::ICategory*>(node_ptr),
                 $descriptor(GENAPI_NAMESPACE::ICategory*), 0);
             break;
         }
-        case intfIEnumEntry:
+        case GENAPI_NAMESPACE::intfIEnumEntry:
         {
             out_item = SWIG_NewPointerObj(
                 dynamic_cast<GENAPI_NAMESPACE::IEnumEntry*>(node_ptr),
                 $descriptor(GENAPI_NAMESPACE::IEnumEntry*), 0);
             break;
         }
-        case intfIPort:
+        case GENAPI_NAMESPACE::intfIPort:
         {
             out_item = SWIG_NewPointerObj(
                 dynamic_cast<GENAPI_NAMESPACE::IPort*>(node_ptr),
                 $descriptor(GENAPI_NAMESPACE::IPort*), 0);
             break;
         }
-        case intfIBase:
+        case GENAPI_NAMESPACE::intfIBase:
         {
             out_item = SWIG_NewPointerObj(
                 dynamic_cast<GENAPI_NAMESPACE::IBase*>(node_ptr),
@@ -633,6 +628,10 @@ def needs_numpy(func):
     delete $1;
 }
 
+%typemap(in, numinputs=0) GENAPI_NAMESPACE::NodeList_t & {
+    $1 = new GENAPI_NAMESPACE::NodeList_t();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Expose INodeMapWrapper to SWIG so that $descriptor(Pylon::INodeMapWrapper*)
@@ -650,7 +649,7 @@ def needs_numpy(func):
               GENAPI_NAMESPACE::INodeMap&
 %{
     $result = SWIG_NewPointerObj(
-        new Pylon::INodeMapWrapper($1),
+        new Pylon::INodeMapWrapper($1, NodeMapType_Unknown),
         $descriptor(Pylon::INodeMapWrapper*),
         SWIG_POINTER_OWN
     );
@@ -927,6 +926,13 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 // sources. The following macro ensures that SWIG again uses 'GENAPI_NAMESPACE'
 // in all the places where pylon uses 'GenApi'.
 #define GenApi GENAPI_NAMESPACE
+%include "parameters_camera.i"
+%include "parameters_chunk_data.i"
+%include "parameters_event_grabber.i"
+%include "parameters_interface.i"
+%include "parameters_stream.i"
+%include "parameters_transport_layer.i"
+%include "parameter_lookup.i"
 
 %include "PylonVersionInfo.i"
 %include "TypeMappings.i"
@@ -948,7 +954,6 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "GrabResultPtr.i"
 %include "WaitObject.i"
 %include "WaitObjects.i"
-%include "InstantCameraParams.i"
 %include "InstantCamera.i"
 %include "InstantCameraArray.i"
 %include "ImageEventHandler.i"
@@ -962,7 +967,6 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "ReusableImage.i"
 %include "PylonImageBase.i"
 %include "PylonImage.i"
-%include "_ImageFormatConverterParams.i"
 %include "ImageFormatConverter.i"
 %include "Parameter.i"
 %include "IntegerParameter.i"

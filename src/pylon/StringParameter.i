@@ -1,6 +1,6 @@
 %rename (StringParameter) Pylon::CStringParameter;
 #define GenICam GENICAM_NAMESPACE
-%ignore Pylon::IStringEx;
+%rename(_IStringEx) Pylon::IStringEx;
 %ignore Pylon::CStringParameter::CStringParameter(GENAPI_NAMESPACE::INodeMap &,char const *);
 %ignore Pylon::CStringParameter::operator()();
 %ignore Pylon::CStringParameter::operator*();
