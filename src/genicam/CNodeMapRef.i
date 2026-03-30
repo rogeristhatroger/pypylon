@@ -28,7 +28,7 @@
 namespace GENAPI_NAMESPACE
 {
 
-	class IDeviceInfo;
+    class IDeviceInfo;
     /**
     \brief Smartpointer for NodeMaps with create function
     \ingroup GenApi_PublicInterface
@@ -50,7 +50,7 @@ namespace GENAPI_NAMESPACE
 
         //! Get device name 
         virtual GENICAM_NAMESPACE::gcstring _GetDeviceName();
-		
+        
         //! Fires nodes which have a polling time
         virtual void _Poll( int64_t ElapsedTime );
 
@@ -70,11 +70,11 @@ namespace GENAPI_NAMESPACE
         //! Retrieves the node from the central map by name
         virtual INode* _GetNode( const GENICAM_NAMESPACE::gcstring& key) const;
 
-		%extend {
+        %extend {
         virtual INode* GetNode( const GENICAM_NAMESPACE::gcstring& key) const{
-			return $self->_GetNode(key);
-		};
-		};
+            return $self->_GetNode(key);
+        };
+        };
 
         //! Invalidates all nodes
         virtual void _InvalidateNodes() const;

@@ -45,7 +45,7 @@
 
 %rename (ArrayParameter) Pylon::CArrayParameter;
 #define GenICam GENICAM_NAMESPACE
-%ignore Pylon::IRegisterEx;
+%rename(_IRegisterEx) Pylon::IRegisterEx;
 %ignore Pylon::CArrayParameter::CArrayParameter(GENAPI_NAMESPACE::INodeMap &,char const *);
 %include <pylon/ArrayParameter.h>;
 

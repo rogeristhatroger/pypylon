@@ -10,7 +10,7 @@
 
 %rename (IntegerParameter) Pylon::CIntegerParameter;
 #define GenICam GENICAM_NAMESPACE
-%ignore Pylon::IIntegerEx;
+%rename(_IIntegerEx) Pylon::IIntegerEx;
 %ignore Pylon::CIntegerParameter::CIntegerParameter(GENAPI_NAMESPACE::INodeMap &,char const *);
 %ignore Pylon::CIntegerParameter::operator()();
 %ignore Pylon::CIntegerParameter::operator*();

@@ -1,6 +1,6 @@
 %rename (Parameter) Pylon::CParameter;
 #define GenICam GENICAM_NAMESPACE
-%ignore Pylon::IValueEx;
+%rename(_IValueEx) Pylon::IValueEx;
 %ignore Pylon::CParameter::CParameter(GENAPI_NAMESPACE::INodeMap &,char const *);
 %ignore Pylon::CParameter::Attach(GENAPI_NAMESPACE::INodeMap &,char const *);
 %include <pylon/Parameter.h>;

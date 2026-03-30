@@ -1,3 +1,6 @@
+%ignore GetNode( const GENICAM_NAMESPACE::gcstring& Name );
+%rename(_GetNode) Pylon::INodeMapWrapper::GetNode2;
+
 namespace GENAPI_NAMESPACE {
     class IDeviceInfo;
 }
@@ -6,7 +9,7 @@ namespace GENAPI_NAMESPACE {
     //! gets the interface of the DeviceInfo
     GENAPI_NAMESPACE::IDeviceInfo *GetDeviceInfo()
     {
-        IDeviceInfo *p_di;
+        GENAPI_NAMESPACE::IDeviceInfo *p_di;
         p_di = dynamic_cast<GENAPI_NAMESPACE::IDeviceInfo*>($self);
         if (NULL == p_di)
             throw LOGICAL_ERROR_EXCEPTION( "Nodemap has no deviceinfo" );
@@ -14,12 +17,17 @@ namespace GENAPI_NAMESPACE {
     };
 
     PROP_GET(DeviceInfo)
+    PROP_GET(NodeMapType)
+    PROP_GET(NodeMapTypeString)
 %pythoncode %{
+    def GetNode(self, name, throwIfNotFound=True):
+        return self._GetNode(name, throwIfNotFound)
+
     def __getattr__(self, attribute):
         if attribute in self.__dict__ or attribute in ( "thisown","this") or attribute.startswith("__"):
             return object.__getattr__(self, attribute)
         else:
-            return self.GetNode(attribute)
+            return _LookupParameter(self, None, attribute)
 
     def __setattr__(self, attribute, val):
         if attribute in self.__dict__ or attribute in ( "thisown","this") or attribute.startswith("__"):

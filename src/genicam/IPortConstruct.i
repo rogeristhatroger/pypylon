@@ -38,7 +38,7 @@ namespace GENAPI_NAMESPACE
     */
     class  IPortConstruct: virtual public IPort
     {
-	public:
+    public:
         ////! Sets pointer the real port implementation; this function may called only once
         //virtual void SetPortImpl(IPort* pPort) = 0;
 

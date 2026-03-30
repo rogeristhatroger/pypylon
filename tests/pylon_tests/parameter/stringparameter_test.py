@@ -482,6 +482,18 @@ class StringParameterTestSuite(PylonParameterTestCase):
         p_ro = pylon.StringParameter(self.nodemap, "TestStringRO")
         self.assertEqual("TestStringValueRO", str(p_ro))
 
+    # ------------------------------------------------------------------
+    # Compatibility with genicam
+    # ------------------------------------------------------------------
+
+    def test_genicam_compatibility(self):
+        """Parameter can be used wherever genicam interfaces are expected."""
+        p = pylon.StringParameter(self.nodemap, "TestStringRW")
+        self.assertIsInstance(p, genicam.IString)
+        self.assertIsInstance(p, genicam.IValue)
+        self.assertTrue(genicam.IsReadable(p))
+        self.assertTrue(genicam.IsWritable(p))
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

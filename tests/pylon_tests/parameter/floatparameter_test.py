@@ -628,6 +628,18 @@ class FloatParameterTestSuite(PylonParameterTestCase):
         p = pylon.FloatParameter(self.nodemap, "TestFloatRW")
         self.assertEqual(p.GetValuePercentOfRange(), p.ValuePercentOfRange)
 
+    # ------------------------------------------------------------------
+    # Compatibility with genicam
+    # ------------------------------------------------------------------
+
+    def test_genicam_compatibility(self):
+        """Parameter can be used wherever genicam interfaces are expected."""
+        p = pylon.FloatParameter(self.nodemap, "TestFloatRW")
+        self.assertIsInstance(p, genicam.IFloat)
+        self.assertIsInstance(p, genicam.IValue)
+        self.assertTrue(genicam.IsReadable(p))
+        self.assertTrue(genicam.IsWritable(p))
+
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']

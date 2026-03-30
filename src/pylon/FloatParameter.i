@@ -27,7 +27,7 @@
 
 %rename (FloatParameter) Pylon::CFloatParameter;
 #define GenICam GENICAM_NAMESPACE
-%ignore Pylon::IFloatEx;
+%rename(_IFloatEx) Pylon::IFloatEx;
 %ignore Pylon::CFloatParameter::CFloatParameter(GENAPI_NAMESPACE::INodeMap &,char const *);
 %ignore Pylon::CFloatParameter::operator()();
 %ignore Pylon::CFloatParameter::operator*();

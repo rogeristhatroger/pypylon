@@ -38,19 +38,19 @@ namespace GENAPI_NAMESPACE
 
             virtual GENAPI_NAMESPACE::INode* GetNode() { return dynamic_cast<GENAPI_NAMESPACE::INode*>($self); };
 
-			//! Get the Id of the chunk the port should be attached to
-			virtual GENICAM_NAMESPACE::gcstring GetChunkID() const {
-				return dynamic_cast<const GENAPI_NAMESPACE::IChunkPort*>($self)->GetChunkID();
-			};
+            //! Get the Id of the chunk the port should be attached to
+            virtual GENICAM_NAMESPACE::gcstring GetChunkID() const {
+                return dynamic_cast<const GENAPI_NAMESPACE::IChunkPort*>($self)->GetChunkID();
+            };
 
-			virtual EYesNo CacheChunkData() const {
-				return dynamic_cast<const GENAPI_NAMESPACE::IChunkPort*>($self)->CacheChunkData();
-			};
+            virtual EYesNo CacheChunkData() const {
+                return dynamic_cast<const GENAPI_NAMESPACE::IChunkPort*>($self)->CacheChunkData();
+            };
 
-			//! Determines if the port adapter must perform an endianess swap
-			virtual EYesNo GetSwapEndianess() {
-				return dynamic_cast<GENAPI_NAMESPACE::IPortConstruct*>($self)->GetSwapEndianess();
-			};
+            //! Determines if the port adapter must perform an endianess swap
+            virtual EYesNo GetSwapEndianess() {
+                return dynamic_cast<GENAPI_NAMESPACE::IPortConstruct*>($self)->GetSwapEndianess();
+            };
 
             PROP_GET(Node);
             PROP_GET(ChunkID);

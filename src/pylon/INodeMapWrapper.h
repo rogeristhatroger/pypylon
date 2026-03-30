@@ -2,14 +2,28 @@
 
 namespace Pylon
 {
+    enum ENodeMapType
+    {
+        NodeMapType_Camera,
+        NodeMapType_StreamGrabber,
+        NodeMapType_DeviceTransportLayer,
+        NodeMapType_EventGrabber,
+        NodeMapType_InstantCamera,
+        NodeMapType_ImageFormatConverter,
+        NodeMapType_ChunkData,
+        NodeMapType_Interface,
+        NodeMapType_Unknown
+    };
+
     // This class is a simple wrapper around an INodeMap pointer. It is used to
     // change the SWIG mapping of GenICam types in the module pypylon.pylon
     // and pypylon.dataprocessing using SWIG typemap instructions.
     class INodeMapWrapper : public GENAPI_NAMESPACE::INodeMap, public GENAPI_NAMESPACE::IDeviceInfo //needed for saving pfs files
     {
     public:
-        INodeMapWrapper( GENAPI_NAMESPACE::INodeMap* pNodeMap )
+        INodeMapWrapper( GENAPI_NAMESPACE::INodeMap* pNodeMap, ENodeMapType nodeMapType)
             : m_pNodeMap( pNodeMap )
+            , m_nodeMapType(nodeMapType)
         {
         }
 
@@ -20,9 +34,23 @@ namespace Pylon
             m_pNodeMap->GetNodes( Nodes );
         }
 
+        // this method will be ignored by SWIG.
         GENAPI_NAMESPACE::INode* GetNode( const GENICAM_NAMESPACE::gcstring& Name ) const override
         {
             return m_pNodeMap->GetNode( Name );
+        }
+
+        GENAPI_NAMESPACE::INode* GetNode2( const GENICAM_NAMESPACE::gcstring& Name, bool throwIfNotFound) const
+        {
+            GENAPI_NAMESPACE::INode* pNode = m_pNodeMap->GetNode( Name );
+            if (throwIfNotFound && pNode == nullptr)
+            {
+                // trowing an exception is the behavior of genicam.INodeMap.GetNode.
+                // this is not always desirable, so we provide the option to return None instead.
+                GENICAM_NAMESPACE::gcstring errorMsg = "Node '" + Name + "' not found in nodemap of type " + GetNodeMapTypeString();
+                throw GENICAM_NAMESPACE::LogicalErrorException(errorMsg.c_str(), __FILE__, __LINE__);
+            }
+            return pNode;
         }
 
         void InvalidateNodes() const override
@@ -95,6 +123,37 @@ namespace Pylon
             return m_pNodeMap;
         }
 
+        ENodeMapType GetNodeMapType() const
+        {
+            return m_nodeMapType;
+        }
+
+        GENICAM_NAMESPACE::gcstring GetNodeMapTypeString() const
+        {
+            switch (m_nodeMapType)
+            {
+            case NodeMapType_Camera:
+                return "Camera";
+            case NodeMapType_StreamGrabber:
+                return "StreamGrabber";
+            case NodeMapType_DeviceTransportLayer:
+                return "DeviceTransportLayer";
+            case NodeMapType_EventGrabber:
+                return "EventGrabber";
+            case NodeMapType_InstantCamera:
+                return "InstantCamera";
+            case NodeMapType_ImageFormatConverter:
+                return "ImageFormatConverter";
+            case NodeMapType_ChunkData:
+                return "ChunkData";
+            case NodeMapType_Interface:
+                return "Interface";
+            case NodeMapType_Unknown:
+            default:
+                return "Unknown";
+            }
+        }
+
     protected:
         virtual GENICAM_NAMESPACE::gcstring GetModelName() override
         {
@@ -141,6 +200,7 @@ namespace Pylon
             return dynamic_cast<GENAPI_NAMESPACE::IDeviceInfo*>(m_pNodeMap)->GetVersionGuid();
         }
     private:
-        GENAPI_NAMESPACE::INodeMap* m_pNodeMap;
+        GENAPI_NAMESPACE::INodeMap* m_pNodeMap = nullptr;
+        ENodeMapType m_nodeMapType = NodeMapType_Unknown;
     };
 }
