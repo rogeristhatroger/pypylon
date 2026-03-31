@@ -1,12 +1,15 @@
 import unittest
 import os
 import sys
+
+from pypylon.pylon import BaslerCamEmuDeviceClass
+
 num = 3
 os.environ["PYLON_CAMEMU"] = "%d" % num
 from pypylon import pylon
 
 def get_class_and_filter():
-    device_class = "BaslerCamEmu"
+    device_class = BaslerCamEmuDeviceClass
     di = pylon.DeviceInfo()
     di.SetDeviceClass(device_class)
     return device_class, [di]

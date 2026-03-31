@@ -1,10 +1,13 @@
 import unittest
 from pypylon import pylon
+from pypylon.pylon import BaslerGigEDeviceClass
+
 
 def get_class_and_filter():
-    device_class = "BaslerGigE"
+    device_class = BaslerGigEDeviceClass
     di = pylon.DeviceInfo()
     di.SetDeviceClass(device_class)
+
     return device_class, [di]
 
 class PylonTestCase(unittest.TestCase):
