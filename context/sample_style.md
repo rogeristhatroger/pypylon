@@ -23,7 +23,8 @@ When a buffer is ready, you get a grab result; call Release() on it when
 finished so the buffer can be reused.
 
 Without hardware, configure Basler Camera Emulation so a virtual device is
-visible to CreateFirstDevice: https://docs.baslerweb.com/camera-emulation
+visible to pylon.FirstFound (or CreateFirstDevice):
+https://docs.baslerweb.com/camera-emulation
 """
 ```
 
@@ -62,3 +63,38 @@ The following additional rules are specific to samples:
   pypylon imports (`from pypylon import pylon`, `from pypylon import genicam`),
   then any other third-party imports. Import only the modules that are actually
   used in the sample.
+
+- **Avoid abbreviations in identifiers.** Use descriptive names for variables,
+  functions, and classes, and avoid abbreviations that may be unclear to readers.
+  For example, use `exposure_time` instead of `exp_time`, and use
+  `CameraConfiguration` instead of `CamConfig`.
+
+- **Prefer properties and shorthand helpers over verbose getters/setters.**
+  Use the Pythonic property syntax and convenience shortcuts provided by
+  pypylon instead of the underlying C++ style accessor methods. Examples:
+
+  | Avoid | Prefer |
+  |---|---|
+  | `pylon.InstantCamera(pylon.TlFactory.GetInstance().CreateFirstDevice())` | `pylon.InstantCamera(pylon.FirstFound)` |
+  | `camera.GetDeviceInfo().GetModelName()` | `camera.DeviceInfo.ModelName` |
+  | `grab_result.GetWidth()` | `grab_result.Width` |
+  | `grab_result.GetHeight()` | `grab_result.Height` |
+  | `grab_result.GetErrorCode()` | `grab_result.ErrorCode` |
+  | `grab_result.GetErrorDescription()` | `grab_result.ErrorDescription` |
+
+- **Use context managers for cameras and grab results.** Where possible, use
+  `with` statements to ensure cameras are closed and grab results are released
+  automatically. For example:
+  ```python
+  with pylon.InstantCamera(pylon.FirstFound) as camera:
+      ...
+  # The camera is automatically closed here
+  ```
+  Similarly for grab results:
+  ```python
+  with camera.RetrieveResult(timeout_ms, pylon.TimeoutHandling_ThrowException) as grab_result:
+      if grab_result.GrabSucceeded():
+          img = grab_result.Array
+          ...
+  # The grab result is automatically released here
+  ```
