@@ -5,7 +5,8 @@
 %pythoncode %{
     def keys(self):
         """Return all available property names."""
-        return [str(n) for n in self.GetPropertyNames()]
+        _count, names = self.GetPropertyNames()
+        return [n for n in names]
 
     def values(self):
         """Return all available property values."""
