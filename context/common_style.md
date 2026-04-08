@@ -44,3 +44,18 @@ and unit tests.
   module-level constants.
   For example, use `exit_code` instead of `exitCode`, and use
   `DEFAULT_EXPOSURE_TIME` instead of `DefaultExposureTime`.
+
+- **Use InstantCamera using with statement.** When using `pylon.InstantCamera`, 
+ use a `with` statement to ensure that the
+  camera is properly closed after use, even if an error occurs.
+  For example:
+  ```python
+  with pylon.InstantCamera(pylon.FirstFound) as camera:
+      # Use the camera here
+      ...
+  # The camera is automatically closed here
+  ```
+- **Avoid abbreviations in identifiers.** Use descriptive names for variables, functions,
+  and classes, and avoid abbreviations that may be unclear to readers.
+  For example, use `exposure_time` instead of `exp_time`, and use
+  `CameraConfiguration` instead of `CamConfig`.

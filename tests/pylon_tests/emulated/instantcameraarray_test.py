@@ -18,22 +18,22 @@ class InstantCameraArrayTestSuite(PylonEmuTestCase):
     def test_initialize(self):
         cameraArray = pylon.InstantCameraArray()
         self.assertEqual(0, cameraArray.GetSize())
-        cameraArray.Initialize(self.num_dev)
-        self.assertEqual(self.num_dev, cameraArray.GetSize())
+        cameraArray.Initialize(self.num_devices)
+        self.assertEqual(self.num_devices, cameraArray.GetSize())
         v = 0
         for cam in cameraArray:
             v += 1
-        self.assertEqual(self.num_dev, v)
+        self.assertEqual(self.num_devices, v)
 
     def test_connect_cameras(self):
         devices = pylon.TlFactory.GetInstance().EnumerateDevices(self.device_filter)
-        self.assertEqual(len(devices), self.num_dev)
-        cameraArray = pylon.InstantCameraArray(self.num_dev)
+        self.assertEqual(len(devices), self.num_devices)
+        cameraArray = pylon.InstantCameraArray(self.num_devices)
         for i, cam in enumerate(cameraArray):
             self.assertEqual(devices[i].GetDeviceClass(), self.device_class)
             cam.Attach(pylon.TlFactory.GetInstance().CreateDevice(devices[i]))
 
-        self.assertEqual(self.num_dev, cameraArray.GetSize())
+        self.assertEqual(self.num_devices, cameraArray.GetSize())
         self.assertFalse(cameraArray.IsGrabbing())
         self.assertFalse(cameraArray.IsOpen())
         self.assertTrue(cameraArray.IsPylonDeviceAttached())
@@ -41,7 +41,7 @@ class InstantCameraArrayTestSuite(PylonEmuTestCase):
 
         cameraArray.Open()
 
-        self.assertEqual(self.num_dev, cameraArray.GetSize())
+        self.assertEqual(self.num_devices, cameraArray.GetSize())
         self.assertFalse(cameraArray.IsGrabbing())
         self.assertTrue(cameraArray.IsOpen())
         self.assertTrue(cameraArray.IsPylonDeviceAttached())
@@ -49,7 +49,7 @@ class InstantCameraArrayTestSuite(PylonEmuTestCase):
 
         cameraArray.StartGrabbing()
 
-        self.assertEqual(self.num_dev, cameraArray.GetSize())
+        self.assertEqual(self.num_devices, cameraArray.GetSize())
         self.assertTrue(cameraArray.IsGrabbing())
         self.assertTrue(cameraArray.IsOpen())
         self.assertTrue(cameraArray.IsPylonDeviceAttached())
@@ -57,7 +57,7 @@ class InstantCameraArrayTestSuite(PylonEmuTestCase):
 
         cameraArray.RetrieveResult(300)
 
-        self.assertEqual(self.num_dev, cameraArray.GetSize())
+        self.assertEqual(self.num_devices, cameraArray.GetSize())
         self.assertTrue(cameraArray.IsGrabbing())
         self.assertTrue(cameraArray.IsOpen())
         self.assertTrue(cameraArray.IsPylonDeviceAttached())
@@ -65,7 +65,7 @@ class InstantCameraArrayTestSuite(PylonEmuTestCase):
 
         cameraArray.StopGrabbing()
 
-        self.assertEqual(self.num_dev, cameraArray.GetSize())
+        self.assertEqual(self.num_devices, cameraArray.GetSize())
         self.assertFalse(cameraArray.IsGrabbing())
         self.assertTrue(cameraArray.IsOpen())
         self.assertTrue(cameraArray.IsPylonDeviceAttached())
@@ -73,7 +73,7 @@ class InstantCameraArrayTestSuite(PylonEmuTestCase):
 
         cameraArray.Close()
 
-        self.assertEqual(self.num_dev, cameraArray.GetSize())
+        self.assertEqual(self.num_devices, cameraArray.GetSize())
         self.assertFalse(cameraArray.IsGrabbing())
         self.assertFalse(cameraArray.IsOpen())
         self.assertTrue(cameraArray.IsPylonDeviceAttached())
@@ -81,7 +81,7 @@ class InstantCameraArrayTestSuite(PylonEmuTestCase):
 
         cameraArray.DestroyDevice()
 
-        self.assertEqual(self.num_dev, cameraArray.GetSize())
+        self.assertEqual(self.num_devices, cameraArray.GetSize())
         self.assertFalse(cameraArray.IsGrabbing())
         self.assertFalse(cameraArray.IsOpen())
         self.assertFalse(cameraArray.IsPylonDeviceAttached())
@@ -89,9 +89,9 @@ class InstantCameraArrayTestSuite(PylonEmuTestCase):
 
     def test_detach_cameras(self):
 
-        cameraArray = pylon.InstantCameraArray(self.num_dev)
+        cameraArray = pylon.InstantCameraArray(self.num_devices)
         devices = pylon.TlFactory.GetInstance().EnumerateDevices(self.device_filter)
-        self.assertEqual(len(devices), self.num_dev)
+        self.assertEqual(len(devices), self.num_devices)
         for i, cam in enumerate(cameraArray):
             self.assertEqual(devices[i].GetDeviceClass(), self.device_class)
             cam.Attach(pylon.TlFactory.GetInstance().CreateDevice(devices[i]))
@@ -99,7 +99,7 @@ class InstantCameraArrayTestSuite(PylonEmuTestCase):
         cameraArray.Open()
         cameraArray.StartGrabbing()
         cameraArray.DetachDevice()
-        self.assertEqual(self.num_dev, cameraArray.GetSize())
+        self.assertEqual(self.num_devices, cameraArray.GetSize())
         self.assertFalse(cameraArray.IsGrabbing())
         self.assertFalse(cameraArray.IsOpen())
         self.assertFalse(cameraArray.IsPylonDeviceAttached())

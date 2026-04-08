@@ -1,26 +1,29 @@
-import unittest
+"""\
+Base test case class for pypylon unit tests that use the Basler camera emulator.
+"""
 import os
-import sys
 
-from pypylon.pylon import BaslerCamEmuDeviceClass
+NUM_CAMERAS = 3
+os.environ["PYLON_CAMEMU"] = "%d" % NUM_CAMERAS
 
-num = 3
-os.environ["PYLON_CAMEMU"] = "%d" % num
 from pypylon import pylon
+import unittest
+
 
 def get_class_and_filter():
-    device_class = BaslerCamEmuDeviceClass
-    di = pylon.DeviceInfo()
-    di.SetDeviceClass(device_class)
-    return device_class, [di]
+    device_class = pylon.BaslerCamEmuDeviceClass
+    device_info = pylon.DeviceInfo()
+    device_info.DeviceClass = device_class
+    return device_class, [device_info]
 
 
 class PylonEmuTestCase(unittest.TestCase):
-    num_dev = num
+    num_devices = NUM_CAMERAS
     device_class, device_filter = get_class_and_filter()
 
+    def get_camera_traits(self):
+        return {"DeviceClass": pylon.BaslerCamEmuDeviceClass}
+
     def create_first(self):
-        tlf = pylon.TlFactory.GetInstance()
-        return pylon.InstantCamera(tlf.CreateFirstDevice(self.device_filter[0]))
-
-
+        tl_factory = pylon.TlFactory.GetInstance()
+        return pylon.InstantCamera(tl_factory.CreateFirstDevice(self.device_filter[0]))
