@@ -73,10 +73,65 @@
       return result;
     }
 
-    GenApi::INode* GetParameter(const Pylon::String_t& fullname)
+    %nothread _GetParameter;
+    PyObject* _GetParameter(const Pylon::String_t& fullname)
     {
-      GenApi::INode* pNode = $self->GetParameters().Get(fullname).GetNode();
-      return pNode;
+        Pylon::CParameter parameter = $self->GetParameters().Get(fullname);
+		GenApi::INode* pNode = parameter.IsValid() ? parameter.GetNode() : nullptr;
+        return _DataprocNodeToParameter(pNode);
     }
+
+%pythoncode %{
+    def GetParameter(self, fullname):
+        """Get a SmartInstantCamera recipe parameter by its full name.
+
+        Falls back to the static pylon parameter tables for /@CameraDevice/,
+        /@DeviceTransportLayer/, and /@StreamGrabber* nodemap identifiers when
+        the parameter is not found in the live nodemap.
+        """
+        import pypylon.genicam as _genicam
+        import pypylon.pylon as _pylon
+
+        _NODEMAP_LOOKUP = {
+            "/@CameraDevice/": _pylon._CAMERA_PARAMETERS,
+            "/@DeviceTransportLayer/": _pylon._TRANSPORT_LAYER_PARAMETERS,
+        }
+
+        try:
+            return self._GetParameter(fullname)
+        except _genicam.LogicalErrorException:
+            param_name = fullname.rsplit("/", 1)[-1]
+            param_dict = None
+
+            for marker, d in _NODEMAP_LOOKUP.items():
+                if marker in fullname:
+                    param_dict = d
+                    break
+
+            if param_dict is None and "/@StreamGrabber" in fullname:
+                param_dict = _pylon._STREAM_PARAMETERS
+
+            if param_dict is not None:
+                intf_type = param_dict.get(param_name)
+                if intf_type is not None:
+                    if intf_type == _genicam.intfIInteger:
+                        return _pylon.IntegerParameter()
+                    elif intf_type == _genicam.intfIBoolean:
+                        return _pylon.BooleanParameter()
+                    elif intf_type == _genicam.intfICommand:
+                        return _pylon.CommandParameter()
+                    elif intf_type == _genicam.intfIFloat:
+                        return _pylon.FloatParameter()
+                    elif intf_type == _genicam.intfIString:
+                        return _pylon.StringParameter()
+                    elif intf_type == _genicam.intfIRegister:
+                        return _pylon.ArrayParameter()
+                    elif intf_type == _genicam.intfIEnumeration:
+                        return _pylon.EnumParameter()
+                    else:
+                        return _pylon.Parameter()
+
+            raise
+%}
 };
 

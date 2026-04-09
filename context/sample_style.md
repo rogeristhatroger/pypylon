@@ -41,7 +41,7 @@ from pypylon import pylon
 exit_code = 0
 try:
     # Add the actual sample code here.
-except BaseException as e:
+except Exception as e:
     print("An exception occurred:", e)
     import traceback
     traceback.print_exc()
@@ -58,6 +58,11 @@ The following additional rules are specific to samples:
 - **Exit code.** Initialize `exit_code = 0` before the `try` block and set it
   to a non-zero value inside the `except` block. Pass it to `sys.exit()` at the
   end of the script.
+
+- **Catch `Exception`, not `BaseException`.** The top-level handler must use
+  `except Exception as e:` so that `SystemExit` (from `sys.exit()`) and
+  `KeyboardInterrupt` propagate normally without an extra `except SystemExit:
+  raise` guard.
 
 - **Import order.** Place standard-library imports first (`import sys`), then
   pypylon imports (`from pypylon import pylon`, `from pypylon import genicam`),
@@ -81,6 +86,61 @@ The following additional rules are specific to samples:
   | `grab_result.GetHeight()` | `grab_result.Height` |
   | `grab_result.GetErrorCode()` | `grab_result.ErrorCode` |
   | `grab_result.GetErrorDescription()` | `grab_result.ErrorDescription` |
+
+  The same principle applies to **pylondataprocessing** types:
+
+  | Avoid | Prefer |
+  |---|---|
+  | `variant.GetErrorDescription()` | `variant.ErrorDescription` |
+  | `variant.GetDataType()` | `variant.DataType` |
+  | `variant.GetContainerType()` | `variant.ContainerType` |
+  | `variant.GetNumArrayValues()` | `variant.NumArrayValues` |
+  | `variant.GetArrayValue(i)` | `variant[i]` |
+  | `region.GetReferenceHeight()` | `region.ReferenceHeight` |
+  | `region.GetDataSize()` | `region.DataSize` |
+  | `region.GetRegionType()` | `region.RegionType` |
+  | `result_collector.GetWaitObject()` | `result_collector.WaitObject` |
+
+- **Prefer parameter methods over free-standing genicam helpers.**
+  Use methods on the parameter object directly instead of passing the
+  parameter to `genicam.IsReadable()` / `genicam.IsWritable()`. If
+  `genicam` is only imported for these helpers, remove the import.
+
+  | Avoid | Prefer |
+  |---|---|
+  | `genicam.IsReadable(param)` | `param.IsReadable()` |
+  | `genicam.IsWritable(param)` | `param.IsWritable()` |
+  | `param.ToString() if genicam.IsReadable(param) else "N/A"` | `param.GetValueOrDefault("N/A")` |
+  | `for s in param.Symbolics:` `try: param.SetValue(s)` `except: pass` | `for s in param.GetSettableValues():` `param.TrySetValue(s)` |
+
+- **Use `TrySetValue` to replace `try: SetValue() except: pass`.**
+  When a `SetValue` call is wrapped in a bare `try/except` only to swallow
+  failure, replace it with `TrySetValue`, which returns `True` on success
+  and `False` on failure without throwing:
+  ```python
+  # Before
+  try:
+      param.SetValue("ExposureEnd")
+  except Exception:
+      pass
+
+  # After
+  param.TrySetValue("ExposureEnd")
+  ```
+  `TrySetValue` is available on `EnumParameter` and `BooleanParameter`.
+
+  **Caveat:** `TrySetValue` only handles *value-not-settable*. If
+  `GetParameter()` itself may throw (e.g. the parameter node does not exist
+  on a particular camera), keep a `try/except` around the `GetParameter()`
+  call:
+  ```python
+  try:
+      chunks_available = recipe.GetParameter(
+          "MyCamera/@CameraDevice/ChunkModeActive"
+      ).TrySetValue(True)
+  except genicam.GenericException:
+      chunks_available = False
+  ```
 
 - **Use context managers for cameras and grab results.** Where possible, use
   `with` statements to ensure cameras are closed and grab results are released

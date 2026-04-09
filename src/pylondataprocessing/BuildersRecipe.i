@@ -12,6 +12,11 @@
 %include <pylondataprocessing/BuildersRecipe.h>;
 
 %extend Pylon::DataProcessing::CBuildersRecipe {
+%pythoncode %{
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.ResetToEmpty()
+        return False
+%}
 
     void GetAvailableVToolTypeIDs2(StringList_t& result) const
     {

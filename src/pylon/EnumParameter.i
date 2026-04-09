@@ -92,3 +92,34 @@
 
 ADD_PROP_GETSET(EnumParameter, Value)
 //ADD_PROP_GETSET(EnumParameter, IntValue) Hint: avoid to use IntValue, any IntValue is device specific -> not mapped
+
+%extend Pylon::CEnumParameter {
+    %nothread GetSettableValues;
+
+    PyObject* GetSettableValues() {
+        GENAPI_NAMESPACE::StringList_t symbolics;
+        $self->GetSymbolics(symbolics);
+
+        PyObject* result = PyList_New(0);
+        if (!result) return NULL;
+
+        for (GENAPI_NAMESPACE::StringList_t::iterator it = symbolics.begin();
+             it != symbolics.end(); ++it)
+        {
+            if ($self->CanSetValue(it->c_str())) {
+                PyObject* pyStr = PyUnicode_FromString(it->c_str());
+                if (!pyStr) {
+                    Py_DECREF(result);
+                    return NULL;
+                }
+                if (PyList_Append(result, pyStr) < 0) {
+                    Py_DECREF(pyStr);
+                    Py_DECREF(result);
+                    return NULL;
+                }
+                Py_DECREF(pyStr);
+            }
+        }
+        return result;
+    }
+}

@@ -1,4 +1,12 @@
 %rename(PylonImage) Pylon::CPylonImage;
+// CPylonImageBase uses %nodefaultdtor which would suppress the destructor for
+// all subclasses including CPylonImage. Explicitly re-enable the destructor so
+// that SWIG registers a 'delete' wrapper and Python can free heap-allocated
+// CPylonImage* objects handed over with SWIG_POINTER_OWN (e.g. from
+// DecompressImage and the IReusableImage& argout typemap), instead of
+// triggering: "swig/python detected a memory leak of type
+// 'Pylon::CPylonImage *', no destructor found."
+%defaultdtor Pylon::CPylonImage;
 %feature("shadow", "0") Pylon::CPylonImage::AttachMemoryView;
 
 %pythoncode %{

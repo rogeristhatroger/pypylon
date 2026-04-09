@@ -52,7 +52,7 @@
     %pythoncode %{
         def __str__(self):
             resultList = ["Type = "]
-            dt = self.GetDataType()
+            dt = self.DataType
             hasString = False
             if (dt == VariantDataType_None):
                 resultList.append("None")
@@ -98,7 +98,7 @@
 
             if self.HasError():
                 resultList.append("; Error = ")
-                resultList.append(self.GetErrorDescription())
+                resultList.append(self.ErrorDescription)
             elif hasString:
                 resultList.append("; ")
                 resultList.append(self.ToString())
@@ -113,36 +113,36 @@
             If the variant is an array, returns a list of values for each array item.
             Uses a switch-case like structure for data type handling, with a loop for every data type. Calls GetDataType only once.
             """
-            dt = self.GetDataType()
-            if self.GetContainerType() == VariantContainerType_Array:
+            dt = self.DataType
+            if self.ContainerType == VariantContainerType_Array:
                 if (dt == VariantDataType_Int64):
-                    return [self.GetArrayValue(i).ToInt64() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToInt64() for i in range(self.NumArrayValues)]
                 elif (dt == VariantDataType_UInt64):
-                    return [self.GetArrayValue(i).ToUInt64() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToUInt64() for i in range(self.NumArrayValues)]
                 elif (dt ==  VariantDataType_Boolean):
-                    return [self.GetArrayValue(i).ToBool() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToBool() for i in range(self.NumArrayValues)]
                 elif (dt == VariantDataType_String):
-                    return [self.GetArrayValue(i).ToString() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToString() for i in range(self.NumArrayValues)]
                 elif (dt == VariantDataType_Float):
-                    return [self.GetArrayValue(i).ToDouble() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToDouble() for i in range(self.NumArrayValues)]
                 elif (dt == VariantDataType_PylonImage):
-                    return [self.GetArrayValue(i).ToImage() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToImage() for i in range(self.NumArrayValues)]
                 elif (dt == VariantDataType_Region):
-                    return [self.GetArrayValue(i).ToRegion() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToRegion() for i in range(self.NumArrayValues)]
                 elif (dt == VariantDataType_TransformationData):
-                    return [self.GetArrayValue(i).ToTransformationData() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToTransformationData() for i in range(self.NumArrayValues)]
                 elif (dt == VariantDataType_PointF2D):
-                    return [self.GetArrayValue(i).ToPointF2D() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToPointF2D() for i in range(self.NumArrayValues)]
                 elif (dt == VariantDataType_LineF2D):
-                    return [self.GetArrayValue(i).ToLineF2D() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToLineF2D() for i in range(self.NumArrayValues)]
                 elif (dt == VariantDataType_RectangleF):
-                    return [self.GetArrayValue(i).ToRectangleF() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToRectangleF() for i in range(self.NumArrayValues)]
                 elif (dt == VariantDataType_CircleF):
-                    return [self.GetArrayValue(i).ToCircleF() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToCircleF() for i in range(self.NumArrayValues)]
                 elif (dt == VariantDataType_EllipseF):
-                    return [self.GetArrayValue(i).ToEllipseF() for i in range(self.GetNumArrayValues())]
+                    return [self[i].ToEllipseF() for i in range(self.NumArrayValues)]
                 else:
-                    return [None for _ in range(self.GetNumArrayValues())]
+                    return [None for _ in range(self.NumArrayValues)]
             else:
                 if (dt == VariantDataType_Int64):
                     return self.ToInt64()
@@ -172,5 +172,16 @@
                     return self.ToEllipseF()
                 else:
                     return None
+
+        def __getitem__(self, index):
+            n = self.NumArrayValues
+            if index < 0:
+                index += n
+            if index < 0 or index >= n:
+                raise IndexError("Variant array index out of range")
+            return self.GetArrayValue(index)
+
+        def __len__(self):
+            return self.NumArrayValues
     %}
 }

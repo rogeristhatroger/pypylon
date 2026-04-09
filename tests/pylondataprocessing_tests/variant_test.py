@@ -442,6 +442,34 @@ class VariantTestSuite(PylonDataProcessingTestCase):
         testee1.SetError("Error message")
         self.assertTrue(testee1.HasError())
         self.assertEqual(testee1.GetErrorDescription(), "Error message")
+        self.assertEqual(testee1.ErrorDescription, "Error message")
+
+    def test_getitem_and_len(self):
+        testeeA = pylondataprocessing.Variant.MakeVariant(
+            pylondataprocessing.VariantDataType_Int64,
+            pylondataprocessing.VariantContainerType_Array, 3,
+        )
+        testeeA.SetArrayItemValue(0, pylondataprocessing.Variant(-10))
+        testeeA.SetArrayItemValue(1, pylondataprocessing.Variant(-20))
+        testeeA.SetArrayItemValue(2, pylondataprocessing.Variant(-30))
+
+        self.assertEqual(len(testeeA), 3)
+        self.assertEqual(testeeA[0].ToInt64(), -10)
+        self.assertEqual(testeeA[1].ToInt64(), -20)
+        self.assertEqual(testeeA[2].ToInt64(), -30)
+
+        self.assertEqual(testeeA[-1].ToInt64(), -30)
+        self.assertEqual(testeeA[-3].ToInt64(), -10)
+
+        with self.assertRaises(IndexError):
+            testeeA[3]
+        with self.assertRaises(IndexError):
+            testeeA[-4]
+
+        scalar = pylondataprocessing.Variant("hello")
+        self.assertEqual(len(scalar), 0)
+        with self.assertRaises(IndexError):
+            scalar[0]
 
     def test_convert(self):
         testee1 = pylondataprocessing.Variant("A")

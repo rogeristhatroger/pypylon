@@ -9,6 +9,15 @@ ADD_PROP_GET(Parameter, AccessMode)
 ADD_PROP_GET(Parameter, Node)
 
 %extend Pylon::CParameter {
+    std::string GetValueOrDefault(const std::string& defaultValue) {
+        try {
+            if (!$self->IsReadable()) return defaultValue;
+            return std::string($self->ToString().c_str());
+        } catch (...) {
+            return defaultValue;
+        }
+    }
+
     %pythoncode %{
         def __str__(self):
             if not self.IsValid():
