@@ -1,0 +1,142 @@
+{
+  "PylonMetaData": {
+    "ObjectVersion": "2.0.0",
+    "MinRequiredSoftwareVersion": "2.0.0"
+  },
+  "PylonContent": {
+    "Ui": {
+      "PylonMetaData": {
+        "ObjectVersion": "3.2.1",
+        "MinRequiredSoftwareVersion": "1.0.0"
+      },
+      "UiGraphInputOutput": [
+        {
+          "id": "str:<GraphInput>",
+          "x": 125.5,
+          "y": 48.5
+        },
+        {
+          "id": "str:<GraphOutput>",
+          "x": 868.5,
+          "y": 28.5
+        }
+      ],
+      "UiNodes": [
+        {
+          "id": "str:Stamp",
+          "x": 395.1215098241985,
+          "y": 45.5
+        }
+      ],
+      "UiMdis": [
+        {
+          "displayName": "str:Pin Data View 0",
+          "WatchMdiPins": [
+            {
+              "nodeName": "str:Stamp",
+              "pinName": "str:Image",
+              "pinDirection": "str:Output"
+            },
+            {
+              "nodeName": "str:Stamp",
+              "pinName": "str:Count",
+              "pinDirection": "str:Output"
+            }
+          ]
+        }
+      ]
+    },
+    "Graph": {
+      "PylonMetaData": {
+        "ObjectVersion": "1.2.0",
+        "MinRequiredSoftwareVersion": "1.0.0"
+      },
+      "Nodes": [
+        {
+          "Name": "str:Stamp",
+          "Enabled": true,
+          "NodeTypeID": "str:4ED77B7C-CE5F-4A85-86F7-084BCD29B3CF",
+          "NodeData": {
+            "PylonMetaData": {
+              "ObjectVersion": "1.0.0",
+              "MinRequiredSoftwareVersion": "1.0.0"
+            },
+            "maxStampCount": 8,
+            "minStampWidth": 25,
+            "maxStampWidth": 50,
+            "minStampHeight": 25,
+            "maxStampHeight": 50
+          }
+        }
+      ],
+      "Connections": [
+        {
+          "Name": "str:Connection2",
+          "Source": "str:Stamp",
+          "Sink": "str:<GraphOutput>",
+          "QueueMode": 3,
+          "MaxSize": 1,
+          "SourceOutputPath": "str:Image",
+          "SinkInputPath": "str:Image",
+          "ValueTypeID": "str:2C893358-0EEF-5260-B262-8CB32DF2C394"
+        },
+        {
+          "Name": "str:Connection3",
+          "Source": "str:Stamp",
+          "Sink": "str:<GraphOutput>",
+          "QueueMode": 3,
+          "MaxSize": 1,
+          "SourceOutputPath": "str:Regions",
+          "SinkInputPath": "str:Regions",
+          "ValueTypeID": "str:83CCAD00-301A-5507-9DDF-ED6B2960D57E"
+        },
+        {
+          "Name": "str:Connection",
+          "Source": "str:<GraphInput>",
+          "Sink": "str:Stamp",
+          "QueueMode": 3,
+          "MaxSize": 1,
+          "SourceOutputPath": "str:Image",
+          "SinkInputPath": "str:Image",
+          "ValueTypeID": "str:2C893358-0EEF-5260-B262-8CB32DF2C394"
+        }
+      ],
+      "GraphInput": {
+        "NodeData": {
+          "Outputs": [
+            {
+              "Name": "str:Image",
+              "Type": "str:Pylon::DataProcessing::Core::IImage",
+              "ValueTypeID": "str:2C893358-0EEF-5260-B262-8CB32DF2C394"
+            }
+          ]
+        }
+      },
+      "GraphOutput": {
+        "NodeData": {
+          "Inputs": [
+            {
+              "Name": "str:Image",
+              "Type": "str:Pylon::DataProcessing::Core::IImage",
+              "ValueTypeID": "str:2C893358-0EEF-5260-B262-8CB32DF2C394"
+            },
+            {
+              "Name": "str:Regions",
+              "Type": "str:Pylon::DataProcessing::Core::IRegionArray",
+              "ValueTypeID": "str:83CCAD00-301A-5507-9DDF-ED6B2960D57E"
+            }
+          ]
+        }
+      },
+      "Resources": {
+        "ThreadPool": {
+          "PylonMetaData": {
+            "ObjectVersion": "1.1.0",
+            "MinRequiredSoftwareVersion": "1.0.0"
+          },
+          "MaxThreadCount": 24
+        }
+      }
+    }
+  }
+}

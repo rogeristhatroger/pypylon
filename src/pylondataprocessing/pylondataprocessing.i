@@ -278,6 +278,19 @@ def needs_numpy(func):
 ///////////////////////////////////
 //// fetch pylon definitions ////
 ///////////////////////////////////
+
+// %import only brings in type information, not typemaps or feature directives.
+// However, %nodefaultdtor on CPylonImageBase (from PylonImageBase.i) IS
+// imported and suppresses the destructor for CPylonImage in this module too.
+// CVariant::ToImage() returns CPylonImage by value, so SWIG heap-allocates the
+// result with SWIG_POINTER_OWN. Without a destructor registered, Python's GC
+// leaks the object and emits:
+//   "swig/python detected a memory leak of type 'Pylon::CPylonImage *',
+//    no destructor found."
+// Re-enable the destructor here, before the import, so SWIG generates the
+// delete wrapper for CPylonImage in this module.
+%defaultdtor Pylon::CPylonImage;
+
 %import "../pylon/pylon.i"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -290,8 +303,13 @@ def needs_numpy(func):
 %inline %{
 static PyObject* _DataprocNodeToParameter(GENAPI_NAMESPACE::INode* node_ptr)
 {
-    if (!node_ptr) { Py_RETURN_NONE; }
     PyObject* result = NULL;
+    if (!node_ptr)
+	{
+        Pylon::CParameter *p = new Pylon::CParameter(node_ptr);
+        result = SWIG_NewPointerObj(p, SWIGTYPE_p_Pylon__CParameter, SWIG_POINTER_OWN);
+		return result;
+	}
     switch (node_ptr->GetPrincipalInterfaceType())
     {
         case GENAPI_NAMESPACE::intfIInteger:
@@ -337,7 +355,9 @@ static PyObject* _DataprocNodeToParameter(GENAPI_NAMESPACE::INode* node_ptr)
             break;
         }
         default:
-            Py_RETURN_NONE;
+            Pylon::CParameter *p = new Pylon::CParameter(node_ptr);
+            result = SWIG_NewPointerObj(p, SWIGTYPE_p_Pylon__CParameter, SWIG_POINTER_OWN);
+            break;
     }
     return result;
 }
@@ -507,8 +527,6 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
     }
 %}
 
-%apply GENAPI_NAMESPACE::INode* GENAPI_INODE_RETURN { GENAPI_NAMESPACE::INode* Pylon::DataProcessing::CRecipe::GetParameter };
-%apply GENAPI_NAMESPACE::INode* GENAPI_INODE_RETURN { GENAPI_NAMESPACE::INode* Pylon::DataProcessing::CSmartInstantCameraT< Pylon::CInstantCamera, Pylon::DataProcessing::SSmartInstantCameraResultT<Pylon::CGrabResultPtr> >::GetParameter };
 ////////////////////////////////////////////////////////////////////////////////
 
 // Check typemap to make the TriggerUpdate overloads working with python dictionaries
@@ -762,6 +780,8 @@ ADD_PROP_GET(Region, BoundingBoxHeight)
 ADD_PROP_GET(Variant, DataType)
 ADD_PROP_GET(Variant, NumSubValues)
 ADD_PROP_GET(Variant, NumArrayValues)
+ADD_PROP_GET(Variant, ErrorDescription)
+ADD_PROP_GET(Variant, ContainerType)
 ADD_PROP_GET(Update, NumPrecedingUpdates)
 ADD_PROP_GET(Recipe, RecipeContext)
 ADD_PROP_GET(GenericOutputObserver, NumResults)

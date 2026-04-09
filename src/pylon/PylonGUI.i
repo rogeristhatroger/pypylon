@@ -32,3 +32,18 @@
 #define IImage CGrabResultPtr
 %include <pylon/PylonGUI.h>;
 #undef IImage
+
+%inline %{
+static void DisplayImageFromPylonImage(size_t winIndex, const Pylon::CPylonImage& image) {
+    Pylon::DisplayImage(winIndex, image);
+}
+%}
+
+%pythoncode %{
+_DisplayImageGrabResult = DisplayImage
+
+def DisplayImage(winIndex, image):
+    if isinstance(image, PylonImage):
+        return DisplayImageFromPylonImage(winIndex, image)
+    return _DisplayImageGrabResult(winIndex, image)
+%}
