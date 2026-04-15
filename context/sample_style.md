@@ -178,19 +178,25 @@ The following additional rules are specific to samples:
       chunks_available = False
   ```
 
-- **Use context managers for cameras and grab results.** Where possible, use
-  `with` statements to ensure cameras are closed and grab results are released
-  automatically. For example:
+- **Use context managers for resource cleanup.** Where possible, use `with`
+  statements to ensure pylon objects are released automatically:
   ```python
   with pylon.InstantCamera(pylon.FirstFound) as camera:
       ...
-  # The camera is automatically closed here
-  ```
-  Similarly for grab results:
-  ```python
+  # camera is closed automatically
+
   with camera.RetrieveResult(timeout_ms, pylon.TimeoutHandling_ThrowException) as grab_result:
       if grab_result.GrabSucceeded():
           img = grab_result.Array
-          ...
-  # The grab result is automatically released here
+        ...
+  # grab result is released automatically
+
+  with tl_factory.CreateTl("BaslerGigE") as gige_tl:
+      ...
+  # ReleaseTl is called automatically
   ```
+
+- **Do not call `camera.Open()` inside a `with` block** when the device is
+  attached at construction (e.g. `pylon.InstantCamera(pylon.FirstFound)`).
+  `InstantCamera.__enter__` already calls `Open()` in that case, so an
+  explicit call is redundant.
