@@ -31,7 +31,7 @@ try:
         # Read the content of the file back to the camera's node map with enabled validation.
         pylon.FeaturePersistence.Load(FILENAME, camera.NodeMap, True)
 
-except BaseException as e:
+except Exception as e:
     print("An exception occurred:", e)
     import traceback
     traceback.print_exc()

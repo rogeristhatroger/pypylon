@@ -71,9 +71,7 @@ try:
                     # Camera context is set to the index of the camera in the array.
                     camera_context_value = grab_result.GetCameraContext()
 
-                    # Show the image acquired by each camera in the window related to each camera.
-                    if sys.platform == "win32":
-                        pylon.DisplayImage(camera_context_value, grab_result)
+                    pylon.DisplayImage(camera_context_value, grab_result)
 
                     print(f"Camera {camera_context_value}: "
                         f"{cameras[camera_context_value].DeviceInfo.ModelName}")
@@ -87,7 +85,7 @@ try:
                 else:
                     print("Error:", f"{grab_result.ErrorCode:#x}", grab_result.ErrorDescription)
 
-except BaseException as e:
+except Exception as e:
     print("An exception occurred:", e)
     import traceback
     traceback.print_exc()

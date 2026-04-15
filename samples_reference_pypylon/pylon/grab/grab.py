@@ -51,13 +51,11 @@ try:
                     print(f"SizeX: {grab_result.Width}; SizeY: {grab_result.Height}; "
                         f"Gray value of first pixel: {img[0, 0]}")
 
-                    # Display the grabbed image (pylon.DisplayImage is only available on Windows)
-                    if sys.platform == "win32":
-                        pylon.DisplayImage(1, grab_result)
+                    pylon.DisplayImage(1, grab_result)
                 else:
                     print("Error: ", f"{grab_result.ErrorCode:#x}", grab_result.ErrorDescription)
 
-except BaseException as e:
+except Exception as e:
     print("An exception occurred:", e)
     import traceback
     traceback.print_exc()

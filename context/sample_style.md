@@ -86,6 +86,14 @@ The following additional rules are specific to samples:
   | `grab_result.GetHeight()` | `grab_result.Height` |
   | `grab_result.GetErrorCode()` | `grab_result.ErrorCode` |
   | `grab_result.GetErrorDescription()` | `grab_result.ErrorDescription` |
+  | `grab_result.GetPixelType()` | `grab_result.PixelType` |
+  | `grab_result.GetBlockID()` | `grab_result.BlockID` |
+  | `image.GetBuffer()` | `image.Buffer` |
+  | `image.GetPixelType()` | `image.PixelType` |
+  | `camera.DeviceInfo.GetDeviceClass()` | `camera.DeviceInfo.DeviceClass` |
+  | `param.GetMin()` | `param.Min` |
+  | `param.GetMax()` | `param.Max` |
+  | `param.GetInc()` | `param.Inc` |
 
   The same principle applies to **pylondataprocessing** types:
 
@@ -101,6 +109,34 @@ The following additional rules are specific to samples:
   | `region.GetRegionType()` | `region.RegionType` |
   | `result_collector.GetWaitObject()` | `result_collector.WaitObject` |
 
+- **Use `.Value` property for straightforward parameter reads and writes.**
+  Camera parameter nodes support a `.Value` property that is more Pythonic
+  than the `.GetValue()` / `.SetValue()` methods. Prefer `.Value` for
+  simple reads and unconditional writes:
+
+  | Avoid | Prefer |
+  |---|---|
+  | `camera.PixelFormat.SetValue("Mono8")` | `camera.PixelFormat.Value = "Mono8"` |
+  | `camera.Width.SetValue(640)` | `camera.Width.Value = 640` |
+  | `camera.Gain.GetValue()` | `camera.Gain.Value` |
+  | `camera.ReverseX.SetValue(False)` | `camera.ReverseX.Value = False` |
+  | `camera.ExposureTime.GetValue()` | `camera.ExposureTime.Value` |
+
+  **Keep `.SetValue()` when extra parameters are needed** — for example,
+  value correction modes that `.Value =` does not support:
+  ```python
+  camera.Width.SetValue(640, pylon.IntegerValueCorrection_Nearest)
+  exposure.SetValue(1000.0, pylon.FloatValueCorrection_ClipToRange)
+  ```
+
+  **Keep `.TrySetValue()` when failure should be silently ignored:**
+  ```python
+  camera.PixelFormat.TrySetValue("Mono8")  # no-op if not settable
+  ```
+
+  **Keep `.SetToMaximum()` / `.SetToMinimum()` / `.SetValuePercentOfRange()`**
+  — these have no `.Value` equivalent.
+
 - **Prefer parameter methods over free-standing genicam helpers.**
   Use methods on the parameter object directly instead of passing the
   parameter to `genicam.IsReadable()` / `genicam.IsWritable()`. If
@@ -111,7 +147,7 @@ The following additional rules are specific to samples:
   | `genicam.IsReadable(param)` | `param.IsReadable()` |
   | `genicam.IsWritable(param)` | `param.IsWritable()` |
   | `param.ToString() if genicam.IsReadable(param) else "N/A"` | `param.GetValueOrDefault("N/A")` |
-  | `for s in param.Symbolics:` `try: param.SetValue(s)` `except: pass` | `for s in param.GetSettableValues():` `param.TrySetValue(s)` |
+  | `for s in param.Symbolics:` `try: param.SetValue(s)` `except: pass` | `for s in param.GetSettableValues():` `param.SetValue(s)` |
 
 - **Use `TrySetValue` to replace `try: SetValue() except: pass`.**
   When a `SetValue` call is wrapped in a bare `try/except` only to swallow
