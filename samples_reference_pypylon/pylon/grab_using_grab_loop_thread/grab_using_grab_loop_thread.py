@@ -17,7 +17,7 @@ import sys
 import time
 
 # Add repo root to path for the optional demo event-printer helpers.
-_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 if _REPO_ROOT not in sys.path:
     sys.path.insert(0, _REPO_ROOT)
 
@@ -38,8 +38,7 @@ class SampleImageEventHandler(pylon.ImageEventHandler):
         print("SampleImageEventHandler.OnImageGrabbed called.")
         if grab_result.GrabSucceeded():
             print(f"SizeX: {grab_result.Width}; SizeY: {grab_result.Height}")
-            if sys.platform == "win32":
-                pylon.DisplayImage(1, grab_result)
+            pylon.DisplayImage(1, grab_result)
         else:
             print("Error:", f"{grab_result.ErrorCode:#x}", grab_result.ErrorDescription)
         print()
@@ -126,9 +125,7 @@ try:
             # so the printed text on the console is in the expected order.
             time.sleep(EVENT_FLUSH_DELAY_MS / 1000.0)
 
-except SystemExit:
-    raise
-except BaseException as e:
+except Exception as e:
     print("An exception occurred:", e)
     import traceback
     traceback.print_exc()

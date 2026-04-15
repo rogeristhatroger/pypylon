@@ -65,8 +65,7 @@ try:
                     f"Gray value of first pixel: {img[0, 0]}"
                 )
 
-                if sys.platform == "win32":
-                    pylon.DisplayImage(1, result.GrabResult)
+                pylon.DisplayImage(1, result.GrabResult)
 
                 # Iterate over all recipe output pins.
                 print("Processing recipe outputs:")

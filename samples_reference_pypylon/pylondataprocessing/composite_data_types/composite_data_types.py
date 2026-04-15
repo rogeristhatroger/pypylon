@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """\
 Demonstrate handling composite data types with the pylon data processing API
-(license required).
+(no license required).
 
 The recipe was created with the pylon Viewer Workbench, where it can also
 be inspected and modified. It configures a Camera vTool and a shape-detection
@@ -60,8 +60,7 @@ try:
                 image_variant = result["Image"]
                 if not image_variant.HasError():
                     image = image_variant.ToImage()
-                    if sys.platform == "win32":
-                        pylon.DisplayImage(1, image)
+                    pylon.DisplayImage(1, image)
                     image.Release()
                 else:
                     print("An error occurred during processing (pin 'Image'):",

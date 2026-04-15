@@ -976,9 +976,7 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "BooleanParameter.i"
 %include "EnumParameter.i"
 %include "ArrayParameter.i"
-#ifdef HAVE_PYLON_GUI
 %include "PylonGUI.i"
-#endif
 %include "FeaturePersistence.i"
 #if (PYLON_VERSION_MAJOR == 6 && PYLON_VERSION_MINOR >= 1) || PYLON_VERSION_MAJOR > 6
 %include "ImageDecompressor.i"

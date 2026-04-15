@@ -18,13 +18,13 @@ GRAB_ONE_TIMEOUT_MS = 1000
 exit_code = 0
 
 def _print_first_six_bytes(image, message=None):
-    # First six raw bytes from GetBuffer() (works for packed formats such as Mono16).
+    # First six raw bytes (works for packed formats such as Mono16).
     if message:
         print()
         print(message, end=" ")
     print()
     print("First six bytes of the image:")
-    buf = image.GetBuffer()
+    buf = image.Buffer
     for i in range(min(6, len(buf))):
         print(f"0x{buf[i]:02x}", end=" ")
     print()
@@ -74,7 +74,7 @@ try:
                     target_grab = converter2.Convert(grab_result)
                     _print_first_six_bytes(target_grab, "Converted image.")
 
-except BaseException as e:
+except Exception as e:
     print("An exception occurred:", e)
     import traceback
     traceback.print_exc()

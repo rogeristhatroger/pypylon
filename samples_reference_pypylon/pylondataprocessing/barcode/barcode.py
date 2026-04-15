@@ -59,8 +59,7 @@ try:
                     img = image.Array
                     print(f"SizeX: {image.Width}; SizeY: {image.Height}; "
                         f"Gray value of first pixel: {img[0, 0]}")
-                    if sys.platform == "win32":
-                        pylon.DisplayImage(1, image)
+                    pylon.DisplayImage(1, image)
                     image.Release()
                 else:
                     print("An error occurred during processing (pin 'Image'):",

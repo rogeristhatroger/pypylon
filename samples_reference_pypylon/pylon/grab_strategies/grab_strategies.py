@@ -22,7 +22,7 @@ import sys
 import time
 
 # Add repo root to path for the optional demo event-printer helpers.
-_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 if _REPO_ROOT not in sys.path:
     sys.path.insert(0, _REPO_ROOT)
 
@@ -260,9 +260,7 @@ try:
 
             camera.StopGrabbing()
 
-except SystemExit:
-    raise
-except BaseException as e:
+except Exception as e:
     print("An exception occurred:", e)
     import traceback
     traceback.print_exc()
