@@ -6,6 +6,12 @@
     PROP_GET(NodeMap)
 
 %pythoncode %{
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        TlFactory.GetInstance().ReleaseTl(self)
+
     class InterfaceContext:
         def __init__(self, tl, iface_info):
             self.tl = tl
