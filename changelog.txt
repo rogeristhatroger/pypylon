@@ -1,3 +1,33 @@
+Version 26.x.x
+    - All changes try to keep backwards compatibility with previous pypylon versions,
+      but some breaking changes are introduced in the API that are typically not used directly
+      (see below).
+    - Added the pylon C++ SDK parameter API to pypylon, providing numerous convenience methods
+      for reading and writing, e.g., camera parameters.
+    - pylon node maps now return typed pylon parameter types instead of only GenICam types.
+    - pylon data processing Recipe and SmartInstantCamera also return pylon parameter types.
+    - Added lists of known parameters to pylon and pylon data processing node maps, matching
+      the C++ native parameter API and simplifying parameter access.
+    - Added SFNC version constants to the pylon module.
+    - DeviceInfo attributes are now accessible as Python properties (e.g. device_info.ModelName).
+    - DeviceInfo now supports dictionary-style access (e.g. device_info['ModelName']).
+    - InstantCamera now supports the context manager protocol: use it in a with statement to
+      have the camera opened and closed automatically.
+    - InstantCameraArray now supports the context manager protocol as well.
+    - InstantCamera can now be used without explicitly calling TlFactory, simplifying
+      single-camera use cases.
+    - Updated numerous samples to use the new API and added new samples.
+    - DisplayImage now uses OpenCV to display images on Linux and macOS when installed,
+      making it work across all platforms.
+    - Updated the image format converter to use the new parameter API.
+      Note: this is a breaking change for reading parameter properties from the converter,
+      but not for setting them.
+    - Extended existing unit tests and added new ones to cover the updated API.
+    - Added sample and test style guidelines in the context folder to unify code style
+      across samples and tests.
+    - Breaking change: Image format converter and instant camera _params classes have been
+      removed and replace with a consistent parameter API across all pylon classes.
+
 Version 26.5.0
     - Date 2026-05-26
     - Updated to pylon Software Suite 26.5.0 on all platforms.
