@@ -107,4 +107,7 @@ except Exception as e:
     traceback.print_exc()
     exit_code = 1
 
+# Prevent memory leak warning caused by a SWIG cross-module finalization race.
+globals().pop('image', None)
+
 sys.exit(exit_code)
