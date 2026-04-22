@@ -35,7 +35,7 @@ and unit tests.
 - **Safe access for optionally available parameters.** When it is not known
   whether a parameter exists or is accessible on a given device, use
   `GetValueOrDefault()` or other `*OrDefault()` methods, or `TrySetValue()`
-  and other `Try*()` methods.
+  and other `Try*()` pattern methods.
   For example, use `camera.ExposureTime.GetValueOrDefault(default_value)`
   instead of unconditionally reading `camera.ExposureTime.Value`.
 
@@ -51,7 +51,7 @@ and unit tests.
   For example:
   ```python
   with pylon.InstantCamera(pylon.FirstFound) as camera:
-      # Use the camera here
+      # Use the camera here, it is open and ready to use
       ...
   # The camera is automatically closed here
   ```

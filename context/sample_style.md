@@ -69,11 +69,6 @@ The following additional rules are specific to samples:
   then any other third-party imports. Import only the modules that are actually
   used in the sample.
 
-- **Avoid abbreviations in identifiers.** Use descriptive names for variables,
-  functions, and classes, and avoid abbreviations that may be unclear to readers.
-  For example, use `exposure_time` instead of `exp_time`, and use
-  `CameraConfiguration` instead of `CamConfig`.
-
 - **Prefer properties and shorthand helpers over verbose getters/setters.**
   Use the Pythonic property syntax and convenience shortcuts provided by
   pypylon instead of the underlying C++ style accessor methods. Examples:
@@ -122,16 +117,34 @@ The following additional rules are specific to samples:
   | `camera.ReverseX.SetValue(False)` | `camera.ReverseX.Value = False` |
   | `camera.ExposureTime.GetValue()` | `camera.ExposureTime.Value` |
 
-  **Keep `.SetValue()` when extra parameters are needed** — for example,
+  **Use `.SetValue()` when extra parameters are needed** — for example,
   value correction modes that `.Value =` does not support:
   ```python
   camera.Width.SetValue(640, pylon.IntegerValueCorrection_Nearest)
   exposure.SetValue(1000.0, pylon.FloatValueCorrection_ClipToRange)
   ```
 
-  **Keep `.TrySetValue()` when failure should be silently ignored:**
+  **Use `.TrySetValue()` when setting an optional parameter:**
+  This is only applicable when the parameter may not be settable on all devices or in all states.
+  If you expect the parameter to be settable and want to fail loudly if it is not, keep using `.Value = <value>`
+  and let it throw an exception if the parameter is not settable.
+  Instead of writing this for enumeration parameters:
+  ```python
+  if camera.PixelFormat.IsWritable() and camera.PixelFormat.CanSetValue("Mono8"):
+      camera.PixelFormat.Value = "Mono8"
+  ```
+  write this:
   ```python
   camera.PixelFormat.TrySetValue("Mono8")  # no-op if not settable
+  ```
+  Or instead of writing this:
+  ```python
+  if camera.Width.IsWritable():
+      camera.Width.SetValue(1000)
+  ```
+  write this:
+  ```python
+  camera.Width.TrySetValue(1000)  # no-op if not settable, fails if 1000 is not in range or not a valid value
   ```
 
   **Keep `.SetToMaximum()` / `.SetToMinimum()` / `.SetValuePercentOfRange()`**
@@ -149,6 +162,13 @@ The following additional rules are specific to samples:
   | `param.ToString() if genicam.IsReadable(param) else "N/A"` | `param.GetValueOrDefault("N/A")` |
   | `for s in param.Symbolics:` `try: param.SetValue(s)` `except: pass` | `for s in param.GetSettableValues():` `param.SetValue(s)` |
 
+  **Note:** `GetSettableValues()` only returns entries that are currently
+  settable — it is a *filtered* subset of `GetAllValues()`. Never use `GetAllValues()`
+  when you need all implemented entries (e.g. listing or comparing), and
+  `GetSettableValues()` only when you want to skip non-settable ones.
+  In comparison `Symbolics` is a list of all entries available in the node map,
+  some of these may never be settable on a given device.
+
 - **Use `TrySetValue` to replace `try: SetValue() except: pass`.**
   When a `SetValue` call is wrapped in a bare `try/except` only to swallow
   failure, replace it with `TrySetValue`, which returns `True` on success
@@ -163,11 +183,10 @@ The following additional rules are specific to samples:
   # After
   param.TrySetValue("ExposureEnd")
   ```
-  `TrySetValue` is available on `EnumParameter` and `BooleanParameter`.
+  `TrySetValue` or other try pattern methods are available on all parameters.
 
   **Caveat:** `TrySetValue` only handles *value-not-settable*. If
-  `GetParameter()` itself may throw (e.g. the parameter node does not exist
-  on a particular camera), keep a `try/except` around the `GetParameter()`
+  the call itself may throw, keep a `try/except` around the `GetParameter()`
   call:
   ```python
   try:
@@ -182,6 +201,7 @@ The following additional rules are specific to samples:
   statements to ensure pylon objects are released automatically:
   ```python
   with pylon.InstantCamera(pylon.FirstFound) as camera:
+      # camera is open and ready to use here
       ...
   # camera is closed automatically
 
@@ -189,14 +209,68 @@ The following additional rules are specific to samples:
       if grab_result.GrabSucceeded():
           img = grab_result.Array
         ...
-  # grab result is released automatically
+  # grab result is released automatically, pylon uses a buffer pool so the underlying buffer is reused
 
-  with tl_factory.CreateTl("BaslerGigE") as gige_tl:
-      ...
-  # ReleaseTl is called automatically
+  tl = tl_factory.CreateTl("BaslerGigE")
+  try:
+      with tl.InterfaceNodeMap(interface_info) as nodemap:
+          ...
+      # interface is closed and destroyed automatically
+  finally:
+      tl_factory.ReleaseTl(tl)
   ```
 
 - **Do not call `camera.Open()` inside a `with` block** when the device is
   attached at construction (e.g. `pylon.InstantCamera(pylon.FirstFound)`).
   `InstantCamera.__enter__` already calls `Open()` in that case, so an
-  explicit call is redundant.
+  explicit call is redundant — `Open()` on an already-open camera is a
+  **no-op** (no events fire, no callbacks re-register).
+
+  **Pre-`Open()` settings.** Some InstantCamera-level parameters and
+  registration calls must take effect *before* `Open()` runs. Because
+  `Open()` cannot re-open an already-open camera, you must construct
+  without a device so that `__enter__` skips the implicit `Open()`:
+
+  **`RegisterConfiguration` with `OnOpened` logic:** `OnOpened` fires
+  during `Open()`. If the handler is registered after `__enter__` already
+  opened the camera, `OnOpened` never fires:
+  If the code changes the device attached to the instant camera register a configuration,
+  the configuration must be registered before `Open()`:
+  ```python
+  with pylon.InstantCamera() as camera:
+      camera.RegisterConfiguration(
+          pylon.SoftwareTriggerConfiguration(),
+          pylon.RegistrationMode_ReplaceAll,
+          pylon.Cleanup_Delete,
+      )
+      camera.Attach(pylon.FirstFound)
+      camera.Open()  # OnOpened fires here and calls pylon.SoftwareTriggerConfiguration.ApplyConfiguration(camera.NodeMap) 
+      ...
+  ```
+  If the code only uses one device and does not change it, the configuration can be applied after the Open() call:
+  ```python
+  with pylon.InstantCamera(pylon.FirstFound) as camera:
+      # camera is open and ready to use here
+      pylon.SoftwareTriggerConfiguration.ApplyConfiguration(camera.NodeMap)
+      ...
+  ```
+
+  **`GrabCameraEvents`:** This flag is not writable once the camera is
+  open (raises `AccessException`). It must be set before `Open()`:
+  ```python
+  with pylon.InstantCamera() as camera:
+      camera.GrabCameraEvents.Value = True
+      camera.Attach(pylon.FirstFound)
+      camera.Open()
+      ...
+  ```
+
+  **`MonitorModeActive`:** This flag controls the device access mode
+  (read-only monitor) and must be set before `Open()`:
+  ```python
+  with pylon.InstantCamera() as camera:
+      camera.MonitorModeActive.Value = True
+      camera.Attach(pylon.FirstFound)
+      camera.Open()
+      ...
+  ```
