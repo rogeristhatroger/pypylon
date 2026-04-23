@@ -1,7 +1,20 @@
+import os
+import sys
+
+# Make the shared samples_reference_pypylon/include/ helpers importable.
+_INCLUDE_DIR = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__), "..", "..", "..",
+        "samples_reference_pypylon", "include",
+    )
+)
+if _INCLUDE_DIR not in sys.path:
+    sys.path.insert(0, _INCLUDE_DIR)
+
 from pylonusbtestcase import PylonTestCase
 from pypylon import pylon
 from pypylon import genicam
-from samples.cameraEventPrinter import CameraEventPrinter
+from camera_event_printer import CameraEventPrinter
 
 eMyExposureEndEvent = 100
 
