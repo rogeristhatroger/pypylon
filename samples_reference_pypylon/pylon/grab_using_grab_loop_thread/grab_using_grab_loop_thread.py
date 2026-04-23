@@ -16,14 +16,16 @@ import os
 import sys
 import time
 
-# Add repo root to path for the optional demo event-printer helpers.
-_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-if _REPO_ROOT not in sys.path:
-    sys.path.insert(0, _REPO_ROOT)
+# Make the shared samples_reference_pypylon/include/ helpers importable.
+_INCLUDE_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "include")
+)
+if _INCLUDE_DIR not in sys.path:
+    sys.path.insert(0, _INCLUDE_DIR)
 
 from pypylon import pylon
-from samples.configurationeventprinter import ConfigurationEventPrinter
-from samples.imageeventprinter import ImageEventPrinter
+from configuration_event_printer import ConfigurationEventPrinter
+from image_event_printer import ImageEventPrinter
 
 TRIGGER_READY_TIMEOUT_MS = 1000
 EVENT_FLUSH_DELAY_MS = 250

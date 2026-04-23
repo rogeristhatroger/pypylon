@@ -50,7 +50,7 @@ class SampleCameraEventHandler(pylon.CameraEventHandler):
 
     # Only very short processing tasks should be performed by this method.
     # Otherwise, the event notification will block the processing of images.
-    def OnCameraEvent(self, camera, user_provided_id, node):
+    def OnCameraEvent(self, camera, user_provided_id, parameter):
         print()
 
         if user_provided_id == EXPOSURE_END_EVENT_ID:
@@ -83,9 +83,9 @@ class SampleCameraEventHandler(pylon.CameraEventHandler):
 class GenericNodePrinter(pylon.CameraEventHandler):
     """Print the name of the node for which the camera event callback fired."""
 
-    def OnCameraEvent(self, camera, user_provided_id, node):
+    def OnCameraEvent(self, camera, user_provided_id, parameter):
         try:
-            print("Camera event callback for node:", node.GetName())
+            print("Camera event callback for node:", parameter.GetInfoOrDefault(pylon.ParameterInfo_Name, "<unknown>"))
         except Exception:
             print("Camera event callback fired.")
 
@@ -141,7 +141,7 @@ try:
             sys.exit(0)
 
         # Cameras based on SFNC 2.0 or later, e.g., USB cameras
-        if camera.NodeMap.GetNode("EventExposureEndData", throwIfNotFound=False).IsValid():
+        if camera.NodeMap.GetNode("EventExposureEndData", throwIfNotFound=False) is not None:
             # Register an event handler for the Exposure End event. For each event
             # type, there is a "data" node representing the event. The actual data
             # that is carried by the event is held by child nodes of the data node.
