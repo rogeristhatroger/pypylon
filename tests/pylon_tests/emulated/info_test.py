@@ -55,6 +55,76 @@ class InfoTestSuite(PylonEmuTestCase):
                 self.assertIsNotNone(info)
 
     # ------------------------------------------------------------------
+    # CInfoBase comparison operators (from Info.i via <pylon/Info.h>)
+    #     bool operator==( const CInfoBase& rhs ) const;
+    #     bool operator <( const CInfoBase& rhs ) const;
+    #         Documented ordering by device class:
+    #         USB < GigE < CameraLink < GenTL (incl. CXP) < unknown < CamEmu.
+    # ------------------------------------------------------------------
+
+    def test_equality(self):
+        """operator== compares equal for two Info objects with identical CInfoBase properties."""
+        for name, cls in INFO_CLASSES:
+            with self.subTest(info_class=name):
+                info1 = cls()
+                info1.FriendlyName = "F"
+                info1.VendorName = "V"
+                info2 = cls()
+                info2.FriendlyName = "F"
+                info2.VendorName = "V"
+                self.assertEqual(info1, info2)
+
+    def test_inequality(self):
+        """operator== returns False when any CInfoBase property differs."""
+        for name, cls in INFO_CLASSES:
+            with self.subTest(info_class=name):
+                info1 = cls()
+                info1.FriendlyName = "F"
+                info2 = cls()
+                info2.FriendlyName = "Other"
+                self.assertNotEqual(info1, info2)
+
+    def test_less_than_by_device_class(self):
+        """operator< orders by DeviceClass rank: USB < GigE < CL < GenTL < unknown < CamEmu."""
+        # Ordered list of DeviceClass values from "least" to "greatest"
+        # according to CInfoBase::operator< documented in pylon/Info.h.
+        # The sentinel "SomethingUnknown" represents the documented "unknown
+        # device classes" bucket: a DeviceClass string that does not match
+        # any known pylon category (anything starting with "Basler..." is
+        # classified by the pylon implementation rather than treated as
+        # unknown, so the sentinel intentionally does not use that prefix).
+        ordered_device_classes = [
+            "BaslerUsb",           # USB
+            "BaslerGigE",          # GigE
+            "BaslerCameraLink",    # CameraLink
+            "BaslerGenTlConsumer", # GenTL (incl. CXP)
+            "SomethingUnknown",    # unknown device classes
+            "BaslerCamEmu",        # CamEmu (sorts last)
+        ]
+        for name, cls in INFO_CLASSES:
+            for i in range(len(ordered_device_classes) - 1):
+                low_class = ordered_device_classes[i]
+                high_class = ordered_device_classes[i + 1]
+                with self.subTest(info_class=name, low=low_class, high=high_class):
+                    low = cls()
+                    low.DeviceClass = low_class
+                    high = cls()
+                    high.DeviceClass = high_class
+                    self.assertTrue(low < high)
+                    self.assertFalse(high < low)
+
+    def test_less_than_same_device_class_not_less(self):
+        """operator< returns False in both directions when two Info objects share the same DeviceClass."""
+        for name, cls in INFO_CLASSES:
+            with self.subTest(info_class=name):
+                left = cls()
+                left.DeviceClass = "BaslerUsb"
+                right = cls()
+                right.DeviceClass = "BaslerUsb"
+                self.assertFalse(left < right)
+                self.assertFalse(right < left)
+
+    # ------------------------------------------------------------------
     # CInfoBase properties (from Info.i)
     # ADD_PROP_GETSET(CInfoBase, FriendlyName)
     # ADD_PROP_GETSET(CInfoBase, FullName)
