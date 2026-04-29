@@ -103,12 +103,19 @@ else:
     # Bayer images are single-channel; cv2 would show them as grayscale.
     # Use pylon's ImageFormatConverter to debayer into BGR8 first.
     _display_converter = ImageFormatConverter()
-    _display_converter.OutputPixelFormat = PixelType_BGR8packed
 
     def _cv2_display(cv2, winIndex, image):
         pt = image.PixelType if hasattr(image, "PixelType") else None
-        if pt is not None and IsBayer(pt):
-            arr = _display_converter.Convert(image).Array
+        if pt is not None and ImageFormatConverter.IsSupportedInputFormat(pt):
+            if IsMonoImage(pt):
+                # cv2 doesn't support displaying 16-bit mono images
+                _display_converter.OutputPixelFormat = PixelType_Mono8
+            else:
+                _display_converter.OutputPixelFormat = PixelType_BGR8packed
+            if pt == _display_converter.OutputPixelFormat:
+                arr = image.Array
+            else:
+                arr = _display_converter.Convert(image).Array
         else:
             arr = image.Array
         cv2.imshow(f"pylon {winIndex}", arr)

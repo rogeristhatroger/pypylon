@@ -3,6 +3,7 @@
 %extend Pylon::IInterface
 {
     PROP_GET(InterfaceInfo)
+    PROP_GET(NodeMap)
 
 %pythoncode %{
     class NodeMapContext:

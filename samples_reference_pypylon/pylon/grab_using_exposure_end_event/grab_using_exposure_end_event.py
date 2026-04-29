@@ -169,7 +169,7 @@ try:
         camera.Attach(pylon.FirstFound)
 
         # Camera models behave differently regarding IDs and counters. Set initial values.
-        is_gige = camera.DeviceInfo.DeviceClass == pylon.DeviceClass_GigE
+        is_gige = camera.DeviceInfo.DeviceClass == pylon.BaslerGigEDeviceClass
         is_16_bit_gige = False
         if is_gige and camera.GevGVSPExtendedIDMode.IsReadable():
             # If the GevGVSPExtendedIDMode is "Off", then the camera is using 16-bit mode.
@@ -196,7 +196,7 @@ try:
             print("The device doesn't support events.")
             sys.exit(0)
 
-        if camera.NodeMap.GetNode("ExposureEndEventData", throwIfNotFound=False).IsValid():
+        if camera.NodeMap.Contains("ExposureEndEventData"):
             camera.RegisterCameraEventHandler(
                 SampleCameraEventHandler(state),
                 "ExposureEndEventData",

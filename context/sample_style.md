@@ -163,7 +163,7 @@ The following additional rules are specific to samples:
   | `for s in param.Symbolics:` `try: param.SetValue(s)` `except: pass` | `for s in param.GetSettableValues():` `param.SetValue(s)` |
 
   **Note:** `GetSettableValues()` only returns entries that are currently
-  settable — it is a *filtered* subset of `GetAllValues()`. Never use `GetAllValues()`
+  settable — it is a *filtered* subset of `GetAllValues()`. Use `GetAllValues()`
   when you need all implemented entries (e.g. listing or comparing), and
   `GetSettableValues()` only when you want to skip non-settable ones.
   In comparison `Symbolics` is a list of all entries available in the node map,

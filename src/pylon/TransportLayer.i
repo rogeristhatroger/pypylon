@@ -6,12 +6,6 @@
     PROP_GET(NodeMap)
 
 %pythoncode %{
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        TlFactory.GetInstance().ReleaseTl(self)
-
     class InterfaceContext:
         def __init__(self, tl, iface_info):
             self.tl = tl
@@ -78,6 +72,15 @@
     $result = tpl;
     delete $1;
 }
+
+%typemap(out) GENAPI_NAMESPACE::INodeMap* Pylon::ITransportLayer::GetNodeMap
+%{
+    $result = SWIG_NewPointerObj(
+        new Pylon::INodeMapWrapper($1, Pylon::NodeMapType_TransportLayer),
+        $descriptor(Pylon::INodeMapWrapper*),
+        SWIG_POINTER_OWN
+    );
+%}
 
 %include <pylon/TransportLayer.h>;
 

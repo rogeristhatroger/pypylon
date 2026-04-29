@@ -29,85 +29,61 @@ import sys
 import time
 from pypylon import pylon
 
-
-def find_cxp_interface(tl_factory):
-    """Locate a CXP transport layer and interface.
-
-    Returns (transport_layer, interface_info) or None if no CXP
-    interface is available. The caller takes ownership of the returned
-    transport layer and must release it via tl_factory.ReleaseTl().
-    Non-CXP transport layers are released during the search.
-    """
-    for tl_info in tl_factory.EnumerateTls():
-        tl = tl_factory.CreateTl(tl_info)
-        found = False
-        try:
-            for interface_info in tl.EnumerateInterfaces():
-                device_class = getattr(interface_info, "DeviceClass", "")
-                if "cxp" in device_class.lower():
-                    found = True
-                    return tl, interface_info
-        finally:
-            if not found:
-                tl_factory.ReleaseTl(tl)
-    return None
-
-
 exit_code = 0
+transport_layer = None
 try:
-    tl_factory = pylon.TlFactory.GetInstance()
+    transport_layer = pylon.TlFactory.GetInstance().CreateTl(pylon.BaslerGenTlCxpDeviceClass)
+    if transport_layer is None:
+        print("No CXP GenTL producer found. This sample requires a CXP-12 interface card.")
+        sys.exit(1)
 
-    result = find_cxp_interface(tl_factory)
-    if result is None:
+    interface_list = transport_layer.EnumerateInterfaces()
+    if len(interface_list) == 0:
         print("No CXP interface found. This sample requires a CXP-12 interface card.")
         sys.exit(1)
 
-    tl, interface_info = result
-    try:
-        with tl.InterfaceNodeMap(interface_info) as nodemap:
-            print("Interface opened.")
+    with transport_layer.InterfaceNodeMap(interface_list[0]) as nodemap:
+        print("Interface opened.")
 
-            external_power = pylon.BooleanParameter(nodemap, "ExternalPowerPresent")
+        print(" ExternalPowerPresent:", end=" ")
+        if  nodemap.ExternalPowerPresent.IsReadable() and nodemap.ExternalPowerPresent.Value:
+            print("yes")
 
-            print(" ExternalPowerPresent:", end=" ")
-            if external_power.IsReadable() and external_power.Value:
-                print("yes")
+            # Switch power OFF.
+            print(" Switching power OFF.")
+            nodemap.CxpPoCxpTurnOff.Execute()
+            time.sleep(1.0)
 
-                # Switch power OFF.
-                print(" Switching power OFF.")
-                pylon.CommandParameter(nodemap, "CxpPoCxpTurnOff").Execute()
-                time.sleep(1.0)
+            # Switch power ON.
+            print(" Switching power ON.")
+            nodemap.CxpPoCxpAuto.Execute()
+            time.sleep(5.0)
 
-                # Switch power ON.
-                print(" Switching power ON.")
-                pylon.CommandParameter(nodemap, "CxpPoCxpAuto").Execute()
-                time.sleep(5.0)
+            # Update device list.
+            print(" Updating device list.")
+            nodemap.DeviceUpdateList.Execute()
 
-                # Update device list.
-                print(" Updating device list.")
-                pylon.CommandParameter(nodemap, "DeviceUpdateList").Execute()
+            # Read telemetry.
+            current = nodemap.CxpPort0Current
+            voltage = nodemap.CxpPort0Voltage
+            power = nodemap.CxpPort0Power
 
-                # Read telemetry.
-                current = pylon.FloatParameter(nodemap, "CxpPort0Current")
-                voltage = pylon.FloatParameter(nodemap, "CxpPort0Voltage")
-                power = pylon.FloatParameter(nodemap, "CxpPort0Power")
-
-                print("  Port 0 :")
-                if current.IsReadable():
-                    print(f"   Current {current.Value:.2f} mA")
-                if voltage.IsReadable():
-                    print(f"   Voltage {voltage.Value:.2f} V")
-                if power.IsReadable():
-                    print(f"   Power {power.Value:.2f} W")
-            else:
-                print("no")
-    finally:
-        tl_factory.ReleaseTl(tl)
+            print("  Port 0 :")
+            if current.IsReadable():
+                print(f"   Current {current.Value:.2f} mA")
+            if voltage.IsReadable():
+                print(f"   Voltage {voltage.Value:.2f} V")
+            if power.IsReadable():
+                print(f"   Power {power.Value:.2f} W")
+        else:
+            print("no")
 
 except Exception as e:
     print("An exception occurred:", e)
     import traceback
     traceback.print_exc()
     exit_code = 1
+finally:
+    pylon.TlFactory.GetInstance().ReleaseTl(transport_layer)
 
 sys.exit(exit_code)
