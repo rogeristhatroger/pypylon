@@ -141,7 +141,7 @@ try:
             sys.exit(0)
 
         # Cameras based on SFNC 2.0 or later, e.g., USB cameras
-        if camera.NodeMap.GetNode("EventExposureEndData", throwIfNotFound=False) is not None:
+        if camera.NodeMap.Contains("EventExposureEndData"):
             # Register an event handler for the Exposure End event. For each event
             # type, there is a "data" node representing the event. The actual data
             # that is carried by the event is held by child nodes of the data node.

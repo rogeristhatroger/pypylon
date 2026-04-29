@@ -670,6 +670,24 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
             self.assertIn("Camera", str(e))
         camera.Close()
 
+    # ------------------------------------------------------------------
+    # Tests for Contains()
+    # ------------------------------------------------------------------
+
+    def test_contains_returns_true_for_existing_node(self):
+        """Contains() returns True for a node that exists in the nodemap."""
+        camera = self.create_first()
+        camera.Open()
+        self.assertTrue(camera.GetNodeMap().Contains("GainRaw"))
+        camera.Close()
+
+    def test_contains_returns_false_for_missing_node(self):
+        """Contains() returns False for a node that does not exist in the nodemap."""
+        camera = self.create_first()
+        camera.Open()
+        self.assertFalse(camera.GetNodeMap().Contains("ThisNodeDoesNotExist_XYZ"))
+        camera.Close()
+
     def test_to_parameter(self):
         """Test ToParameter() on a raw genicam INodeMap (not wrapped by INodeMapWrapper) does NOT"""
         camera = self.create_first()
@@ -688,6 +706,62 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("Gain")), pylon.FloatParameter)
         self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("DeviceVendorName")), pylon.StringParameter)
         self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("GainAuto")), pylon.EnumParameter)
+
+        camera.Close()
+
+    def test_to_parameter_none_returns_parameter(self):
+        """ToParameter(None) returns a base Parameter instance, not None."""
+        result = pylon.ToParameter(None)
+        self.assertIsNotNone(result)
+        self.assertIsInstance(result, pylon.Parameter)
+
+    def test_to_parameter_unknown_type_returns_parameter(self):
+        """ToParameter() with an unrecognised type returns a base Parameter instance."""
+        result = pylon.ToParameter(42)
+        self.assertIsInstance(result, pylon.Parameter)
+
+    def test_to_parameter_base_parameter_is_specialised(self):
+        """ToParameter() specialises a base Parameter into the correct subtype."""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+
+        # Obtain a base Parameter by constructing one directly from the node
+        base_param = pylon.Parameter(nm.GetNode("GainRaw").GetNode())
+        result = pylon.ToParameter(base_param)
+        self.assertIsInstance(result, pylon.IntegerParameter)
+
+        camera.Close()
+
+    def test_to_parameter_specific_parameter_kept_unchanged(self):
+        """ToParameter() returns a specific Parameter subclass unchanged."""
+        camera = self.create_first()
+        camera.Open()
+        nm = camera.GetNodeMap()
+
+        int_param = pylon.IntegerParameter(nm.GetNode("GainRaw").GetNode())
+        result = pylon.ToParameter(int_param)
+        self.assertIs(result, int_param)
+
+        camera.Close()
+
+    def test_to_parameter_invalid_base_parameter_returned_as_is(self):
+        """ToParameter() returns an invalid (unattached) base Parameter unchanged."""
+        base_param = pylon.Parameter()
+        result = pylon.ToParameter(base_param)
+        self.assertIsInstance(result, pylon.Parameter)
+        self.assertIs(result, base_param)
+
+
+        """ToParameter() never returns the raw input – always a Parameter subtype."""
+        camera = self.create_first()
+        camera.Open()
+        raw_nm = camera.GetNodeMap()._Get()
+
+        # Category node has no specific Pylon *Parameter type – must still be a Parameter
+        root_cat = raw_nm.GetNode("Root")
+        result = pylon.ToParameter(root_cat)
+        self.assertIsInstance(result, pylon.Parameter)
 
         camera.Close()
 

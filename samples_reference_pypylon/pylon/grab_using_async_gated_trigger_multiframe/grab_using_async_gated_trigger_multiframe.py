@@ -128,10 +128,9 @@ def find_cxp_camera():
     Returns the DeviceInfo of a camera connected through a Basler CXP-12
     frame grabber, or None if no such device is present.
     """
-    info = pylon.DeviceInfo()
-    info.DeviceClass = pylon.BaslerGenTlCxpDeviceClass
-    device_filter = [info]
-    device_list = pylon.TlFactory.GetInstance().EnumerateDevices(device_filter)
+    device_list = pylon.TlFactory.GetInstance().EnumerateDevices(
+        [{pylon.DeviceClassKey : pylon.BaslerGenTlCxpDeviceClass}]
+    )
     if len(device_list) > 0:
         return device_list[0]
     else:

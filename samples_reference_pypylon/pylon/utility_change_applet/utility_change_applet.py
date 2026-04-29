@@ -28,16 +28,12 @@ def find_cxp_interface(tl_factory):
     Non-CXP transport layers are released during the search.
     """
     for tl_info in tl_factory.EnumerateTls():
-        tl = tl_factory.CreateTl(tl_info)
-        found = False
-        try:
-            for interface_info in tl.EnumerateInterfaces():
-                device_class = getattr(interface_info, "DeviceClass", "")
-                if "cxp" in device_class.lower():
-                    found = True
-                    return tl, interface_info
-        finally:
-            if not found:
+        if tl_info.TLType == "CXP" and tl_info.VendorName == "Basler":
+            tl = tl_factory.CreateTl(tl_info)
+            interface_info_list = tl.EnumerateInterfaces()
+            if len(interface_info_list) > 0:
+                return tl, interface_info_list[0]
+            else:
                 tl_factory.ReleaseTl(tl)
     return None
 
@@ -81,7 +77,7 @@ try:
             print("Interface opened.")
 
             # List the available applets.
-            applet_entries = nodemap.InterfaceApplet.Symbolics
+            applet_entries = nodemap.InterfaceApplet.GetSettableValues()
             print_applets(applet_entries)
 
             current_applet = nodemap.InterfaceApplet.Value
@@ -119,7 +115,7 @@ try:
             print("Interface opened.")
 
             # List the available applets.
-            applet_entries = nodemap.InterfaceApplet.Symbolics
+            applet_entries = nodemap.InterfaceApplet.GetSettableValues()
 
             current_applet = nodemap.InterfaceApplet.Value
             print(f"- Current applet: {current_applet}")
@@ -144,7 +140,7 @@ try:
             print("Interface opened.")
 
             # List the available applets.
-            applet_entries = nodemap.InterfaceApplet.Symbolics
+            applet_entries = nodemap.InterfaceApplet.GetSettableValues()
 
             current_applet = nodemap.InterfaceApplet.Value
             print(f"- Current applet: {current_applet}")

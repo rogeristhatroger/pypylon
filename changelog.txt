@@ -27,6 +27,11 @@ Version 26.x.x
       across samples and tests.
     - Breaking change: Image format converter and instant camera _params classes have been
       removed and replace with a consistent parameter API across all pylon classes.
+    - The device filter list when enumerating devices now accepts a mixture of pylon.DeviceInfo objects
+      and dictionaries with string keys and values, e.g.:
+      filter_list = [device_info, {'ModelName': 'Basler acA640-100gm'}]
+      found_devices = pylon.TlFactory.GetInstance().EnumerateDevices(filter_list)
+    - Breaking change: CreateTl() does not throw if the transport layer cannot be loaded, but instead returns None.
 
 Version 26.5.0
     - Date 2026-05-26

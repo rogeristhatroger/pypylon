@@ -255,9 +255,10 @@ def check_shading_data(camera):
 
 try:
     # Only look for GigE cameras (runner cameras are GigE).
-    device_filter = pylon.DeviceInfo()
-    device_filter.DeviceClass = pylon.BaslerGigEDeviceClass
-    device_list = pylon.TlFactory.GetInstance().EnumerateDevices([device_filter])
+    device_list = pylon.TlFactory.GetInstance().EnumerateDevices(
+        [{pylon.DeviceClassKey : pylon.BaslerGigEDeviceClass}]
+    )
+
     gige_camera_info = device_list[0] if device_list else None
 
     if gige_camera_info is None:

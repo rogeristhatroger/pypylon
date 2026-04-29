@@ -158,126 +158,6 @@ void TranslateGenicamException(const GenericException* e)
             );
     }
 }
-
-//  For copy deployment of pylon DLLs:
-//
-//  Version 5.0.5 of Pylon started to use LoadLibraryEx in order to load its
-//  DLLs. Calling LoadLibraryEx with the full path of the DLL and setting the
-//  flag LOAD_WITH_ALTERED_SEARCH_PATH adds the path of that DLL to the DLL
-//  search path, while its dependant DLLs are searched. That ensured that all
-//  Pylon DLLs that are stored in the pypylon package folder could be loaded.
-//  That also meant that nothing had to be done here, to make pypylon work.
-//
-//  Unfortunately with version 5.0.11 Pylon changed the way how the GigE and
-//  USB TLs DLLs loaded gxapi and uxapi. The mechanism was changed to 'delay
-//  loading'. This requires that the delay loaded DLLs are found in one of
-//  the standard DLL search paths. While this is going to be fixed in a future
-//  Pylon release, we now have to play tricks again like we had to do, before
-//  Pylon 5.0.5 was released.
-//
-//  Our trick is still this:
-//  The only thing we can do about the DLL search path here is changing the
-//  'PATH' environment variable (using 'SetDllDirectory' or 'AddDllDirectory'
-//  would not be appropriate). In order not to disturb the way pythons 'os'
-//  module handles 'os.environ', we do not want to make a permanent change.
-//
-//  So what we do is this:
-//   - Append the location of this DLL to the PATH.
-//   - Request that the TL DLLs (including gxapi and uxapi) are loaded NOW.
-//   - Restore the previous PATH.
-//
-//  We implement this workaround for Pylon versions < 5.0.5, == 5.0.11,
-//  == 5.0.12, == 5.1.0 and == 5.1.1. Version 5.2.0 has a fix that makes this
-// workaround superfluous.
-
-#ifdef WIN32
-#define NEED_PYLON_DLL_WORKAROUND 1
-#include <Shlwapi.h>    // for PathRemoveFileSpec()
-#pragma comment(lib, "Shlwapi")
-#pragma comment(lib, "user32.lib")
-#else
-#define NEED_PYLON_DLL_WORKAROUND 0
-#endif
-
-#if NEED_PYLON_DLL_WORKAROUND
-static void FixPylonDllLoadingIfNecessary()
-{
-    // Pylon::PylonInitialize must have been called before calling this
-    // function!
-
-    unsigned int major, minor, subminor, build;
-    Pylon::GetPylonVersion(&major, &minor, &subminor, &build);
-    if (major != 5)
-    {
-        return;
-    }
-    bool necessary = (
-        (minor == 0 && (subminor < 5 || subminor == 11 || subminor == 12)) ||
-        (minor == 1 && (subminor == 0 || subminor == 1))
-        );
-    if (!necessary)
-    {
-        return;
-    }
-
-    // Get HMODULE of this function
-    HMODULE hmod = NULL;
-    GetModuleHandleExW(
-        GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
-        GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-        reinterpret_cast<PWSTR>(FixPylonDllLoadingIfNecessary),
-        &hmod
-        );
-
-    // get module file name and remove file spec
-    const DWORD ENV_MAX = UNICODE_STRING_MAX_CHARS;
-    // ENV_MAX is so large that it should not be allocated on the stack
-    PWSTR new_PATH = new WCHAR[ENV_MAX];
-    GetModuleFileNameW(hmod, new_PATH, ENV_MAX);
-    PathRemoveFileSpecW(new_PATH);
-
-    // append previous PATH
-    PWSTR p_Previous_PATH = new_PATH + lstrlenW(new_PATH);
-    *p_Previous_PATH++ = L';';
-    const DWORD rem = ENV_MAX - static_cast<DWORD>(p_Previous_PATH - new_PATH);
-    GetEnvironmentVariableW(L"PATH", p_Previous_PATH, rem);
-
-    // set new PATH
-    SetEnvironmentVariableW(L"PATH", new_PATH);
-
-    // Try to load TLs
-    try
-    {
-        Pylon::CTlFactory& tlf = Pylon::CTlFactory::GetInstance();
-        Pylon::TlInfoList_t tli;
-
-        tlf.EnumerateTls(tli);
-        for (unsigned int i = 0; i < tli.size(); i++)
-        {
-            try
-            {
-                ITransportLayer *pTL = tlf.CreateTl(tli[i]);
-                tlf.ReleaseTl(pTL);
-            }
-            catch (Pylon::GenericException&)
-            {
-                // Ignore TL loading failure and keep on trying other TLs.
-            }
-        }
-    }
-    catch (Pylon::GenericException&)
-    {
-        // Ignore failure of enumerating TLs and carry on loading this
-        // module. The user will notice later if he doesn´t find any cameras.
-    }
-
-    // restore p_Previous_PATH
-    SetEnvironmentVariableW(L"PATH", p_Previous_PATH);
-
-    delete[] new_PATH;
-}
-#endif
-
 %}
 
 %init %{
@@ -287,10 +167,6 @@ static void FixPylonDllLoadingIfNecessary()
     // register PylonTerminate on interpreter shutdown
     auto pylon_terminate = [](){ Pylon::PylonTerminate(true);};
     Py_AtExit( pylon_terminate );
-
-#if NEED_PYLON_DLL_WORKAROUND
-    FixPylonDllLoadingIfNecessary();
-#endif
 
     // Need to import TranslateGenicamException from _genicam in order to be
     // able to translate C++ Genicam exceptions to the correct Python exceptions.
@@ -666,45 +542,88 @@ def needs_numpy(func):
 //
 %pythoncode %{
 def ToParameter(val):
-    """Convert a genicam interface object to the matching Pylon *Parameter type.
+    """Convert any supported value to the most specific Pylon *Parameter type available.
 
-    Recognised conversions:
-        genicam.IInteger     -> pylon.IntegerParameter
-        genicam.IBoolean     -> pylon.BooleanParameter
-        genicam.ICommand     -> pylon.CommandParameter
-        genicam.IFloat       -> pylon.FloatParameter
-        genicam.IString      -> pylon.StringParameter
-        genicam.IRegister    -> pylon.ArrayParameter
-        genicam.IEnumeration -> pylon.EnumParameter
-        genicam.INode        -> (dispatched via GetPrincipalInterfaceType())
-        genicam.IValue       -> (dispatched via GetNode() and implicit downcasting)
+    The conversion rules are applied in the following order:
 
-    All other objects are returned unmodified.
+    1. None / null
+           -> Parameter()  (empty, unattached base parameter)
+
+    2. Already a Pylon Parameter instance
+           If the parameter wraps a node whose interface type can be mapped to a
+           more specific subclass, that subclass is returned.  If the input is
+           already the most specific type, or no more specific type exists, the
+           input object is returned unchanged.
+
+    3. genicam.IValue (IInteger, IBoolean, ICommand, IFloat, IString,
+                       IRegister, IEnumeration, …)
+           The underlying INode is retrieved and dispatch continues as below.
+
+    4. genicam.INode
+           Dispatched via GetPrincipalInterfaceType():
+               intfIInteger     -> IntegerParameter
+               intfIBoolean     -> BooleanParameter
+               intfICommand     -> CommandParameter
+               intfIFloat       -> FloatParameter
+               intfIString      -> StringParameter
+               intfIRegister    -> ArrayParameter
+               intfIEnumeration -> EnumParameter
+               any other type   -> Parameter  (base, wraps the node)
+
+    5. Any other value
+           -> Parameter()  (empty base parameter)
     """
     from pypylon import genicam as _genicam
-    # IValue: get the underlying node first so we can inspect the interface type
+
+    # ------------------------------------------------------------------ #
+    # Helper: map an INode* to the most specific Parameter subclass.      #
+    # Returns None when no specific mapping exists.                        #
+    # ------------------------------------------------------------------ #
+    def _node_to_specific(node):
+        t = node.GetPrincipalInterfaceType()
+        if t == _genicam.intfIInteger:
+            return IntegerParameter(node)
+        elif t == _genicam.intfIBoolean:
+            return BooleanParameter(node)
+        elif t == _genicam.intfICommand:
+            return CommandParameter(node)
+        elif t == _genicam.intfIFloat:
+            return FloatParameter(node)
+        elif t == _genicam.intfIString:
+            return StringParameter(node)
+        elif t == _genicam.intfIRegister:
+            return ArrayParameter(node)
+        elif t == _genicam.intfIEnumeration:
+            return EnumParameter(node)
+        return None  # no more-specific type available
+
+    # 1. None
+    if val is None:
+        return Parameter()
+
+    # 2. Already a Pylon Parameter – try to specialise, keep if already specific
+    if isinstance(val, Parameter):
+        # Only the base Parameter class can potentially be specialised;
+        # subclasses are already as specific as we can get.
+        if type(val) is Parameter:
+            node = val.GetNode() if val.IsValid() else None
+            if node is not None:
+                specific = _node_to_specific(node)
+                if specific is not None:
+                    return specific
+        return val
+
+    # 3. genicam.IValue – unwrap to INode first
     if isinstance(val, _genicam.IValue):
         val = val.GetNode()
 
-    # INode: dispatch on the principal interface type
+    # 4. genicam.INode – dispatch on interface type
     if isinstance(val, _genicam.INode):
-        t = val.GetPrincipalInterfaceType()
-        if t == _genicam.intfIInteger:
-            return IntegerParameter(val)
-        elif t == _genicam.intfIBoolean:
-            return BooleanParameter(val)
-        elif t == _genicam.intfICommand:
-            return CommandParameter(val)
-        elif t == _genicam.intfIFloat:
-            return FloatParameter(val)
-        elif t == _genicam.intfIString:
-            return StringParameter(val)
-        elif t == _genicam.intfIRegister:
-            return ArrayParameter(val)
-        elif t == _genicam.intfIEnumeration:
-            return EnumParameter(val)
+        specific = _node_to_specific(val)
+        return specific if specific is not None else Parameter(val)
 
-    return val
+    # 5. Unrecognised type
+    return Parameter()
 %}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -933,7 +852,7 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "parameters_stream.i"
 %include "parameters_transport_layer.i"
 %include "parameter_lookup.i"
-
+%include "Device.i"
 %include "PylonVersionInfo.i"
 %include "TypeMappings.i"
 %include "Container.i"
@@ -944,9 +863,7 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "InterfaceInfo.i"
 %include "TlInfo.i"
 %include "DeviceFactory.i"
-#if PYLON_VERSION_MAJOR >= 6
 %include "Interface.i"
-#endif
 %include "TransportLayer.i"
 %include "GigETransportLayer.i"
 %include "TlFactory.i"
@@ -978,12 +895,13 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "ArrayParameter.i"
 %include "PylonGUI.i"
 %include "FeaturePersistence.i"
-#if (PYLON_VERSION_MAJOR == 6 && PYLON_VERSION_MINOR >= 1) || PYLON_VERSION_MAJOR > 6
 %include "ImageDecompressor.i"
-#endif
-#if (PYLON_VERSION_MAJOR == 6 && PYLON_VERSION_MINOR >= 2) || PYLON_VERSION_MAJOR > 6
 %include "PylonDataComponent.i"
 %include "PylonDataContainer.i"
+%include "DeviceClass.i"
+%include "SfncVersion.i"
+%include "ConfigurationHelper.i"
+
 ADD_PROP_GET(PylonDataContainer, DataComponentCount)
 ADD_PROP_GET(PylonDataComponent, ComponentType)
 ADD_PROP_GET(PylonDataComponent, PixelType)
@@ -997,11 +915,6 @@ ADD_PROP_GET(PylonDataComponent, DataSize)
 ADD_PROP_GET(PylonDataComponent, TimeStamp)
 ADD_PROP_GET(PylonDataComponent, Array)
 ADD_PROP_GET(PylonDataComponent, ImageFormat)
-#endif
-%include "DeviceClass.i"
-%include "SfncVersion.i"
-%include "ConfigurationHelper.i"
-
 ADD_PROP_GET(GrabResult, ErrorDescription)
 ADD_PROP_GET(GrabResult, ErrorCode)
 ADD_PROP_GET(GrabResult, PayloadType)
@@ -1053,4 +966,5 @@ void GetPylonVersion(
     unsigned int* subminor,
     unsigned int* build
     );
+
 const char* GetPylonVersionString();
