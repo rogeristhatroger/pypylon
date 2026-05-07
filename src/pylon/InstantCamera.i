@@ -36,6 +36,8 @@ namespace Pylon {
 %pythoncode %{
     FirstFound = True
     Unambiguous = False
+    BufferHandlingMode_Pool = "Pool"
+    BufferHandlingMode_Stream = "Stream"
 %}
 
 %extend Pylon::CInstantCamera {

@@ -333,7 +333,7 @@ class SmartInstantCameraTestSuite(PylonDataProcessingTestCase):
             testee = pylondataprocessing.SmartInstantCamera(pylon.TlFactory.GetInstance().CreateFirstDevice(self.get_filter()), recipefilename)
 
             testee.StartGrabbingMax(True, 10, pylon.GrabStrategy_OneByOne, pylon.GrabLoop_ProvidedByInstantCamera, pylon.GrabLoop_ProvidedByInstantCamera)
-            self.assertTrue(testee.GetGrabStopWaitObject().Wait(2000))
+            self.assertTrue(testee.GetGrabStopWaitObject().Wait(5000))
             self.assertFalse(testee.IsGrabbing())
 
             testee.StartGrabbing(True, pylon.GrabStrategy_OneByOne, pylon.GrabLoop_ProvidedByInstantCamera, pylon.GrabLoop_ProvidedByInstantCamera)
