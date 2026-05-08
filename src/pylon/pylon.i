@@ -958,6 +958,8 @@ ADD_PROP_GET(GrabResult, ChunkDataNodeMap)
 ADD_PROP_GET(GrabResult, DataComponentCount)
 ADD_PROP_GET(GrabResult, DataContainer)
 ADD_PROP_GET(GrabResult, CameraContext)
+ADD_PROP_GET(GrabResult, BufferSize)
+ADD_PROP_GET(GrabResult, BufferContext)
 
 ADD_PROP_GET(PylonImage, AllocatedBufferSize)
 ADD_PROP_GET(PylonImage, Aoi)
