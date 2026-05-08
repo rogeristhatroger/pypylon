@@ -1,32 +1,66 @@
+"""\
+This unit test checks the mapped pypylon PylonDataContainer and
+PylonDataComponent API introduced by src/pylon/PylonDataContainer.i and
+src/pylon/PylonDataComponent.i.  Tests are usage-centric: each test method
+exercises a coherent group of related methods so that the overall number
+of tests stays manageable while still covering every public method and
+property.
+"""
 from pylonemutestcase import PylonEmuTestCase
 from pypylon import pylon
 from pypylon import genicam
+import tempfile
 import unittest
 import os
 
 
 class DataContainerTestSuite(PylonEmuTestCase):
 
+    def _grab_one(self, gen_dc=False):
+        """Open the first emulator camera and return a single grab result."""
+        with self.create_first() as camera:
+            if gen_dc:
+                camera.GenDC.Value = True
+            return camera.GrabOne(5000)
+
+    def _assert_components_equivalent(self, expected, actual):
+        """Field-by-field equality of two PylonDataComponent instances, including data bytes."""
+        self.assertEqual(expected.IsValid(), actual.IsValid())
+        self.assertEqual(expected.ComponentType, actual.ComponentType)
+        self.assertEqual(expected.PixelType, actual.PixelType)
+        self.assertEqual(expected.Width, actual.Width)
+        self.assertEqual(expected.Height, actual.Height)
+        self.assertEqual(expected.OffsetX, actual.OffsetX)
+        self.assertEqual(expected.OffsetY, actual.OffsetY)
+        self.assertEqual(expected.PaddingX, actual.PaddingX)
+        self.assertEqual(expected.DataSize, actual.DataSize)
+        self.assertEqual(expected.TimeStamp, actual.TimeStamp)
+        self.assertEqual(expected.GetData(), actual.GetData())
+
+    # ------------------------------------------------------------------
+    # Default construction
+    # ------------------------------------------------------------------
+
     def test_empty_container(self):
+        """A default-constructed container reports zero components and rejects index lookups."""
         testee = pylon.PylonDataContainer()
         self.assertEqual(testee.DataComponentCount, 0)
         self.assertEqual(testee.GetDataComponentCount(), 0)
         testee.Release()
-        try:
+        with self.assertRaises(genicam.OutOfRangeException):
             testee.GetDataComponentByIndex(0)
-        except genicam.OutOfRangeException:
-            pass
-        else:
-            self.fail("Exception not raised.")
-        try:
-            testee.Save("dummyfilename")
-        except genicam.LogicalErrorException:
-            pass
-        else:
-            self.fail("Exception not raised.")
-        #testee.Load(filename) //load is test below
+
+    def test_empty_container_copy(self):
+        """Copy-constructing an empty container yields another empty container."""
+        empty = pylon.PylonDataContainer()
+        assigned = pylon.PylonDataContainer(empty)
+        self.assertEqual(assigned.DataComponentCount, empty.DataComponentCount)
+        self.assertEqual(assigned.GetDataComponentCount(), 0)
+        with self.assertRaises(genicam.OutOfRangeException):
+            assigned.GetDataComponentByIndex(1)
 
     def test_empty_container_component(self):
+        """A default-constructed component is invalid and reports zero/undefined for every metadata field."""
         testee = pylon.PylonDataComponent()
         self.assertEqual(testee.PixelType, pylon.PixelType_Undefined)
         self.assertEqual(testee.ComponentType, 0)
@@ -47,64 +81,216 @@ class DataContainerTestSuite(PylonEmuTestCase):
         self.assertEqual(testee.GetPaddingX(), 0)
         self.assertEqual(testee.GetDataSize(), 0)
         self.assertEqual(testee.GetTimeStamp(), 0)
-        testee.GetData()
-    
-    def test_container_load(self):
-        testee1 = pylon.PylonDataContainer()
+        self.assertIsNone(testee.GetData())
+        self.assertEqual(testee.GetStride(), [False, 0])
+
+    def test_empty_container_component_copy(self):
+        """Copy-constructing an empty component preserves every default field."""
+        empty = pylon.PylonDataComponent()
+        assigned = pylon.PylonDataComponent(empty)
+        self._assert_components_equivalent(empty, assigned)
+        self.assertEqual(assigned.IsValid(), False)
+        self.assertEqual(assigned.PixelType, pylon.PixelType_Undefined)
+        self.assertEqual(assigned.ComponentType, 0)
+
+    # ------------------------------------------------------------------
+    # Construction from file or grab result
+    # ------------------------------------------------------------------
+
+    def test_construct_from_filename(self):
+        """The filename ctor is equivalent to default-construct + Load(filename)."""
         thisdir = os.path.dirname(__file__)
         filename = os.path.join(thisdir, 'little_boxes.gendc')
-        testee1.Load(filename)
-        self.assertEqual(testee1.DataComponentCount, 3)
-        testee2 = testee1.GetDataComponentByIndex(0)
-        self.assertEqual(testee2.IsValid(), True)
-        self.assertEqual(testee2.PixelType, pylon.PixelType_Coord3D_ABC32f)
-        self.assertEqual(testee2.ComponentType, pylon.ComponentType_Range)
-        self.assertEqual(testee2.Width, 160)
-        self.assertEqual(testee2.Height, 120)
-        self.assertEqual(testee2.OffsetX, 80)
-        self.assertEqual(testee2.OffsetY, 60)
-        self.assertEqual(testee2.PaddingX, 0)
-        self.assertEqual(testee2.DataSize, 230400)
-        self.assertEqual(testee2.TimeStamp, 62653150103775)
-        testee2.Array
-        self.assertEqual(testee2.GetData()[0], 79)
-        self.assertEqual(testee2.GetMemoryView()[0], 79)
-        #self.assertEqual(testee2.Array[0,0], [-468.76804, -338.49225,  746.62396])
-        testee3 = testee1.GetDataComponentByIndex(1)
-        self.assertEqual(testee3.IsValid(), True)
-        self.assertEqual(testee3.PixelType, pylon.PixelType_Mono16)
-        self.assertEqual(testee3.ComponentType, pylon.ComponentType_Intensity)
-        self.assertEqual(testee3.Width, 160)
-        self.assertEqual(testee3.Height, 120)
-        self.assertEqual(testee3.OffsetX, 80)
-        self.assertEqual(testee3.OffsetY, 60)
-        self.assertEqual(testee3.PaddingX, 0)
-        self.assertEqual(testee3.DataSize, 38400)
-        self.assertEqual(testee3.TimeStamp, 62653150103775)
-        self.assertEqual(testee3.Array[0,0], 20388)
-        self.assertEqual(testee3.GetData()[0], 164)
-        self.assertEqual(testee3.GetMemoryView()[0], 164)
-        testee4 = testee1.GetDataComponentByIndex(2)
-        self.assertEqual(testee4.IsValid(), True)
-        self.assertEqual(testee4.PixelType, pylon.PixelType_Confidence16)
-        self.assertEqual(testee4.ComponentType, pylon.ComponentType_Confidence)
-        self.assertEqual(testee4.Width, 160)
-        self.assertEqual(testee4.Height, 120)
-        self.assertEqual(testee4.OffsetX, 80)
-        self.assertEqual(testee4.OffsetY, 60)
-        self.assertEqual(testee4.PaddingX, 0)
-        self.assertEqual(testee4.DataSize, 38400)
-        self.assertEqual(testee4.TimeStamp, 62653150103775)
-        self.assertEqual(testee4.Array[0,0], 1769)
-        self.assertEqual(testee4.GetData()[0], 233)
-        self.assertEqual(testee4.GetMemoryView()[0], 233)
-        testee4.Release()
-        self.assertEqual(testee4.IsValid(), False)
-        testee3.Release()
-        testee2.Release()
-        testee1.Release()
+
+        testee = pylon.PylonDataContainer(filename)
+        self.assertEqual(testee.DataComponentCount, 3)
+        component_0 = testee.GetDataComponentByIndex(0)
+        self.assertEqual(component_0.IsValid(), True)
+        component_0.Release()
+        testee.Release()
+
+        with self.assertRaises(genicam.GenericException):
+            pylon.PylonDataContainer("")
+        with self.assertRaises(genicam.GenericException):
+            pylon.PylonDataContainer("valid_but_not_existing__")
+
+    def test_construct_from_grab_result(self):
+        """A live grab result becomes a container; a failed/empty one yields zero components."""
+        with self._grab_one(gen_dc=True) as grab_result_gen_dc:
+            self.assertEqual(grab_result_gen_dc.PayloadType, pylon.PayloadType_GenDC)
+            container_gen_dc = pylon.PylonDataContainer(grab_result_gen_dc)
+            self.assertGreater(container_gen_dc.DataComponentCount, 0)
+            for i in range(container_gen_dc.DataComponentCount):
+                self.assertEqual(
+                    container_gen_dc.GetDataComponentByIndex(i).IsValid(), True
+                )
+            container_gen_dc.Release()
+
+        empty_grab_result = pylon.GrabResult()
+        container_invalid = pylon.PylonDataContainer(empty_grab_result)
+        self.assertEqual(container_invalid.DataComponentCount, 0)
+
+        with self._grab_one() as grab_result_image:
+            container_image = pylon.PylonDataContainer(grab_result_image)
+            self.assertGreater(container_image.DataComponentCount, 0)
+
+            intensity_components = container_image.GetDataComponentByType(
+                pylon.ComponentType_Intensity
+            )
+            self.assertGreater(len(intensity_components), 0)
+            component_intensity = intensity_components[0]
+
+            self.assertEqual(component_intensity.IsValid(), True)
+            self.assertEqual(component_intensity.ComponentType, pylon.ComponentType_Intensity)
+            self.assertEqual(component_intensity.PixelType, grab_result_image.PixelType)
+            self.assertEqual(component_intensity.Width, grab_result_image.Width)
+            self.assertEqual(component_intensity.Height, grab_result_image.Height)
+            self.assertEqual(component_intensity.OffsetX, grab_result_image.OffsetX)
+            self.assertEqual(component_intensity.OffsetY, grab_result_image.OffsetY)
+            self.assertEqual(component_intensity.PaddingX, grab_result_image.PaddingX)
+            self.assertEqual(component_intensity.DataSize, grab_result_image.PayloadSize)
+            self.assertEqual(component_intensity.TimeStamp, grab_result_image.TimeStamp)
+            container_image.Release()
+
+    # ------------------------------------------------------------------
+    # Copy construction (populated)
+    # ------------------------------------------------------------------
+
+    def test_copy_construction(self):
+        """Copy-constructing a populated container or component preserves every field."""
+        with self._grab_one() as grab_result:
+            grab_result_container = pylon.PylonDataContainer(grab_result)
+            self.assertGreater(grab_result_container.DataComponentCount, 0)
+            grab_result_component = grab_result_container.GetDataComponentByIndex(0)
+            self.assertEqual(grab_result_component.IsValid(), True)
+
+            copied_container = pylon.PylonDataContainer(grab_result_container)
+            self.assertEqual(
+                copied_container.DataComponentCount,
+                grab_result_container.DataComponentCount,
+            )
+            copied_component = copied_container.GetDataComponentByIndex(0)
+            self._assert_components_equivalent(grab_result_component, copied_component)
+
+            copied_component_alone = pylon.PylonDataComponent(grab_result_component)
+            self._assert_components_equivalent(grab_result_component, copied_component_alone)
+
+            copied_component_alone.Release()
+            copied_component.Release()
+            copied_container.Release()
+            grab_result_component.Release()
+            grab_result_container.Release()
+
+    # ------------------------------------------------------------------
+    # Component access (by index / by type / deprecated alias)
+    # ------------------------------------------------------------------
+
+    def test_get_data_component_by_type(self):
+        """GetDataComponentByType returns one match per present ComponentType and an empty list otherwise."""
+        thisdir = os.path.dirname(__file__)
+        filename = os.path.join(thisdir, 'little_boxes.gendc')
+        container = pylon.PylonDataContainer(filename)
+        self.assertEqual(container.DataComponentCount, 3)
+
+        for component_type, expected_pixel in (
+            (pylon.ComponentType_Range, pylon.PixelType_Coord3D_ABC32f),
+            (pylon.ComponentType_Intensity, pylon.PixelType_Mono16),
+            (pylon.ComponentType_Confidence, pylon.PixelType_Confidence16),
+        ):
+            matches = container.GetDataComponentByType(component_type)
+            self.assertIsInstance(matches, list)
+            self.assertEqual(len(matches), 1)
+            self.assertEqual(matches[0].IsValid(), True)
+            self.assertEqual(matches[0].ComponentType, component_type)
+            self.assertEqual(matches[0].PixelType, expected_pixel)
+
+        absent = container.GetDataComponentByType(pylon.ComponentType_Undefined)
+        self.assertIsInstance(absent, list)
+        self.assertEqual(len(absent), 0)
+
+        container.Release()
+
+    def test_get_data_component_deprecated(self):
+        """The legacy GetDataComponent(index) alias warns and forwards to GetDataComponentByIndex."""
+        thisdir = os.path.dirname(__file__)
+        filename = os.path.join(thisdir, 'little_boxes.gendc')
+        container = pylon.PylonDataContainer(filename)
+
+        with self.assertWarnsRegex(DeprecationWarning, "GetDataComponentByIndex"):
+            deprecated_comp = container.GetDataComponent(1)
+
+        canonical_comp = container.GetDataComponentByIndex(1)
+        self._assert_components_equivalent(canonical_comp, deprecated_comp)
+
+        deprecated_comp.Release()
+        canonical_comp.Release()
+        container.Release()
+
+    # ------------------------------------------------------------------
+    # Loaded-fixture inspection (little_boxes.gendc)
+    # ------------------------------------------------------------------
+
+    def test_container_load(self):
+        """Load() of the little_boxes.gendc fixture reproduces three components with the expected metadata and pixel data."""
+        container = pylon.PylonDataContainer()
+        thisdir = os.path.dirname(__file__)
+        filename = os.path.join(thisdir, 'little_boxes.gendc')
+        container.Load(filename)
+        self.assertEqual(container.DataComponentCount, 3)
+
+        range_component = container.GetDataComponentByIndex(0)
+        self.assertEqual(range_component.IsValid(), True)
+        self.assertEqual(range_component.PixelType, pylon.PixelType_Coord3D_ABC32f)
+        self.assertEqual(range_component.ComponentType, pylon.ComponentType_Range)
+        self.assertEqual(range_component.Width, 160)
+        self.assertEqual(range_component.Height, 120)
+        self.assertEqual(range_component.OffsetX, 80)
+        self.assertEqual(range_component.OffsetY, 60)
+        self.assertEqual(range_component.PaddingX, 0)
+        self.assertEqual(range_component.DataSize, 230400)
+        self.assertEqual(range_component.TimeStamp, 62653150103775)
+        self.assertEqual(range_component.Array.shape, (120, 160, 3))
+        self.assertEqual(range_component.GetData()[0], 79)
+        self.assertEqual(range_component.GetMemoryView()[0], 79)
+
+        intensity_component = container.GetDataComponentByIndex(1)
+        self.assertEqual(intensity_component.IsValid(), True)
+        self.assertEqual(intensity_component.PixelType, pylon.PixelType_Mono16)
+        self.assertEqual(intensity_component.ComponentType, pylon.ComponentType_Intensity)
+        self.assertEqual(intensity_component.Width, 160)
+        self.assertEqual(intensity_component.Height, 120)
+        self.assertEqual(intensity_component.OffsetX, 80)
+        self.assertEqual(intensity_component.OffsetY, 60)
+        self.assertEqual(intensity_component.PaddingX, 0)
+        self.assertEqual(intensity_component.DataSize, 38400)
+        self.assertEqual(intensity_component.TimeStamp, 62653150103775)
+        self.assertEqual(intensity_component.Array[0, 0], 20388)
+        self.assertEqual(intensity_component.GetData()[0], 164)
+        self.assertEqual(intensity_component.GetMemoryView()[0], 164)
+
+        confidence_component = container.GetDataComponentByIndex(2)
+        self.assertEqual(confidence_component.IsValid(), True)
+        self.assertEqual(confidence_component.PixelType, pylon.PixelType_Confidence16)
+        self.assertEqual(confidence_component.ComponentType, pylon.ComponentType_Confidence)
+        self.assertEqual(confidence_component.Width, 160)
+        self.assertEqual(confidence_component.Height, 120)
+        self.assertEqual(confidence_component.OffsetX, 80)
+        self.assertEqual(confidence_component.OffsetY, 60)
+        self.assertEqual(confidence_component.PaddingX, 0)
+        self.assertEqual(confidence_component.DataSize, 38400)
+        self.assertEqual(confidence_component.TimeStamp, 62653150103775)
+        self.assertEqual(confidence_component.Array[0, 0], 1769)
+        self.assertEqual(confidence_component.GetData()[0], 233)
+        self.assertEqual(confidence_component.GetMemoryView()[0], 233)
+
+        confidence_component.Release()
+        self.assertEqual(confidence_component.IsValid(), False)
+        intensity_component.Release()
+        range_component.Release()
+        container.Release()
 
     def test_container_load_zero_copy(self):
+        """GetArrayZeroCopy yields a zero-copy numpy view of the component buffer."""
         testee1 = pylon.PylonDataContainer()
         thisdir = os.path.dirname(__file__)
         filename = os.path.join(thisdir, 'little_boxes.gendc')
@@ -116,6 +302,142 @@ class DataContainerTestSuite(PylonEmuTestCase):
         testee3.Release()
         testee1.Release()
 
+    def test_component_array_and_format_accessors(self):
+        """Data, ImageFormat / GetImageFormat, and GetArray (default + raw) agree with each other and with the component metadata."""
+        thisdir = os.path.dirname(__file__)
+        filename = os.path.join(thisdir, 'little_boxes.gendc')
+        container = pylon.PylonDataContainer(filename)
+        intensity_component = container.GetDataComponentByIndex(1)
+
+        self.assertEqual(intensity_component.PixelType, pylon.PixelType_Mono16)
+        self.assertEqual(intensity_component.Data, intensity_component.GetData())
+        self.assertEqual(intensity_component.ImageFormat, intensity_component.GetImageFormat())
+
+        shape, dtype, fmt = intensity_component.GetImageFormat()
+        self.assertEqual(shape, (intensity_component.Height, intensity_component.Width))
+        self.assertEqual(dtype.__name__, "uint16")
+        self.assertEqual(fmt, "H")
+
+        typed_array = intensity_component.GetArray()
+        self.assertEqual(typed_array.shape, shape)
+        self.assertEqual(typed_array.dtype.name, "uint16")
+        self.assertEqual(typed_array[0, 0], 20388)
+
+        raw_array = intensity_component.GetArray(raw=True)
+        self.assertEqual(raw_array.ndim, 1)
+        self.assertEqual(raw_array.shape, (intensity_component.DataSize,))
+        self.assertEqual(raw_array.dtype.name, "uint8")
+        self.assertEqual(raw_array[0], intensity_component.GetData()[0])
+
+        bytes_per_pixel = 2
+        expected_stride = intensity_component.Width * bytes_per_pixel + intensity_component.PaddingX
+        self.assertEqual(
+            intensity_component.GetStride(),
+            [True, expected_stride],
+        )
+
+        intensity_component.Release()
+        container.Release()
+
+    # ------------------------------------------------------------------
+    # Save / Load
+    # ------------------------------------------------------------------
+
+    def test_empty_container_save_rejects(self):
+        """Save() on an empty container raises LogicalErrorException regardless of filename."""
+        testee = pylon.PylonDataContainer()
+        with self.assertRaises(genicam.LogicalErrorException):
+            testee.Save("dummyfilename")
+
+    def test_save_load_roundtrip(self):
+        """Save() persists a container, and Load() reproduces every component field."""
+        with self._grab_one(gen_dc=True) as grab_result_gen_dc:
+            container_valid = pylon.PylonDataContainer(grab_result_gen_dc)
+            self.assertGreater(container_valid.DataComponentCount, 0)
+
+            with self.assertRaises(genicam.GenericException):
+                container_valid.Save("")
+
+            fd, save_path = tempfile.mkstemp(suffix=".gendc")
+            os.close(fd)
+            os.unlink(save_path)
+            try:
+                container_valid.Save(save_path)
+
+                container_loaded = pylon.PylonDataContainer()
+                container_loaded.Load(save_path)
+                self.assertEqual(
+                    container_loaded.DataComponentCount,
+                    container_valid.DataComponentCount,
+                )
+                for i in range(container_loaded.DataComponentCount):
+                    self._assert_components_equivalent(
+                        container_valid.GetDataComponentByIndex(i),
+                        container_loaded.GetDataComponentByIndex(i),
+                    )
+                container_loaded.Release()
+            finally:
+                if os.path.exists(save_path):
+                    os.unlink(save_path)
+
+            container_valid.Release()
+
+        with self._grab_one() as grab_result_image:
+            container_from_image = pylon.PylonDataContainer(grab_result_image)
+            fd, image_path = tempfile.mkstemp(suffix=".gendc")
+            os.close(fd)
+            os.unlink(image_path)
+            try:
+                container_from_image.Save(image_path)
+
+                container_from_image_loaded = pylon.PylonDataContainer()
+                container_from_image_loaded.Load(image_path)
+                self.assertEqual(
+                    container_from_image_loaded.DataComponentCount,
+                    container_from_image.DataComponentCount,
+                )
+                container_from_image_loaded.Release()
+
+                container_constructed = pylon.PylonDataContainer(image_path)
+                self.assertEqual(
+                    container_constructed.DataComponentCount,
+                    container_from_image.DataComponentCount,
+                )
+                container_constructed.Release()
+            finally:
+                if os.path.exists(image_path):
+                    os.unlink(image_path)
+            container_from_image.Release()
+
+    def test_load_rejects_invalid(self):
+        """Load() and the filename ctor reject empty/malformed/missing/garbage paths."""
+        container = pylon.PylonDataContainer()
+
+        for bad_path in ("", "valid_but_not_existing__"):
+            with self.assertRaises(genicam.GenericException):
+                container.Load(bad_path)
+            self.assertEqual(container.DataComponentCount, 0)
+
+        fd, empty_path = tempfile.mkstemp(suffix=".gendc")
+        os.close(fd)
+        try:
+            with self.assertRaises(genicam.GenericException):
+                container.Load(empty_path)
+            self.assertEqual(container.DataComponentCount, 0)
+        finally:
+            os.unlink(empty_path)
+
+        fd, illegal_path = tempfile.mkstemp(suffix=".gendc")
+        try:
+            with os.fdopen(fd, "wb") as f:
+                for i in range(1, 10):
+                    f.write(str(i).encode("ascii"))
+            with self.assertRaises(genicam.GenericException):
+                container.Load(illegal_path)
+            self.assertEqual(container.DataComponentCount, 0)
+        finally:
+            os.unlink(illegal_path)
+
+
 if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
