@@ -1,4 +1,3 @@
-
 %ignore CGrabResultPtrImpl;
 %ignore operator IImage&;
 %rename(GrabResult) Pylon::CGrabResultPtr;
