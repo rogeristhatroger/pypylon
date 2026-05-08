@@ -829,6 +829,26 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 
 %enddef
 
+////////////////////////////////////////////////////////////////////////////////
+//
+// GetStride output parameter typemap
+//
+// GetStride(size_t& strideBytes) uses a C++ output-reference parameter.
+// Hide it from Python (numinputs=0) and append the value to the return tuple
+// so that the Python call is:
+//
+//   ok, stride = obj.GetStride()
+//
+// The typemap matches on the parameter name "strideBytes" which is used
+// consistently across CGrabResultData, CPylonImage, and CPylonDataComponent.
+//
+%typemap(in, numinputs=0) size_t& strideBytes (size_t temp = 0) {
+    $1 = &temp;
+}
+%typemap(argout) size_t& strideBytes {
+    %append_output(PyLong_FromSize_t(*$1));
+}
+
 // ignore assignment operator in all classes
 %ignore *::operator=;
 
@@ -937,6 +957,7 @@ ADD_PROP_GET(GrabResult, NumberOfSkippedImages)
 ADD_PROP_GET(GrabResult, ChunkDataNodeMap)
 ADD_PROP_GET(GrabResult, DataComponentCount)
 ADD_PROP_GET(GrabResult, DataContainer)
+ADD_PROP_GET(GrabResult, CameraContext)
 
 ADD_PROP_GET(PylonImage, AllocatedBufferSize)
 ADD_PROP_GET(PylonImage, Aoi)
@@ -950,7 +971,6 @@ ADD_PROP_GET(PylonImage, PaddingX)
 ADD_PROP_GET(PylonImage, PixelData)
 ADD_PROP_GET(PylonImage, PixelType)
 ADD_PROP_GET(PylonImage, Plane)
-ADD_PROP_GET(PylonImage, Stride)
 ADD_PROP_GET(PylonImage, Width)
 
 %apply unsigned int *OUTPUT {
