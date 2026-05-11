@@ -667,14 +667,14 @@ def ToParameter(val):
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// ImageConverter output
+// ImageConverter and ImagePersistence output
 //
 
-%typemap(in,numinputs=0, noblock=1) Pylon::IReusableImage& {
+%typemap(in,numinputs=0, noblock=1) Pylon::IReusableImage&, IReusableImage& {
   $1 = new Pylon::CPylonImage();
 }
 
-%typemap(argout, noblock=1) Pylon::IReusableImage& {
+%typemap(argout, noblock=1) Pylon::IReusableImage&, IReusableImage& {
   Py_DECREF($result);
   $result = SWIG_NewPointerObj(
     SWIG_as_voidptr($1),
@@ -684,8 +684,58 @@ def ToParameter(val):
 }
 
 // '%typemap(freearg)' must be empty!
-%typemap(freearg, noblock=1) Pylon::IReusableImage& {}
+%typemap(freearg, noblock=1) Pylon::IReusableImage&, IReusableImage& {}
 
+////////////////////////////////////////////////////////////////////////////////
+//
+// ImageConverter and ImagePersistence input, maps the IImage cast operators of pylon C++
+//
+
+%typemap(in) const Pylon::IImage &, const IImage & {
+    // Reject None early: SWIG_ConvertPtr accepts None as a null pointer, which
+    // would result in a null reference and a SEGFAULT inside the C++ call.
+    if ($input == Py_None) {
+        SWIG_exception_fail(SWIG_TypeError,
+                            "None is not a valid IImage, CGrabResultPtr or CPylonDataComponent");
+    }
+
+    // Case 1: already an IImage*
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_Pylon__IImage, 0)) && $1) {
+	$1 = (IImage*)$1;
+    }
+
+    // Case 2: CGrabResultPtr -> extract IImage
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_Pylon__CGrabResultPtr, 0)) && $1) {
+	Pylon::CGrabResultPtr* grabPtr = (Pylon::CGrabResultPtr*)$1;
+	if (!(*grabPtr)) {
+	    SWIG_exception_fail(SWIG_ValueError, "Invalid CGrabResultPtr");
+	}
+	$1 = &(grabPtr->operator Pylon::IImage&());
+    }
+
+    // Case 3: Pylon::CPylonDataComponent -> extract IImage
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_Pylon__CPylonDataComponent, 0)) && $1) {
+	$1 = const_cast<Pylon::IImage*>(&(((Pylon::CPylonDataComponent*)$1)->operator const Pylon::IImage&()));
+    }
+
+    else {
+	SWIG_exception_fail(SWIG_TypeError,
+			    "Expected IImage, CGrabResultPtr or CPylonDataComponent");
+    }
+}
+
+%typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER) const Pylon::IImage &, const IImage & {
+  // SWIG_ConvertPtr accepts None (Python null) as a null pointer and returns
+  // SWIG_OK.  We must reject that explicitly with the '&& ptr' guards so that
+  // None does not accidentally match this overload and reach the 'in' typemap
+  // where a null IImage reference would SEGFAULT.
+  Pylon::IImage *ptr = nullptr;
+  $1 =
+      (SWIG_IsOK(SWIG_ConvertPtr($input, (void **)(&ptr), SWIGTYPE_p_Pylon__IImage, 0)) && ptr)
+      || (SWIG_IsOK(SWIG_ConvertPtr($input, (void **)(&ptr), SWIGTYPE_p_Pylon__CGrabResultPtr, 0)) && ptr)
+      || (SWIG_IsOK(SWIG_ConvertPtr($input, (void **)(&ptr), SWIGTYPE_p_Pylon__CPylonDataComponent, 0)) && ptr)
+      ;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -900,6 +950,7 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "AcquireContinuousConfiguration.i"
 %include "AcquireSingleFrameConfiguration.i"
 %include "ActionTriggerConfiguration.i"
+%include "ImagePersistence.i"
 %include "Image.i"
 %include "ReusableImage.i"
 %include "PylonImageBase.i"
