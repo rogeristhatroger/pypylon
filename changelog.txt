@@ -1,3 +1,8 @@
+Version 26.5.0
+    - Date 2026-05-26
+    - Updated to pylon Software Suite 26.5.0 on all platforms.
+    - Updated GitHub Actions to versions that use Node.js 24 and removed those relying on the deprecated set-output command.
+
 Version 26.4.1
     - Date 2026-04-28
     - Updated to pylon Software Suite 26.4.1 on all platforms.
