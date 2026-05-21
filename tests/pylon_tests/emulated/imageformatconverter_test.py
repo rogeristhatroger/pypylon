@@ -642,6 +642,18 @@ class ImageFormatConverterTestSuite(PylonEmuTestCase):
                 with self.assertRaises(TypeError):
                     converter.ImageHasDestinationFormat(bad)
 
+    # ------------------------------------------------------------------
+    # Backwards compatability
+    # ------------------------------------------------------------------
+
+    def test_backwards_compatibility_direct_assignment(self):
+        """Setting a parameter value using direct assignment instead of using the .Value property."""
+        converter = pylon.ImageFormatConverter()
+        converter.InconvertibleEdgeHandling = pylon.InconvertibleEdgeHandling_Extend
+        self.assertEqual(converter.InconvertibleEdgeHandling.Value, pylon.InconvertibleEdgeHandling_Extend)
+        converter.InconvertibleEdgeHandling = pylon.InconvertibleEdgeHandling_Clip
+        self.assertEqual(converter.InconvertibleEdgeHandling.Value, pylon.InconvertibleEdgeHandling_Clip)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -4,10 +4,10 @@ def _LookupParameter(nodemap_wrapper1, nodemap_wrapper2, name):
 
     node = nodemap_wrapper1.GetNode(name, False)
     nodemap_wrapper = nodemap_wrapper1
-    if not node.IsValid() and nodemap_wrapper2 is not None:
+    if isinstance(node, Parameter) and not node.IsValid() and nodemap_wrapper2 is not None:
         node = nodemap_wrapper2.GetNode(name, False)
         nodemap_wrapper = nodemap_wrapper2
-    if node.IsValid():
+    if not (isinstance(node, Parameter) and not node.IsValid()): # check for node being null
         return node; #this is already converted to the correct Parameter type by the typemap for GetNode()
 
     nodemap_type = nodemap_wrapper.GetNodeMapType()

@@ -80,7 +80,7 @@ namespace Pylon {
                 type_attr.fset(self, val)
             else:
                 warnings.warn(f"Setting a feature value by direct assignment is deprecated. Use <nodemap>.{attribute}.Value = {val}", DeprecationWarning, stacklevel=2)
-                self.GetNodeMap().GetNode(attribute).SetValue(val)
+                _LookupParameter(self.GetInstantCameraNodeMap(), self.GetNodeMap() if self.IsPylonDeviceAttached() else None, attribute).SetValue(val)
 
     def __dir__(self):
         l = dir(type(self))
