@@ -2,18 +2,6 @@
 """\
 Access interface-level parameters such as Power-over-CXP on a CXP-12 card.
 
-The C++ pylon SDK provides CUniversalInstantInterface for convenient
-access to interface parameters: you supply a CInterfaceInfo filter
-(e.g. BaslerGenTlCxpDeviceClass) and the class finds, opens, and
-exposes all GenICam nodes as named properties in one step.
-
-In pypylon this wrapper is not yet available, so this sample performs
-the equivalent steps manually:
-  1. Enumerate transport layers and their interfaces.
-  2. Filter by device class string to locate a CXP interface.
-  3. Open the interface and obtain its raw GenICam node map.
-  4. Access parameters via pylon.*Parameter wrappers.
-
 Using the Basler CXP-12 interface card as an example, the sample shows how
 to toggle Power-over-CXP and read current/voltage/power telemetry. The same
 pattern works for any transport layer interface that exposes GenICam nodes.

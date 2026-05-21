@@ -13,7 +13,7 @@ https://docs.baslerweb.com/camera-emulation
 import sys
 import os
 
-# Make the shared samples_reference_pypylon/include/ helpers importable.
+# Make the shared samples/include/ helpers importable.
 _INCLUDE_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "..", "include")
 )

@@ -60,10 +60,10 @@ def configure_auto_function_roi_sfnc1(camera):
     camera.AutoFunctionAOISelector.SetValue("AOI1")
     camera.AutoFunctionAOIUsageIntensity.TrySetValue(True)
     camera.AutoFunctionAOIUsageWhiteBalance.TrySetValue(True)
-    camera.AutoFunctionAOIOffsetX.SetValue(camera.OffsetX.Min)
-    camera.AutoFunctionAOIOffsetY.SetValue(camera.OffsetY.Min)
-    camera.AutoFunctionAOIWidth.SetValue(camera.Width.Max)
-    camera.AutoFunctionAOIHeight.SetValue(camera.Height.Max)
+    camera.AutoFunctionAOIOffsetX.SetToMinimum()
+    camera.AutoFunctionAOIOffsetY.SetToMinimum()
+    camera.AutoFunctionAOIWidth.SetToMaximum()
+    camera.AutoFunctionAOIHeight.SetToMaximum()
 
 
 def configure_auto_function_roi_sfnc2(camera):
@@ -74,10 +74,10 @@ def configure_auto_function_roi_sfnc2(camera):
     camera.AutoFunctionROISelector.SetValue("ROI1")
     camera.AutoFunctionROIUseBrightness.TrySetValue(True)
     camera.AutoFunctionROIUseWhiteBalance.TrySetValue(True)
-    camera.AutoFunctionROIOffsetX.SetValue(camera.OffsetX.Min)
-    camera.AutoFunctionROIOffsetY.SetValue(camera.OffsetY.Min)
-    camera.AutoFunctionROIWidth.SetValue(camera.Width.Max)
-    camera.AutoFunctionROIHeight.SetValue(camera.Height.Max)
+    camera.AutoFunctionROIOffsetX.SetToMinimum()
+    camera.AutoFunctionROIOffsetY.SetToMinimum()
+    camera.AutoFunctionROIWidth.SetToMaximum()
+    camera.AutoFunctionROIHeight.SetToMaximum()
 
 
 def configure_auto_parameters_sfnc1(camera):

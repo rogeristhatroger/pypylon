@@ -1,8 +1,11 @@
+"""An image generator used for demonstration purposes."""
+
 import numpy as np
 from pypylon import pylon
 
 def create_mandelbrot_fractal(pixel_type, width, height):
-    # Palette (same as C++)
+    """Create a Mandelbrot fractal image as a PylonImage with the specified pixel type and dimensions."""
+
     palette = np.array([
         [0, 28, 50], [0, 42, 75], [0, 56, 100], [0, 70, 125], [0, 84, 150],
         [0, 50, 0], [0, 100, 0], [0, 150, 0], [0, 200, 0], [0, 250, 0],
@@ -91,4 +94,3 @@ def create_mandelbrot_fractal(pixel_type, width, height):
         return converter.Convert(pylon_image)
 
     return pylon_image
-
