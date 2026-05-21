@@ -894,6 +894,23 @@ class InstantCameraTestSuite(PylonEmuTestCase):
         self.assertTrue(camera.GetGrabStopWaitObject().Wait(0))
         self.assertFalse(camera.GetGrabResultWaitObject().Wait(0))
 
+    # ------------------------------------------------------------------
+    # Backwards compatability
+    # ------------------------------------------------------------------
+
+    def test_backwards_compatibility_direct_assignment(self):
+        """Setting a parameter value using direct assignment instead of using the .Value property."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            camera.MaxNumBuffer = 10
+            self.assertEqual(camera.MaxNumBuffer.Value, 10)
+            camera.MaxNumBuffer = 9
+            self.assertEqual(camera.MaxNumBuffer.Value, 9)
+
+
+    def test_backwards_compatibility_use_genicam_type(self):
+        """Using a parameter as property resulting in a returned genicam type instead of a parameter type."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            root = camera.Root
 
 if __name__ == "__main__":
     unittest.main()
