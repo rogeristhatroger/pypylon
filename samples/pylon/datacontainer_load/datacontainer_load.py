@@ -2,14 +2,14 @@
 """\
 This sample shows how to load and inspect a GenDC data container.
 
-GenDC (Generic Data Container) is used by 3D cameras such as Basler blaze
+GenDC (Generic Data Container) is, e.g., used by 3D cameras such as Basler blaze
 to deliver multiple data components (e.g. range, intensity, confidence) in
 a single acquisition. The sample loads a pre-recorded .gendc file, prints
 metadata for each component, and displays displayable components using
 pylon.DisplayImage.
 
 This sample does not require camera hardware; it operates on a .gendc file
-shipped in the samples_reference_pypylon/images/3d/ directory.
+shipped in the samples/images/3d/ directory.
 """
 import os
 import sys

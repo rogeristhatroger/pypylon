@@ -49,7 +49,7 @@ try:
         func_handle = genicam.Register(camera.Width.Node, on_node_changed)
 
         print(f"Setting Width to maximum ({camera.Width.Max})...")
-        camera.Width.Value = camera.Width.Max
+        camera.Width.SetToMaximum()
 
         print(f"Restoring Width to {original_width}...")
         camera.Width.Value = original_width
@@ -67,7 +67,7 @@ try:
         )
 
         print(f"Setting Width to maximum ({camera.Width.Max})...")
-        camera.Width.Value = camera.Width.Max
+        camera.Width.SetToMaximum()
 
         print(f"Restoring Width to {original_width}...")
         camera.Width.Value = original_width
@@ -77,7 +77,7 @@ try:
         # After deregistering, changes no longer trigger any callback.
         print("\n--- After deregistering both ---")
         print(f"Setting Width to maximum (no callback expected)...")
-        camera.Width.Value = camera.Width.Max
+        camera.Width.SetToMaximum()
         camera.Width.Value = original_width
 
 except Exception as e:
