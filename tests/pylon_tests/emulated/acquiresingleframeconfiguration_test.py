@@ -1,5 +1,6 @@
 """\
 This unit test checks the AcquireSingleFrameConfiguration class.
+introduced by `src/pylon/AcquireSingleFrameConfiguration.i`.
 """
 from pylonemutestcase import PylonEmuTestCase
 from pypylon import pylon

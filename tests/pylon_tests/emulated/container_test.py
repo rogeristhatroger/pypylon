@@ -1,6 +1,7 @@
 """\
 This unit test checks the container types returned by the pylon.TlFactory
-enumeration methods (EnumerateTls, EnumerateInterfaces, EnumerateDevices).
+enumeration methods (EnumerateTls, EnumerateInterfaces, EnumerateDevices)
+introduced by `src/pylon/Container.i`.
 """
 from pylonemutestcase import PylonEmuTestCase
 from pypylon import pylon

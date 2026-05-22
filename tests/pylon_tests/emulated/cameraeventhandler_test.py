@@ -1,5 +1,6 @@
 """\
-This unit test checks the CameraEventHandler class.
+This unit test checks the CameraEventHandler class
+introduced by `src/pylon/CameraEventHandler.i`.
 """
 from pylonemutestcase import PylonEmuTestCase
 from pypylon import pylon

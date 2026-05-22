@@ -690,5 +690,4 @@ class IntegerParameterTestSuite(PylonParameterTestCase):
         self.assertTrue(genicam.IsWritable(p))
 
 if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

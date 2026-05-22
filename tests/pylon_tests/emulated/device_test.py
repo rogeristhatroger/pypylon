@@ -1,5 +1,5 @@
 """\
-This unit test checks all of the mapped pypylon API introduced by src/pylon/Device.i.
+This unit test checks all of the mapped pypylon API introduced by `src/pylon/Device.i`.
 """
 from pylonemutestcase import PylonEmuTestCase
 from pypylon import pylon

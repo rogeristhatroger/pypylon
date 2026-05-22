@@ -1,5 +1,6 @@
 """\
-This unit test checks the ConfigurationEventHandler class.
+This unit test checks the ConfigurationEventHandler class
+introduced by `src/pylon/ConfigurationEventHandler.i`.
 """
 from pylonemutestcase import PylonEmuTestCase
 from pypylon import pylon
