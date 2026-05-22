@@ -1,5 +1,6 @@
 """\
-This unit test checks the AcquireContinuousConfiguration class.
+This unit test checks the AcquireContinuousConfiguration class
+introduced by `src/pylon/AcquireContinuousConfiguration.i`.
 """
 from pylonemutestcase import PylonEmuTestCase
 from pypylon import pylon

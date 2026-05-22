@@ -445,5 +445,4 @@ class StringTestSuite(GenicamTestCase):
 #         self.assertEqual((uint32_t)2, CallbackUtility::Count())
 
 if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

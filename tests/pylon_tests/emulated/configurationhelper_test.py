@@ -1,3 +1,8 @@
+"""\
+This unit test checks the ConfigurationHelper class
+introduced by `src/pylon/ConfigurationHelper.i`.
+"""
+
 from pypylon import pylon
 from pylonemutestcase import PylonEmuTestCase
 import unittest
