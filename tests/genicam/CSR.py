@@ -12,7 +12,7 @@ Created on 07.05.2012
 
 @author: thies.moeller@baslerweb.com
 '''
-import genicam
+from pypylon import genicam
 
 
 class RMap(object):

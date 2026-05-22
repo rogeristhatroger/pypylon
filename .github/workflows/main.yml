@@ -531,7 +531,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest numpy
           pip install --no-index --find-links pypylon-wheels pypylon
-          pytest tests/genicam_tests tests/pylon_tests/emulated tests/pylondataprocessing_tests
+          pytest tests/genicam tests/pylon/emulated tests/pylondataprocessing
 
       - name: Run pypylon unit tests for Python ${{ matrix.python-version }} without pylon Data Processing
         if: runner.os == 'macOS'
@@ -539,4 +539,4 @@ jobs:
           arch -${{ matrix.architecture == 'arm64' && 'arm64' || 'x86_64' }} python -m pip install --upgrade pip
           arch -${{ matrix.architecture == 'arm64' && 'arm64' || 'x86_64' }} pip install pytest numpy
           arch -${{ matrix.architecture == 'arm64' && 'arm64' || 'x86_64' }} pip install --no-index --find-links pypylon-wheels pypylon
-          arch -${{ matrix.architecture == 'arm64' && 'arm64' || 'x86_64' }} pytest tests/genicam_tests tests/pylon_tests/emulated
+          arch -${{ matrix.architecture == 'arm64' && 'arm64' || 'x86_64' }} pytest tests/genicam tests/pylon/emulated

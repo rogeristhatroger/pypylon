@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 
@@ -49,7 +49,7 @@ class ErrorTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ErrorTestSuite_TestBasics")
 
         Value = Camera.GetNode("Value")
@@ -66,9 +66,9 @@ class ErrorTestSuite(GenicamTestCase):
 
         # error
         Error.Value = "Ahrrgs"
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             Value.Value = 17
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             EnumValue.SetIntValue(1)
 
         # error suppressed

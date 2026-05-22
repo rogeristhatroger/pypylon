@@ -6,13 +6,12 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 from testport import CTestPort, cast_data, CStructTestPort, cast_buffer, sizeof
 from callbackhelper import CallbackObject
 import sys
-import genicam
 
 
 class NodeTestSuite(GenicamTestCase):
@@ -143,7 +142,7 @@ class NodeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestAccessMode_1")
 
         Node0 = Camera.GetNode("Node0")
@@ -170,152 +169,152 @@ class NodeTestSuite(GenicamTestCase):
         # NodeList_t mParents
         # NodeImplWO.GetParents(mParents)
 
-        self.assertEqual(intfIValue, CatNode.Node.GetPrincipalInterfaceType())
-        self.assertEqual(intfIValue, Node00.Node.GetPrincipalInterfaceType())
-        self.assertEqual(intfICategory, Node0.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIValue, CatNode.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIValue, Node00.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfICategory, Node0.Node.GetPrincipalInterfaceType())
         MyNode = Camera.GetNode("Node00")
-        self.assertEqual(intfIValue, MyNode.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIValue, MyNode.Node.GetPrincipalInterfaceType())
 
         # Check default access mode
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Node0.Node.GetAlias()
-        self.assertEqual(RO, Node0.Node.GetAccessMode())
-        self.assertEqual(RW, Node00.Node.GetAccessMode())
-        self.assertEqual(RO, Node01.Node.GetAccessMode())
-        self.assertEqual(RW, Node010.Node.GetAccessMode())
+        self.assertEqual(genicam.RO, Node0.Node.GetAccessMode())
+        self.assertEqual(genicam.RW, Node00.Node.GetAccessMode())
+        self.assertEqual(genicam.RO, Node01.Node.GetAccessMode())
+        self.assertEqual(genicam.RW, Node010.Node.GetAccessMode())
 
         # Use cache
-        self.assertEqual(RO, Node0.GetAccessMode())
+        self.assertEqual(genicam.RO, Node0.GetAccessMode())
 
         # Check Implemented
         Implemented0.Value = 0
-        self.assertEqual(NI, Node00.GetAccessMode())
+        self.assertEqual(genicam.NI, Node00.GetAccessMode())
         Implemented0.Value = 1
 
         # Check Available
         Available.Value = 0
-        self.assertEqual(NA, Node00.GetAccessMode())
+        self.assertEqual(genicam.NA, Node00.GetAccessMode())
         Available.Value = 1
 
         # Check Locked
         Locked.Value = 1
-        self.assertEqual(RO, Node00.GetAccessMode())
+        self.assertEqual(genicam.RO, Node00.GetAccessMode())
         Locked.Value = 0
 
         # Check Implemented of a <pFeature> node
         Implemented010.Value = 0
-        self.assertEqual(RO, Node0.GetAccessMode())
+        self.assertEqual(genicam.RO, Node0.GetAccessMode())
 
         # note that the access mode is either NI or RO since NI does not change
         # the access mode can be always(!) cacheable
         # as a consequence this test case is not valid for categories
-        self.assertEqual(RO, Node01.GetAccessMode())
+        self.assertEqual(genicam.RO, Node01.GetAccessMode())
         Implemented010.Value = 1
 
         # Check Category access mode implied by pFeature
-        self.assertEqual(NI, CatFtrNI.GetAccessMode())
-        self.assertEqual(RO, CatFtrNA.GetAccessMode())
+        self.assertEqual(genicam.NI, CatFtrNI.GetAccessMode())
+        self.assertEqual(genicam.RO, CatFtrNA.GetAccessMode())
 
         # Check flag access
         Implemented0.Value = 0
         Available.Value = 0
         Locked.Value = 1
-        self.assertEqual(False, IsImplemented(Node00))
-        self.assertEqual(False, IsAvailable(Node00))
+        self.assertEqual(False, genicam.IsImplemented(Node00))
+        self.assertEqual(False, genicam.IsAvailable(Node00))
         Implemented0.Value = 1
         Available.Value = 0
-        self.assertEqual(True, IsImplemented(Node00))
-        self.assertEqual(False, IsAvailable(Node00))
-        self.assertEqual(False, IsReadable(Node00))
-        self.assertEqual(False, IsWritable(Node00))
+        self.assertEqual(True, genicam.IsImplemented(Node00))
+        self.assertEqual(False, genicam.IsAvailable(Node00))
+        self.assertEqual(False, genicam.IsReadable(Node00))
+        self.assertEqual(False, genicam.IsWritable(Node00))
         Available.Value = 1
-        self.assertEqual(True, IsAvailable(Node00))
+        self.assertEqual(True, genicam.IsAvailable(Node00))
         Locked.Value = 1
-        self.assertEqual(RO, Node00.GetAccessMode())
-        self.assertEqual(True, IsReadable(Node00))
-        self.assertEqual(False, IsWritable(Node00))
+        self.assertEqual(genicam.RO, Node00.GetAccessMode())
+        self.assertEqual(True, genicam.IsReadable(Node00))
+        self.assertEqual(False, genicam.IsWritable(Node00))
         Locked.Value = 0
-        self.assertEqual(True, IsWritable(Node00))
+        self.assertEqual(True, genicam.IsWritable(Node00))
         # and again with the flags made "not available"
         Implemented0Available = Camera.GetNode("Implemented0Available")
         AvailableAvailable = Camera.GetNode("AvailableAvailable")
         LockedAvailable = Camera.GetNode("LockedAvailable")
         Implemented0Available.Value = 0
-        self.assertEqual(True, IsImplemented(Node00))
-        self.assertEqual(False, IsAvailable(Node00))
+        self.assertEqual(True, genicam.IsImplemented(Node00))
+        self.assertEqual(False, genicam.IsAvailable(Node00))
         Implemented0Available.Value = 1
-        self.assertEqual(True, IsImplemented(Node00))
+        self.assertEqual(True, genicam.IsImplemented(Node00))
         AvailableAvailable.Value = 0
-        self.assertEqual(True, IsImplemented(Node00))
-        self.assertEqual(False, IsAvailable(Node00))
-        self.assertEqual(False, IsReadable(Node00))
-        self.assertEqual(False, IsWritable(Node00))
+        self.assertEqual(True, genicam.IsImplemented(Node00))
+        self.assertEqual(False, genicam.IsAvailable(Node00))
+        self.assertEqual(False, genicam.IsReadable(Node00))
+        self.assertEqual(False, genicam.IsWritable(Node00))
         AvailableAvailable.Value = 1
-        self.assertEqual(True, IsWritable(Node00))
+        self.assertEqual(True, genicam.IsWritable(Node00))
 
         # WO flags
-        self.assertEqual(False, IsReadable(WONode))
-        self.assertEqual(NA, NodeImplWO.GetAccessMode())
-        self.assertEqual(NA, NodeAvailWO.GetAccessMode())
-        self.assertEqual(NA, NodeLockedWO.GetAccessMode())
+        self.assertEqual(False, genicam.IsReadable(WONode))
+        self.assertEqual(genicam.NA, NodeImplWO.GetAccessMode())
+        self.assertEqual(genicam.NA, NodeAvailWO.GetAccessMode())
+        self.assertEqual(genicam.NA, NodeLockedWO.GetAccessMode())
 
         LockedAvailable.Value = 0
-        self.assertEqual(NA, Node00.GetAccessMode())
-        self.assertEqual(False, IsReadable(Node00))
-        self.assertEqual(False, IsWritable(Node00))
+        self.assertEqual(genicam.NA, Node00.GetAccessMode())
+        self.assertEqual(False, genicam.IsReadable(Node00))
+        self.assertEqual(False, genicam.IsWritable(Node00))
         LockedAvailable.Value = 1
-        self.assertEqual(True, IsWritable(Node00))
+        self.assertEqual(True, genicam.IsWritable(Node00))
         # Do similar checks for category
         CatImplemented.Value = 0
-        self.assertEqual(NI, Cat.GetAccessMode())
+        self.assertEqual(genicam.NI, Cat.GetAccessMode())
         CatImplemented.Value = 1
         CatAvailable.Value = 0
-        self.assertEqual(NI, Cat.GetAccessMode())
+        self.assertEqual(genicam.NI, Cat.GetAccessMode())
         CatAvailable.Value = 1
-        self.assertEqual(False, IsAvailable(Cat))
+        self.assertEqual(False, genicam.IsAvailable(Cat))
         CatImplementedAvailable = Camera.GetNode("CatImplementedAvailable")
         CatAvailableAvailable = Camera.GetNode("CatAvailableAvailable")
         CatImplementedAvailable.Value = 0
-        self.assertEqual(False, IsImplemented(Cat))
-        self.assertEqual(False, IsAvailable(Cat))
+        self.assertEqual(False, genicam.IsImplemented(Cat))
+        self.assertEqual(False, genicam.IsAvailable(Cat))
         CatImplementedAvailable.Value = 1
         CatAvailableAvailable.Value = 0
-        IsImplemented(Cat)
-        IsAvailable(Cat)
-        self.assertEqual(False, IsImplemented(Cat))
-        self.assertEqual(False, IsAvailable(Cat))
-        self.assertEqual(False, IsReadable(Cat))
-        self.assertEqual(False, IsWritable(Cat))
+        genicam.IsImplemented(Cat)
+        genicam.IsAvailable(Cat)
+        self.assertEqual(False, genicam.IsImplemented(Cat))
+        self.assertEqual(False, genicam.IsAvailable(Cat))
+        self.assertEqual(False, genicam.IsReadable(Cat))
+        self.assertEqual(False, genicam.IsWritable(Cat))
         CatAvailableAvailable.Value = 1
-        self.assertEqual(False, IsAvailable(Cat))
+        self.assertEqual(False, genicam.IsAvailable(Cat))
 
         # Check visibility
-        self.assertEqual(True, IsVisible(Beginner, Guru))
-        self.assertEqual(False, IsVisible(Invisible, Expert))
+        self.assertEqual(True,genicam.IsVisible(genicam.Beginner, genicam.Guru))
+        self.assertEqual(False,genicam.IsVisible(genicam.Invisible, genicam.Expert))
 
         # Check flag combinations
-        self.assertEqual(NI, Combine(RO, NI))
-        self.assertEqual(NA, Combine(RO, NA))
-        self.assertEqual(NA, Combine(WO, RO))
+        self.assertEqual(genicam.NI, genicam.Combine(genicam.RO, genicam.NI))
+        self.assertEqual(genicam.NA, genicam.Combine(genicam.RO, genicam.NA))
+        self.assertEqual(genicam.NA, genicam.Combine(genicam.WO, genicam.RO))
 
         # check what happens if a WO node is locked
         LockedAvailable.Value = 0
-        self.assertTrue(IsWritable(WONode2))
-        self.assertTrue(not IsReadable(WONode2))
+        self.assertTrue(genicam.IsWritable(WONode2))
+        self.assertTrue(not genicam.IsReadable(WONode2))
         LockedAvailable.Value = 1
-        self.assertTrue(not IsWritable(WONode2))
-        self.assertTrue(not IsReadable(WONode2))
+        self.assertTrue(not genicam.IsWritable(WONode2))
+        self.assertTrue(not genicam.IsReadable(WONode2))
 
         # ticket #693
-        self.assertTrue(not IsReadable(None))
-        self.assertTrue(not IsWritable(None))
-        self.assertTrue(not IsImplemented(None))
-        self.assertTrue(not IsAvailable(None))
+        self.assertTrue(not genicam.IsReadable(None))
+        self.assertTrue(not genicam.IsWritable(None))
+        self.assertTrue(not genicam.IsImplemented(None))
+        self.assertTrue(not genicam.IsAvailable(None))
 
-        self.assertTrue(not IsReadable(None))
-        self.assertTrue(not IsWritable(None))
-        self.assertTrue(not IsImplemented(None))
-        self.assertTrue(not IsAvailable(None))
+        self.assertTrue(not genicam.IsReadable(None))
+        self.assertTrue(not genicam.IsWritable(None))
+        self.assertTrue(not genicam.IsImplemented(None))
+        self.assertTrue(not genicam.IsAvailable(None))
 
         # to complete happy path, check also locked node
         # whose value had different access mode than RW
@@ -347,19 +346,19 @@ class NodeTestSuite(GenicamTestCase):
     
         """
 
-        Camera2 = CNodeMapRef()
+        Camera2 = genicam.CNodeMapRef()
         Camera2._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestAccessMode_2")
 
         Port2 = CTestPort()
-        Port2.CreateEntry(0x0104, "uint32_t", 1024, RW, LittleEndian)
+        Port2.CreateEntry(0x0104, "uint32_t", 1024, genicam.RW, genicam.LittleEndian)
         Camera2._Connect(Port2, "Port")
 
         Value = Camera2.GetNode("Value")
 
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             Value.Value
 
-        self.assertEqual(False, IsAvailable(Value))
+        self.assertEqual(False, genicam.IsAvailable(Value))
 
     def test_NameSpace(self):
 
@@ -373,52 +372,52 @@ class NodeTestSuite(GenicamTestCase):
             <Node Name="MyStandard" NameSpace="Standard"/>
             <Node Name="MyCustom" NameSpace="Custom"/>
         """
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestNameSpace")
 
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Camera.GetNode("Std::")  # check an invalid name. This must work but has to return a None-pointer!
 
         Node = Camera.GetNode("Cust::MyDefault")
 
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Node = Camera.GetNode("Std::MyDefault")
 
         Node = Camera.GetNode("MyDefault").Node
 
-        self.assertEqual(Custom, Node.GetNameSpace())
+        self.assertEqual(genicam.Custom, Node.GetNameSpace())
         self.assertEqual("MyDefault", Node.GetName())
         self.assertEqual("Cust::MyDefault", Node.GetName(True))
 
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Node = Camera.GetNode("Cust::MyStandard")
 
         Node = Camera.GetNode("Std::MyStandard")
 
         Node = Camera.GetNode("MyStandard").Node
 
-        self.assertEqual(Standard, Node.GetNameSpace())
+        self.assertEqual(genicam.Standard, Node.GetNameSpace())
         self.assertEqual("MyStandard", Node.GetName())
         self.assertEqual("Std::MyStandard", Node.GetName(True))
 
         Node = Camera.GetNode("Cust::MyCustom")
 
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Node = Camera.GetNode("Std::MyCustom")
 
         Node = Camera.GetNode("MyCustom").Node
 
-        self.assertEqual(Custom, Node.GetNameSpace())
+        self.assertEqual(genicam.Custom, Node.GetNameSpace())
         self.assertEqual("MyCustom", Node.GetName())
         self.assertEqual("Cust::MyCustom", Node.GetName(True))
 
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Node = Camera.GetNode("Trallala::MyDefault")
 
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Node = Camera.GetNode("Std::Trallala")
 
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Node = Camera.GetNode("Trallala")
 
     def test_PropertyAccess(self):
@@ -450,17 +449,17 @@ class NodeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestPropertyAccess")
 
         MyName = Camera.GetNode("MyName")
 
-        self.assertEqual(RW, MyName.GetAccessMode())
+        self.assertEqual(genicam.RW, MyName.GetAccessMode())
         self.assertEqual("MyName", MyName.Node.GetName())
         self.assertEqual("Std::MyName", MyName.Node.GetName(True))
-        self.assertEqual(Standard, MyName.Node.GetNameSpace())
+        self.assertEqual(genicam.Standard, MyName.Node.GetNameSpace())
         self.assertEqual("MyDisplayName", MyName.Node.GetDisplayName())
-        self.assertEqual(Guru, MyName.Node.GetVisibility())
+        self.assertEqual(genicam.Guru, MyName.Node.GetVisibility())
         self.assertEqual("MyToolTip", MyName.Node.GetToolTip())
         self.assertEqual("MyDescription", MyName.Node.GetDescription())
 
@@ -603,7 +602,7 @@ class NodeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestCachingMode")
 
         Int01 = Camera.GetNode("Int01")
@@ -636,9 +635,9 @@ class NodeTestSuite(GenicamTestCase):
         Port = CTestPort()
         #    short s = (short)0xfdfd # *JS* removed warning
         s = 0xfdfd
-        Port.CreateEntry(0x0010, "uint16_t", s, RW, LittleEndian)
-        Port.CreateEntry(0x0012, "uint16_t", s, RW, LittleEndian)
-        Port.CreateEntry(0x0014, "uint16_t", s, RW, LittleEndian)
+        Port.CreateEntry(0x0010, "uint16_t", s, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x0012, "uint16_t", s, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x0014, "uint16_t", s, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -680,16 +679,16 @@ class NodeTestSuite(GenicamTestCase):
 
         # Volatile change of value is visible only to NoCache nodes
         Value = 1
-        Port.Write(0x10, cast_data("uint16_t", LittleEndian, Value))
-        Port.Write(0x12, cast_data("uint16_t", LittleEndian, Value))
-        Port.Write(0x14, cast_data("uint16_t", LittleEndian, Value))
+        Port.Write(0x10, cast_data("uint16_t", genicam.LittleEndian, Value))
+        Port.Write(0x12, cast_data("uint16_t", genicam.LittleEndian, Value))
+        Port.Write(0x14, cast_data("uint16_t", genicam.LittleEndian, Value))
         self.assertEqual(1, NoCache.GetValue())
         self.assertEqual(0, Around.GetValue())
         self.assertEqual(0, Through.GetValue())
         Value = 2
-        Port.Write(0x10, cast_data("uint16_t", LittleEndian, Value))
-        Port.Write(0x12, cast_data("uint16_t", LittleEndian, Value))
-        Port.Write(0x14, cast_data("uint16_t", LittleEndian, Value))
+        Port.Write(0x10, cast_data("uint16_t", genicam.LittleEndian, Value))
+        Port.Write(0x12, cast_data("uint16_t", genicam.LittleEndian, Value))
+        Port.Write(0x14, cast_data("uint16_t", genicam.LittleEndian, Value))
         self.assertEqual(2, IntNoCache.GetValue())
         self.assertEqual(0, IntAround.GetValue())
         self.assertEqual(0, IntThrough.GetValue())
@@ -698,9 +697,9 @@ class NodeTestSuite(GenicamTestCase):
         Through.SetValue(3)
         Around.SetValue(3)
         Value = 4
-        Port.Write(0x10, cast_data("uint16_t", LittleEndian, Value))
-        Port.Write(0x12, cast_data("uint16_t", LittleEndian, Value))
-        Port.Write(0x14, cast_data("uint16_t", LittleEndian, Value))
+        Port.Write(0x10, cast_data("uint16_t", genicam.LittleEndian, Value))
+        Port.Write(0x12, cast_data("uint16_t", genicam.LittleEndian, Value))
+        Port.Write(0x14, cast_data("uint16_t", genicam.LittleEndian, Value))
 
         self.assertEqual(4, NoCache.GetValue())
         self.assertEqual(4, Around.GetValue())
@@ -709,20 +708,20 @@ class NodeTestSuite(GenicamTestCase):
         IntThrough.SetValue(5)
         IntAround.SetValue(5)
         Value = 6
-        Port.Write(0x10, cast_data("uint16_t", LittleEndian, Value))
-        Port.Write(0x12, cast_data("uint16_t", LittleEndian, Value))
-        Port.Write(0x14, cast_data("uint16_t", LittleEndian, Value))
+        Port.Write(0x10, cast_data("uint16_t", genicam.LittleEndian, Value))
+        Port.Write(0x12, cast_data("uint16_t", genicam.LittleEndian, Value))
+        Port.Write(0x14, cast_data("uint16_t", genicam.LittleEndian, Value))
 
         self.assertEqual(6, IntNoCache.GetValue())
         self.assertEqual(6, IntAround.GetValue())
         self.assertEqual(5, IntThrough.GetValue())
         # make sure the cache is avoided if the write fails
         Through.SetValue(7)
-        with self.assertRaises(OutOfRangeException):
+        with self.assertRaises(genicam.OutOfRangeException):
             Through.SetValue(0xFFFFFFFF)
         self.assertEqual(7, Through.GetValue())
         Through.SetValue(7)
-        with self.assertRaises(OutOfRangeException):
+        with self.assertRaises(genicam.OutOfRangeException):
             Through.SetValue(0xFFFFFFFF)
         self.assertEqual(7, Through.GetValue())
 
@@ -730,7 +729,7 @@ class NodeTestSuite(GenicamTestCase):
         FloatAround = Camera.GetNode("FloatAround")
         FloatAround.SetValue(50.0)
         Value = 60
-        Port.Write(0x14, cast_data("uint16_t", LittleEndian, Value))
+        Port.Write(0x14, cast_data("uint16_t", genicam.LittleEndian, Value))
 
         self.assertAlmostEqual(60.0, FloatAround.GetValue(), delta=(7. / 3 - 4. / 3 - 1))
 
@@ -740,7 +739,7 @@ class NodeTestSuite(GenicamTestCase):
             <Node Name="Dummy"/>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestDeviceInformation")
 
         # CDeviceInfoPtr DeviceInfo(Camera._Ptr)
@@ -805,7 +804,7 @@ class NodeTestSuite(GenicamTestCase):
     
              """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestTheRest")
 
         IntChild = Camera.GetNode("IntChild")
@@ -824,7 +823,7 @@ class NodeTestSuite(GenicamTestCase):
         # CNodeMapPtr NodeMap = IntChild.GetNodeMap()
 
         self.assertEqual("IntChild", IntParent.Node.GetAlias().Node.GetName())
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             IntChild.Node.GetAlias()
 
 
@@ -885,7 +884,7 @@ class NodeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestStringConversions")
 
         Int = Camera.GetNode("TestInt")
@@ -896,10 +895,10 @@ class NodeTestSuite(GenicamTestCase):
         BigRegVal = "\0" * 128
 
         Port = CTestPort()
-        Port.CreateEntry(0x0000, "uint8_t", RegVal, RW, LittleEndian)
-        Port.CreateEntry(0x0110, "uint16_t", RegVal2L, RW, LittleEndian)
-        Port.CreateEntry(0x0120, "uint16_t", RegVal2B, RW, LittleEndian)
-        Port.CreateEntry(0x0130, "str128", BigRegVal, RW, LittleEndian)
+        Port.CreateEntry(0x0000, "uint8_t", RegVal, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x0110, "uint16_t", RegVal2L, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x0120, "uint16_t", RegVal2B, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x0130, "str128", BigRegVal, genicam.RW, genicam.LittleEndian)
         Camera._Connect(Port, "Port")
 
         Register = Camera.GetNode("TestReg")
@@ -907,7 +906,7 @@ class NodeTestSuite(GenicamTestCase):
         Register2B = Camera.GetNode("TestReg2B")
         BigRegister = Camera.GetNode("TestRegBig")
 
-        self.assertEqual(intfIRegister, Register.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIRegister, Register.Node.GetPrincipalInterfaceType())
 
         # test options not yet covered by other tests
         Int.FromString("0X100")
@@ -915,11 +914,11 @@ class NodeTestSuite(GenicamTestCase):
         Int.FromString("0x200")
         self.assertEqual(0x200, Int.GetValue())
         # and the old '&h' options, no more supported
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             Int.FromString("&h1")
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             Int.FromString("&HFF")
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             Int.FromString("&FFF")
 
         # the same for byte arrays
@@ -933,13 +932,13 @@ class NodeTestSuite(GenicamTestCase):
 
         # single byte register, including some invalid strings
         # (the string should start with 0x following by one or more pairs of hexa-digits)
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             Register.FromString("1")
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             Register.FromString("0x")
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             Register.FromString("0x1")
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             Register.FromString("0x123")
 
         Register.FromString("0xAB")
@@ -983,7 +982,7 @@ class NodeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestBool")
 
         Node = Camera.GetNode("Node")
@@ -993,17 +992,17 @@ class NodeTestSuite(GenicamTestCase):
 
         # Check Implemented
         Implemented.SetValue(False)
-        self.assertEqual(NI, Node.GetAccessMode())
+        self.assertEqual(genicam.NI, Node.GetAccessMode())
         Implemented.SetValue(True)
 
         # Check Available
         Available.SetValue(False)
-        self.assertEqual(NA, Node.GetAccessMode())
+        self.assertEqual(genicam.NA, Node.GetAccessMode())
         Available.SetValue(True)
 
         # Check Locked
         Locked.SetValue(True)
-        self.assertEqual(RO, Node.GetAccessMode())
+        self.assertEqual(genicam.RO, Node.GetAccessMode())
         Locked.SetValue(False)
 
     def test_ImposeAccessMode(self):
@@ -1027,7 +1026,7 @@ class NodeTestSuite(GenicamTestCase):
             <Port Name="Port"/>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Port = CTestPort()
 
         # now initialize map
@@ -1036,13 +1035,13 @@ class NodeTestSuite(GenicamTestCase):
 
         # test the access mode
         Value = Camera.GetNode("TestReg")
-        Register(Value.Node, TestRegCb.Callback)
-        self.assertEqual(RW, Value.GetAccessMode(), "Expected Imposed Access mode is taken in account.")
-        self.assertEqual(RW, Value.GetAccessMode(), "Expected Imposed Access mode is taken in account.")
-        Value.Node.ImposeAccessMode(RO)
+        genicam.Register(Value.Node, TestRegCb.Callback)
+        self.assertEqual(genicam.RW, Value.GetAccessMode(), "Expected Imposed Access mode is taken in account.")
+        self.assertEqual(genicam.RW, Value.GetAccessMode(), "Expected Imposed Access mode is taken in account.")
+        Value.Node.ImposeAccessMode(genicam.RO)
         self.assertEqual(1, TestRegCb.Count(), "Callback not fired by ImposeAccessMode.")
-        self.assertEqual(RO, Value.GetAccessMode(), "Expected Imposed Access mode is taken in account.")
-        self.assertEqual(RO, Value.GetAccessMode(), "Expected Imposed Access mode is taken in account.")
+        self.assertEqual(genicam.RO, Value.GetAccessMode(), "Expected Imposed Access mode is taken in account.")
+        self.assertEqual(genicam.RO, Value.GetAccessMode(), "Expected Imposed Access mode is taken in account.")
 
     def test_Const(self):
         """[ GenApiTest@NodeTestSuite_TestConst.xml|gxml
@@ -1064,7 +1063,7 @@ class NodeTestSuite(GenicamTestCase):
             <Port Name="Port"/>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Port = CTestPort()
 
         # now test initialized map
@@ -1073,13 +1072,13 @@ class NodeTestSuite(GenicamTestCase):
 
         # node pointer
         pNode = Camera.GetNode("Root")
-        if IsReadable(pNode):
+        if genicam.IsReadable(pNode):
             pass
-        elif IsWritable(pNode):
+        elif genicam.IsWritable(pNode):
             pass
-        elif IsAvailable(pNode):
+        elif genicam.IsAvailable(pNode):
             pass
-        elif IsImplemented(pNode):
+        elif genicam.IsImplemented(pNode):
             pass
         else:
             self.assertTrue(False, "unexpected AccessMode")
@@ -1088,9 +1087,9 @@ class NodeTestSuite(GenicamTestCase):
         Node = Camera.GetNode("Port")
         # const INode& rNode = *Node
         # if (IsReadable( rNode ))
-        # else if (IsWritable( rNode ))
-        # else if (IsAvailable( rNode ))
-        # else if (IsImplemented( rNode ))
+        # else if (genicam.IsWritable( rNode ))
+        # else if (genicam.IsAvailable( rNode ))
+        # else if (genicam.IsImplemented( rNode ))
         # else self.assertTrue( 0 && "unexpected AccessMode" )
 
     def test_ReadOnlyPort(self):
@@ -1106,29 +1105,29 @@ class NodeTestSuite(GenicamTestCase):
             <Port Name="Port"/>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
 
         # Extended Test Port declaring that read access is allowed only.
         class CReadonlyTestPort(CTestPort):
             def GetAccessMode(self):
-                return RO
+                return genicam.RO
 
         Port = CReadonlyTestPort()
         # Initial register value
         RegVal = 0xcd
-        Port.CreateEntry(0x0000, "uint8_t", RegVal, RW, LittleEndian)
+        Port.CreateEntry(0x0000, "uint8_t", RegVal, genicam.RW, genicam.LittleEndian)
 
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestReadOnlyPort")
         Camera._Connect(Port, "Port")
-        self.assertEqual(RO, Port.GetAccessMode())
+        self.assertEqual(genicam.RO, Port.GetAccessMode())
 
         Reg = Camera.GetNode("TestReg")
         CurRegVal = 0xff
-        self.assertEqual(RO, Reg.GetAccessMode(), "Access mode is not R0!")
-        with self.assertRaises(AccessException):
-            Reg.Set(cast_data("uint8_t", LittleEndian, CurRegVal))
+        self.assertEqual(genicam.RO, Reg.GetAccessMode(), "Access mode is not R0!")
+        with self.assertRaises(genicam.AccessException):
+            Reg.Set(cast_data("uint8_t", genicam.LittleEndian, CurRegVal))
 
-        CurRegVal = cast_buffer("uint8_t", LittleEndian, Reg.Get(sizeof("uint8_t")))
+        CurRegVal = cast_buffer("uint8_t", genicam.LittleEndian, Reg.Get(sizeof("uint8_t")))
         self.assertEqual(RegVal, CurRegVal)
 
     def test_URL(self):
@@ -1172,7 +1171,7 @@ class NodeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestURL")
 
         TheNodeA = Camera.GetNode("TheNodeA").Node
@@ -1230,7 +1229,7 @@ class NodeTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestDeprecated")
 
         TheNode = Camera.GetNode("TheNode")
@@ -1262,12 +1261,12 @@ class NodeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestStructReg")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x02, "uint32_t", 0xFFFFFFFF, RW, LittleEndian)
+        Port.CreateEntry(0x02, "uint32_t", 0xFFFFFFFF, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -1300,15 +1299,15 @@ class NodeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestExtension")
 
     def test_AccessModeCache(self):
         Port = CTestPort()
         RegisterA = 0
         RegisterB = 0
-        Port.CreateEntry(0x4000, "uint32_t", RegisterA, RW, LittleEndian)
-        Port.CreateEntry(0x4004, "uint32_t", RegisterB, RW, LittleEndian)
+        Port.CreateEntry(0x4000, "uint32_t", RegisterA, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x4004, "uint32_t", RegisterB, genicam.RW, genicam.LittleEndian)
 
         """[ GenApiTest@NodeTestSuite_TestAccessModeCache.xml|gxml
     
@@ -1448,7 +1447,7 @@ class NodeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestAccessModeCache")
         Camera._Connect(Port, "MyPort")
 
@@ -1478,53 +1477,53 @@ class NodeTestSuite(GenicamTestCase):
 
         # Validate expected original access mode: NA.
         # Required as it populates the access mode cache.
-        self.assertTrue(not IsAvailable(lD.GetAccessMode()))
-        self.assertTrue(not IsAvailable(lE.GetAccessMode()))
-        self.assertTrue(not IsAvailable(lF.GetAccessMode()))
-        self.assertTrue(not IsAvailable(lG.GetAccessMode()))
-        self.assertTrue(not IsAvailable(lH.GetAccessMode()))
-        self.assertTrue(not IsAvailable(lI.GetAccessMode()))
-        self.assertTrue(not IsAvailable(lJ.GetAccessMode()))
-        self.assertTrue(not IsAvailable(lK.GetAccessMode()))
-        self.assertTrue(not IsAvailable(lL.GetAccessMode()))
-        self.assertTrue(not IsAvailable(lM.GetAccessMode()))
-        self.assertTrue(not IsImplemented(lN.GetAccessMode()))
-        self.assertTrue(IsWritable(lO.GetAccessMode()))
-        self.assertTrue(not IsAvailable(lP.GetAccessMode()))
+        self.assertTrue(not genicam.IsAvailable(lD.GetAccessMode()))
+        self.assertTrue(not genicam.IsAvailable(lE.GetAccessMode()))
+        self.assertTrue(not genicam.IsAvailable(lF.GetAccessMode()))
+        self.assertTrue(not genicam.IsAvailable(lG.GetAccessMode()))
+        self.assertTrue(not genicam.IsAvailable(lH.GetAccessMode()))
+        self.assertTrue(not genicam.IsAvailable(lI.GetAccessMode()))
+        self.assertTrue(not genicam.IsAvailable(lJ.GetAccessMode()))
+        self.assertTrue(not genicam.IsAvailable(lK.GetAccessMode()))
+        self.assertTrue(not genicam.IsAvailable(lL.GetAccessMode()))
+        self.assertTrue(not genicam.IsAvailable(lM.GetAccessMode()))
+        self.assertTrue(not genicam.IsImplemented(lN.GetAccessMode()))
+        self.assertTrue(genicam.IsWritable(lO.GetAccessMode()))
+        self.assertTrue(not genicam.IsAvailable(lP.GetAccessMode()))
 
         # Directly change A value
         lNewAVal = 4
-        lAccessA = RW  # Out, irrelevant
-        Port.UpdateEntry(0x4000, cast_data("uint32_t", LittleEndian, lNewAVal), lAccessA)
+        lAccessA = genicam.RW  # Out, irrelevant
+        Port.UpdateEntry(0x4000, cast_data("uint32_t", genicam.LittleEndian, lNewAVal), lAccessA)
 
         # Directly change B value
         lNewBVal = 2
-        lAccessB = RW  # Out, irrelevant
-        Port.UpdateEntry(0x4004, cast_data("uint32_t", LittleEndian, lNewBVal), lAccessB)
+        lAccessB = genicam.RW  # Out, irrelevant
+        Port.UpdateEntry(0x4004, cast_data("uint32_t", genicam.LittleEndian, lNewBVal), lAccessB)
 
         # Now the big test - with 0000378 fixed, should pass
-        self.assertTrue(IsAvailable(lD.Node.GetAccessMode()))
-        self.assertTrue(IsAvailable(lE.Node.GetAccessMode()))
-        self.assertTrue(IsAvailable(lF.Node.GetAccessMode()))
-        self.assertTrue(IsAvailable(lG.Node.GetAccessMode()))
-        self.assertTrue(IsAvailable(lH.Node.GetAccessMode()))
-        self.assertTrue(IsAvailable(lI.Node.GetAccessMode()))
-        self.assertTrue(IsAvailable(lJ.Node.GetAccessMode()))
-        self.assertTrue(IsAvailable(lK.Node.GetAccessMode()))
-        self.assertTrue(IsAvailable(lL.Node.GetAccessMode()))
-        self.assertTrue(IsAvailable(lM.Node.GetAccessMode()))
-        self.assertTrue(IsImplemented(lN.Node.GetAccessMode()))
-        self.assertTrue(not IsWritable(lO.Node.GetAccessMode()))
-        self.assertTrue(IsAvailable(lP.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsAvailable(lD.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsAvailable(lE.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsAvailable(lF.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsAvailable(lG.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsAvailable(lH.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsAvailable(lI.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsAvailable(lJ.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsAvailable(lK.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsAvailable(lL.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsAvailable(lM.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsImplemented(lN.Node.GetAccessMode()))
+        self.assertTrue(not genicam.IsWritable(lO.Node.GetAccessMode()))
+        self.assertTrue(genicam.IsAvailable(lP.Node.GetAccessMode()))
 
         isk = Camera.GetNode("isk")
         fsk = Camera.GetNode("fsk")
         ic = Camera.GetNode("ic")
         fc = Camera.GetNode("fc")
-        self.assertEqual(NoCache, isk.Node.GetCachingMode())
-        self.assertEqual(NoCache, fsk.Node.GetCachingMode())
-        self.assertEqual(NoCache, ic.Node.GetCachingMode())
-        self.assertEqual(NoCache, fc.Node.GetCachingMode())
+        self.assertEqual(genicam.NoCache, isk.Node.GetCachingMode())
+        self.assertEqual(genicam.NoCache, fsk.Node.GetCachingMode())
+        self.assertEqual(genicam.NoCache, ic.Node.GetCachingMode())
+        self.assertEqual(genicam.NoCache, fc.Node.GetCachingMode())
 
     def test_IsUncached(self):
         # if(GenApiSchemaVersion == v1_0)
@@ -1560,15 +1559,15 @@ class NodeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestIsUncached")
 
         # type definition of TestIsUncached is above
-        regs = [("Value", "uint32_t", 0, RW, LittleEndian), ]
+        regs = [("Value", "uint32_t", 0, genicam.RW, genicam.LittleEndian), ]
 
         Port = CStructTestPort(regs)
 
-        self.assertEqual(intfIPort, Port.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIPort, Port.GetPrincipalInterfaceType())
         Port.Value = 42
         Camera._Connect(Port, "Port")
 
@@ -1614,7 +1613,7 @@ class NodeTestSuite(GenicamTestCase):
 
         # now make the disabler unreadable and repeate similar tests
         PollingDisablerAvail.Value = 0
-        self.assertTrue(not IsAvailable(Value))  ## is this expected?
+        self.assertTrue(not genicam.IsAvailable(Value))  ## is this expected?
 
     #
     #     struct MyCallbackUtility
@@ -1667,10 +1666,10 @@ class NodeTestSuite(GenicamTestCase):
         </Port>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestWriteCache")
 
-        regs = [("bit", "uint8_t,bits", 0, RW, LittleEndian),
+        regs = [("bit", "uint8_t,bits", 0, genicam.RW, genicam.LittleEndian),
                 ]
         Port = CStructTestPort(regs)
 
@@ -1813,7 +1812,7 @@ class NodeTestSuite(GenicamTestCase):
             </Integer>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "NodeTestSuite_TestLinkTypes")
 
         Node = Camera.GetNode("TheNode")

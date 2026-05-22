@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 
@@ -34,9 +34,9 @@ class CycleDetectorTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
-        with self.assertRaises(RuntimeException):
-            RuntimeException, Camera._LoadXMLFromFile("GenApiTest", "CycleDetectorTestSuite_TestWriteCycles")
+        Camera = genicam.CNodeMapRef()
+        with self.assertRaises(genicam.RuntimeException):
+            genicam.RuntimeException, Camera._LoadXMLFromFile("GenApiTest", "CycleDetectorTestSuite_TestWriteCycles")
 
     def test_DependencyCycles(self):
 
@@ -61,8 +61,8 @@ class CycleDetectorTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
-        with self.assertRaises(RuntimeException):
+        Camera = genicam.CNodeMapRef()
+        with self.assertRaises(genicam.RuntimeException):
             Camera._LoadXMLFromFile("GenApiTest", "CycleDetectorTestSuite_TestDependencyCycles")
 
     # Load check a file with a write cycle and a top level node
@@ -91,7 +91,7 @@ class CycleDetectorTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         if self.GenApiSchemaVersion == "v1_0":
             # {
             # for v1.0 schema the loader does not check for write cycles
@@ -110,11 +110,11 @@ class CycleDetectorTestSuite(GenicamTestCase):
             self.assertEqual(100, OffsetMax.GetValue(True))
         else:
             # for all other schema versions it does
-            with self.assertRaises(RuntimeException):
+            with self.assertRaises(genicam.RuntimeException):
                 Camera._LoadXMLFromFile("GenApiTest", "CycleDetectorTestSuite_TestInfiniteRecursion")
 
             # no nodes are created because of the cycle
-            with self.assertRaises(AccessException):
+            with self.assertRaises(genicam.AccessException):
                 Camera.GetNode("WidthValue")
                 # }
 
@@ -145,7 +145,7 @@ class CycleDetectorTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         if self.GenApiSchemaVersion == "v1_0":
             # for v1.0 schema the loader does not check for write cycles
             Camera._LoadXMLFromFile("GenApiTest", "CycleDetectorTestSuite_TestRecursion")
@@ -162,11 +162,11 @@ class CycleDetectorTestSuite(GenicamTestCase):
             OXMax.Value
         else:
             # for all other schema versions it does
-            with self.assertRaises(RuntimeException):
+            with self.assertRaises(genicam.RuntimeException):
                 Camera._LoadXMLFromFile("GenApiTest", "CycleDetectorTestSuite_TestRecursion")
 
             # no nodes are created because of the cycle
-            with self.assertRaises(AccessException):
+            with self.assertRaises(genicam.AccessException):
                 Camera.GetNode("WidthValue")
 
     def test_RecursionBreaker(self):
@@ -209,8 +209,8 @@ class CycleDetectorTestSuite(GenicamTestCase):
            
         """
 
-        Camera = CNodeMapRef()
-        with self.assertRaises(RuntimeException):
+        Camera = genicam.CNodeMapRef()
+        with self.assertRaises(genicam.RuntimeException):
             Camera._LoadXMLFromFile("GenApiTest", "CycleDetectorTestSuite_TestRecursionBreaker")
 
 

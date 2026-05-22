@@ -7,5 +7,5 @@ import sys
 #We add the directory to the path to be able to do:
 # from genicamtestcase import GenicamTestCase
 #and to fake
-# from genicam import *
+# from pypylon import genicam
 sys.path.insert(0, os.path.dirname(__file__))

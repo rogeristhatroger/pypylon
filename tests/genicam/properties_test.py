@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 
@@ -25,7 +25,7 @@ class PropertiesTestSuite(GenicamTestCase):
     def test_PropertyAccess(self):
         # The nodes were not being loaded properly from the cache. 
         # Clearing the cache loads the nodes from the XML, eliminating the error.
-        CNodeMapRef._ClearXMLCache()
+        genicam.CNodeMapRef._ClearXMLCache()
         """[ GenApiTest@PropertiesTestSuite_TestPropertyAccess.xml|gxml
     
         <Category Name="Root">
@@ -105,7 +105,7 @@ class PropertiesTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef("TestCamera")
+        Camera = genicam.CNodeMapRef("TestCamera")
         Camera._LoadXMLFromFile("GenApiTest", "PropertiesTestSuite_TestPropertyAccess")
 
         print("Dumping PropertyNames:\n")
@@ -118,7 +118,7 @@ class PropertiesTestSuite(GenicamTestCase):
             for Prop in PropertyNames:
                 try:
                     ValueStr, AttributeStr = Node.Node.GetProperty(Prop)
-                except LogicalErrorException:
+                except genicam.LogicalErrorException:
                     print("\t  Property '", Prop, "' is not available\n")
 
                 if AttributeStr == "":
@@ -263,7 +263,7 @@ class PropertiesTestSuite(GenicamTestCase):
     def test_SwissKnifePropertyAccess(self):
         # The nodes were not being loaded properly from the cache. 
         # Clearing the cache loads the nodes from the XML, eliminating the error.
-        CNodeMapRef._ClearXMLCache()
+        genicam.CNodeMapRef._ClearXMLCache()
         """[ GenApiTest@PropertiesTestSuite_TestSwissKnifePropertyAccess.xml|gxml
     
         <IntSwissKnife Name="Result">
@@ -282,7 +282,7 @@ class PropertiesTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "PropertiesTestSuite_TestSwissKnifePropertyAccess")
 
         Result = Camera.GetNode("Result")
@@ -293,7 +293,7 @@ class PropertiesTestSuite(GenicamTestCase):
         for Prop in PropertyNames:
             try:
                 ValueStr, AttributeStr = Result.Node.GetProperty(Prop)
-            except LogicalErrorException:
+            except genicam.LogicalErrorException:
                 print("\tProperty '", Prop, "' is not available\n")
 
             if AttributeStr == "":

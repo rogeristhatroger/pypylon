@@ -6,10 +6,10 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
-from TestPort import CTestPort
+from testport import CTestPort
 from locale import setlocale, LC_ALL
 
 
@@ -41,18 +41,18 @@ class FloatTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestValueAccess")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x00ff, "float32_t", 42, RW, LittleEndian)
+        Port.CreateEntry(0x00ff, "float32_t", 42, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
 
         floatValue = Camera._GetNode("MyFloat")
-        self.assertEqual(intfIFloat, floatValue.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIFloat, floatValue.Node.GetPrincipalInterfaceType())
 
         # Check IFloat of CFloat
         self.assertEqual("dB", floatValue.GetUnit())
@@ -73,13 +73,13 @@ class FloatTestSuite(GenicamTestCase):
         self.assertAlmostEqual(dbl01, floatValue.Value, delta=0.001)
 
         # Check IBase
-        self.assertEqual(RW, floatValue.GetAccessMode())
+        self.assertEqual(genicam.RW, floatValue.GetAccessMode())
 
         # Check CFltReg implementation, does not support units
         floatValue2 = Camera.GetNode("MyFloatReg")
-        self.assertEqual(intfIFloat, floatValue2.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIFloat, floatValue2.Node.GetPrincipalInterfaceType())
         self.assertEqual("", floatValue2.GetUnit())
-        self.assertEqual(PureNumber, floatValue2.GetRepresentation())
+        self.assertEqual(genicam.PureNumber, floatValue2.GetRepresentation())
 
     #             CFloatRef refFloat
     #             CPPUNIT_ASSERT_NO_THROW(refFloat.SetReference( ptrFloat01 ) )
@@ -94,24 +94,24 @@ class FloatTestSuite(GenicamTestCase):
     #             String2Value( refFloat.ToString(), &dbl01 )
     #             CPPUNIT_ASSERT_DOUBLES_EQUAL( dbl01, refFloat.Value, 0.001 )
     #             CPPUNIT_ASSERT_NO_THROW( refFloat.SetReference( 0 ) )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.FromString( "2e-005" ), AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.ToString(), AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.FromString( "2e-005" ), genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.ToString(), genicam.AccessException )
     #             self.assertEqual( NI, refFloat.GetAccessMode() )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Max, AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Min, AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetNode(), AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetRepresentation(), AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetUnit(), AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Value, AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Value =  3e-004 , AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.operator ()(), AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.operator =( 4e-004 ), AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.operator *(), AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetDisplayNotation(), AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetDisplayPrecision(), AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetIntAlias(), AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.ImposeMin(0.0), AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.ImposeMax(0.0), AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Max, genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Min, genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetNode(), genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetRepresentation(), genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetUnit(), genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Value, genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Value =  3e-004 , genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.operator ()(), genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.operator =( 4e-004 ), genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.operator *(), genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetDisplayNotation(), genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetDisplayPrecision(), genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.GetIntAlias(), genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.ImposeMin(0.0), genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.ImposeMax(0.0), genicam.AccessException )
 
     #             #
     #             # Pleora FG - Adding missing cases, and maybe more...
@@ -126,9 +126,9 @@ class FloatTestSuite(GenicamTestCase):
     #
     #             # Pleora FG - SetValue, invalid
     #             refFloat.SetReference( NULL )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Value =  0.0 , AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Value =  0.0, true , AccessException )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Value =  0.0, false , AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Value =  0.0 , genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Value =  0.0, true , genicam.AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.Value =  0.0, false , genicam.AccessException )
     #
     #             # Pleora FG - operator=, valid
     #             refFloat.SetReference( ptrFloat01 )
@@ -137,7 +137,7 @@ class FloatTestSuite(GenicamTestCase):
     #
     #             # Pleora FG - operator=, invalid
     #             refFloat.SetReference( NULL )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat = 2.0, AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat = 2.0, genicam.AccessException )
     #
     #             # Pleora FG - operator(), valid
     #             refFloat.SetReference( ptrFloat01 )
@@ -146,7 +146,7 @@ class FloatTestSuite(GenicamTestCase):
     #
     #             # Pleora FG - operator(), invalid
     #             refFloat.SetReference( NULL )
-    #             CPPUNIT_ASSERT_THROW_EX( refFloat.operator()(), AccessException )
+    #             CPPUNIT_ASSERT_THROW_EX( refFloat.operator()(), genicam.AccessException )
     #
     #             # Pleora FG - operator*, valid
     #             refFloat.SetReference( ptrFloat01 )
@@ -207,7 +207,7 @@ class FloatTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestFloatNodeAccess")
 
         floatValue = Camera.GetNode("Value")
@@ -220,16 +220,16 @@ class FloatTestSuite(GenicamTestCase):
         self.assertAlmostEqual(22.0, floatValue.Value, delta=0.0000001)
 
         # value too small
-        with self.assertRaises(OutOfRangeException):   floatValue.Value = 0.0
+        with self.assertRaises(genicam.OutOfRangeException):   floatValue.Value = 0.0
 
         # value too large
-        with self.assertRaises(OutOfRangeException):   floatValue.Value = 40.0
+        with self.assertRaises(genicam.OutOfRangeException):   floatValue.Value = 40.0
 
         # set without verify
         floatValue.SetValue(1000.0,  False)
 
         # get with verify
-        with self.assertRaises(OutOfRangeException):   floatValue.GetValue(True)
+        with self.assertRaises(genicam.OutOfRangeException):   floatValue.GetValue(True)
 
         floatValue.SetValue(20.0,  False)
 
@@ -237,7 +237,7 @@ class FloatTestSuite(GenicamTestCase):
         floatValueValue.SetValue(-1.0,  False)
 
         # get with verify
-        with self.assertRaises(OutOfRangeException):   floatValue.GetValue(True)
+        with self.assertRaises(genicam.OutOfRangeException):   floatValue.GetValue(True)
         floatValueValue.Value = 20.0
 
         # play around with strings
@@ -245,7 +245,7 @@ class FloatTestSuite(GenicamTestCase):
         # adef problems in precision and representation by converting back to numbers
         dbl01 = float(floatValue.ToString())
         self.assertAlmostEqual(dbl01, floatValue.Value, delta=0.001)
-        with self.assertRaises(InvalidArgumentException):   floatValue.FromString("abc")
+        with self.assertRaises(genicam.InvalidArgumentException):   floatValue.FromString("abc")
 
         # unit
         self.assertEqual("", floatValueValue.GetUnit())
@@ -257,20 +257,20 @@ class FloatTestSuite(GenicamTestCase):
 
         # Pleora FG - Direct access
         valueRep = Camera.GetNode("ValueRep")
-        self.assertEqual(valueRep.GetRepresentation(), Logarithmic)
+        self.assertEqual(valueRep.GetRepresentation(), genicam.Logarithmic)
 
         # Pleora FG - Indirect access
         valueRepRef = Camera.GetNode("ValueRepRef")
-        self.assertEqual(valueRepRef.GetRepresentation(), Logarithmic)
+        self.assertEqual(valueRepRef.GetRepresentation(), genicam.Logarithmic)
 
         # Access for terminal node
-        self.assertEqual(floatValueValue.GetRepresentation(), PureNumber)
+        self.assertEqual(floatValueValue.GetRepresentation(), genicam.PureNumber)
 
         # similar for FloatReg and SwissKnife
         valueRep2 = Camera.GetNode("ValueRep2")
-        self.assertEqual(valueRep2.GetRepresentation(), Logarithmic)
+        self.assertEqual(valueRep2.GetRepresentation(), genicam.Logarithmic)
         valueRep3 = Camera.GetNode("ValueRep3")
-        self.assertEqual(valueRep3.GetRepresentation(), Logarithmic)
+        self.assertEqual(valueRep3.GetRepresentation(), genicam.Logarithmic)
 
         #
         # Pleora FG - FloatT missing coverage
@@ -369,19 +369,19 @@ class FloatTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestFloatRegNodeAccess")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x0000, "float32_t", 3.12159, RW, LittleEndian)
-        Port.CreateEntry(0x0010, "float64_t", 2.71828, RW, LittleEndian)
-        Port.CreateEntry(0x0020, "float64_t", 42.0, RO, LittleEndian)
-        Port.CreateEntry(0x0030, "float64_t", 42.0, WO, LittleEndian)
-        Port.CreateEntry(0x0040, "float64_t", 42.0, RW, LittleEndian)
-        Port.CreateEntry(0x0050, "float64_t", 42.0, RW, LittleEndian)
-        Port.CreateEntry(0x0060, "float64_t", 42.0, RW, LittleEndian)
-        Port.CreateEntry(0x0070, "float64_t", 42.0, RW, BigEndian)
+        Port.CreateEntry(0x0000, "float32_t", 3.12159, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x0010, "float64_t", 2.71828, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x0020, "float64_t", 42.0, genicam.RO, genicam.LittleEndian)
+        Port.CreateEntry(0x0030, "float64_t", 42.0, genicam.WO, genicam.LittleEndian)
+        Port.CreateEntry(0x0040, "float64_t", 42.0, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x0050, "float64_t", 42.0, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x0060, "float64_t", 42.0, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x0070, "float64_t", 42.0, genicam.RW, genicam.BigEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -408,7 +408,7 @@ class FloatTestSuite(GenicamTestCase):
         # adef problems in precision and representation by converting back to numbers
         dbl01 = float(doubleValue.ToString())
         self.assertAlmostEqual(dbl01, doubleValue.Value, 0.001)
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             doubleValue.FromString("abc")
 
         #
@@ -417,7 +417,7 @@ class FloatTestSuite(GenicamTestCase):
 
         # Pleora FG - SetValue on non-writable float
         valueRO = Camera.GetNode("ValueReadOnly")
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             valueRO.SetValue(5.0,  True)
 
             # Pleora FG - SetValue chache-related execution paths
@@ -430,7 +430,7 @@ class FloatTestSuite(GenicamTestCase):
 
         # Pleora FG - GetValue on no-readable float
         valueWO = Camera.GetNode("ValueWriteOnly")
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             valueWO.GetValue(True)
 
         # Pleora FG - GetValue chache-related execution paths - trigs all possible 'if' values
@@ -460,12 +460,12 @@ class FloatTestSuite(GenicamTestCase):
         <Port Name="Port"/>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestFloatRegWriteAroundCaching")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x0000, "float32_t", 3.0, RW, LittleEndian)
+        Port.CreateEntry(0x0000, "float32_t", 3.0, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -554,15 +554,15 @@ class FloatTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestFloatFormatting")
 
         floatValue = Camera.GetNode("MyFloat0")
 
-        print("Notation = " + EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ",")
+        print("Notation = " + genicam.EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ",")
         print("DisplayPrecision = ", floatValue.GetDisplayPrecision(), " : ")
         print("Value = " + floatValue.ToString() + "\n")
-        self.assertEqual(fnAutomatic, floatValue.GetDisplayNotation())
+        self.assertEqual(genicam.fnAutomatic, floatValue.GetDisplayNotation())
         # 6 is the display precision the STL uses as default
         self.assertEqual(6, floatValue.GetDisplayPrecision())
         self.assertEqual("12.3457", floatValue.ToString())
@@ -573,71 +573,71 @@ class FloatTestSuite(GenicamTestCase):
         #             self.assertEqual( refFloat.GetDisplayPrecision(), ptrFloat.GetDisplayPrecision() )
 
         floatValue = Camera.GetNode("MyFloat1")
-        print("Notation = " + EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
+        print("Notation = " + genicam.EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
         print("DisplayPrecision = ", floatValue.GetDisplayPrecision(), " : ")
         print("Value = " + floatValue.ToString() + "\n")
-        self.assertEqual(fnAutomatic, floatValue.GetDisplayNotation())
+        self.assertEqual(genicam.fnAutomatic, floatValue.GetDisplayNotation())
         self.assertEqual(6, floatValue.GetDisplayPrecision())
         self.assertEqual("1.23457e+100", floatValue.ToString())
 
         floatValue = Camera.GetNode("MyFloat2")
-        print("Notation = " + EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
+        print("Notation = " + genicam.EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
         print("DisplayPrecision = ", floatValue.GetDisplayPrecision(), " : ")
         print("Value = ", floatValue.ToString(), "\n")
-        self.assertEqual(fnScientific, floatValue.GetDisplayNotation())
+        self.assertEqual(genicam.fnScientific, floatValue.GetDisplayNotation())
         self.assertEqual(4, floatValue.GetDisplayPrecision())
         self.assertTrue(("1.2346e+001" == floatValue.ToString()) or ("1.2346e+01" == floatValue.ToString()))
 
         floatValue = Camera.GetNode("MyFloat3")
-        print("Notation = " + EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
+        print("Notation = " + genicam.EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
         print("DisplayPrecision = ", floatValue.GetDisplayPrecision(), " : ")
         print("Value = " + floatValue.ToString() + "\n")
-        self.assertEqual(fnFixed, floatValue.GetDisplayNotation())
+        self.assertEqual(genicam.fnFixed, floatValue.GetDisplayNotation())
         self.assertEqual(5, floatValue.GetDisplayPrecision())
         self.assertEqual("12.34568", floatValue.ToString())
 
         floatValue = Camera.GetNode("MyFloat4")
-        print("Notation = " + EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
+        print("Notation = " + genicam.EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
         print("DisplayPrecision = ", floatValue.GetDisplayPrecision(), " : ")
         print("Value = " + floatValue.ToString() + "\n")
-        self.assertEqual(fnFixed, floatValue.GetDisplayNotation())
+        self.assertEqual(genicam.fnFixed, floatValue.GetDisplayNotation())
         self.assertEqual(6, floatValue.GetDisplayPrecision())
         self.assertEqual("12.345679", floatValue.ToString())
 
         floatValue = Camera.GetNode("MyFloat5")
-        print("Notation = " + EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
+        print("Notation = " + genicam.EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
         print("DisplayPrecision = ", floatValue.GetDisplayPrecision(), " : ")
         print("Value = " + floatValue.ToString() + "\n")
-        self.assertEqual(fnAutomatic, floatValue.GetDisplayNotation())
+        self.assertEqual(genicam.fnAutomatic, floatValue.GetDisplayNotation())
         self.assertEqual(3, floatValue.GetDisplayPrecision())
         self.assertEqual("12.3", floatValue.ToString())
 
         floatValue = Camera.GetNode("MyFloat6")
-        print("Notation = " + EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
+        print("Notation = " + genicam.EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
         print("DisplayPrecision = ", floatValue.GetDisplayPrecision(), " : ")
         print("Value = " + floatValue.ToString() + "\n")
-        self.assertEqual(fnFixed, floatValue.GetDisplayNotation())
+        self.assertEqual(genicam.fnFixed, floatValue.GetDisplayNotation())
         self.assertEqual(5, floatValue.GetDisplayPrecision())
         self.assertEqual("12.34568", floatValue.ToString())
 
         floatValue = Camera.GetNode("MyFloat7")
-        print("Notation = " + EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
+        print("Notation = " + genicam.EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
         print("DisplayPrecision = ", floatValue.GetDisplayPrecision(), " : ")
         print("Value = " + floatValue.ToString() + "\n")
-        self.assertEqual(fnFixed, floatValue.GetDisplayNotation())
+        self.assertEqual(genicam.fnFixed, floatValue.GetDisplayNotation())
         self.assertEqual(5, floatValue.GetDisplayPrecision())
         self.assertEqual("12.34568", floatValue.ToString())
 
         floatValue = Camera.GetNode("MyFloat8")
-        print("Notation = " + EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
+        print("Notation = " + genicam.EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
         print("DisplayPrecision = ", floatValue.GetDisplayPrecision(), " : ")
         print("Value = " + floatValue.ToString() + "\n")
-        self.assertEqual(fnScientific, floatValue.GetDisplayNotation())
+        self.assertEqual(genicam.fnScientific, floatValue.GetDisplayNotation())
         self.assertEqual(1, floatValue.GetDisplayPrecision())
         self.assertTrue(("1.2e+001" == floatValue.ToString()) or ("1.2e+01" == floatValue.ToString()))
 
         floatValue = Camera.GetNode("MyFloat9")
-        print("Notation = " + EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
+        print("Notation = " + genicam.EDisplayNotationClass.ToString(floatValue.GetDisplayNotation()) + ", ")
         print("DisplayPrecision = ", floatValue.GetDisplayPrecision(), " : ")
         print("Value = " + floatValue.ToString() + "\n")
         self.assertEqual("3.1415", floatValue.ToString())
@@ -747,7 +747,7 @@ class FloatTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestFloatInc")
 
         gainWithInc = Camera.GetNode("GainWithInc")
@@ -758,15 +758,15 @@ class FloatTestSuite(GenicamTestCase):
         self.assertAlmostEqual(0.2, gainWithInc.Inc, delta=self.FLOAT64_EPSILON)
 
         #             CFloatRef refFloatWithInc
-        #             CPPUNIT_ASSERT_THROW_EX (refFloatWithInc.HasInc(), AccessException)
-        #             CPPUNIT_ASSERT_THROW_EX (refFloatWithInc.GetInc(), AccessException)
+        #             CPPUNIT_ASSERT_THROW_EX (refFloatWithInc.HasInc(), genicam.AccessException)
+        #             CPPUNIT_ASSERT_THROW_EX (refFloatWithInc.GetInc(), genicam.AccessException)
         #             CPPUNIT_ASSERT_NO_THROW(refFloatWithInc.SetReference( ptrGainWithInc ) )
         #             self.assertEqual (true, refFloatWithInc.HasInc() )
         #             CPPUNIT_ASSERT_DOUBLES_EQUAL( (double)0.2, refFloatWithInc.GetInc(), std::numeric_limits<double>::epsilon() )
 
         gainWithoutInc = Camera.GetNode("GainWithOutInc")
         self.assertEqual(False, gainWithoutInc.HasInc())
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             gainWithoutInc.Inc
 
         #             CFloatRef refFloatWithoutInc
@@ -817,23 +817,23 @@ class FloatTestSuite(GenicamTestCase):
 
         gainFromVaryingConverter = Camera.GetNode("GainFromVaryingConverter")
         self.assertEqual(False, gainFromVaryingConverter.HasInc())
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             gainFromVaryingConverter.Inc
 
         gainFromNonLinearConverter = Camera.GetNode("GainFromNonLinearConverter")
         self.assertEqual(False, gainFromNonLinearConverter.HasInc())
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             gainFromNonLinearConverter.Inc
 
         gainFromSwissKnife = Camera.GetNode("GainFromSwissKnife")
         self.assertEqual(False, gainFromSwissKnife.HasInc())
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             gainFromSwissKnife.Inc
-        self.assertEqual(PureNumber, gainFromSwissKnife.GetRepresentation())
+        self.assertEqual(genicam.PureNumber, gainFromSwissKnife.GetRepresentation())
 
         gainFloatReg = Camera.GetNode("GainFloatReg")
         self.assertEqual(False, gainFloatReg.HasInc())
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             gainFloatReg.Inc
 
     def test_FloatpLength(self):
@@ -859,13 +859,13 @@ class FloatTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestFloatpLength")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x0000, "float32_t", 42.1, RW, LittleEndian)
-        Port.CreateEntry(0x00ff, "float64_t", 13.2, RW, LittleEndian)
+        Port.CreateEntry(0x0000, "float32_t", 42.1, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x00ff, "float64_t", 13.2, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -882,25 +882,25 @@ class FloatTestSuite(GenicamTestCase):
         length.SetValue(8)
         self.assertAlmostEqual(13.2, floatValue.GetValue(), delta=0.00001)
         length.SetValue(3)
-        with self.assertRaises(OutOfRangeException):
+        with self.assertRaises(genicam.OutOfRangeException):
             floatValue.GetValue()
 
     def test_PolyReference(self):
         # test artificially the hard-to-test code paths
         #         CFloatPolyRef poly
         #         self.assertEqual (false, poly.IsInitialized())
-        #         CPPUNIT_ASSERT_THROW_EX (poly.SetValue (1.0), GenICam::RuntimeException)
-        #         CPPUNIT_ASSERT_THROW_EX (poly.GetValue (), GenICam::RuntimeException)
-        #         CPPUNIT_ASSERT_THROW_EX (poly.GetMin (), GenICam::RuntimeException)
-        #         CPPUNIT_ASSERT_THROW_EX (poly.GetMax (), GenICam::RuntimeException)
-        #         CPPUNIT_ASSERT_THROW_EX (poly.GetInc (), GenICam::RuntimeException)
-        #         CPPUNIT_ASSERT_THROW_EX (poly.GetRepresentation (), GenICam::RuntimeException)
-        #         CPPUNIT_ASSERT_THROW_EX (poly.GetUnit (), GenICam::RuntimeException)
-        #         CPPUNIT_ASSERT_THROW_EX (poly.GetDisplayNotation (), GenICam::RuntimeException)
-        #         CPPUNIT_ASSERT_THROW_EX (poly.GetDisplayPrecision (), GenICam::RuntimeException)
-        #         CPPUNIT_ASSERT_THROW_EX (poly.GetCachingMode (), GenICam::RuntimeException)
+        #         CPPUNIT_ASSERT_THROW_EX (poly.SetValue (1.0), GenICam::genicam.RuntimeException)
+        #         CPPUNIT_ASSERT_THROW_EX (poly.GetValue (), GenICam::genicam.RuntimeException)
+        #         CPPUNIT_ASSERT_THROW_EX (poly.GetMin (), GenICam::genicam.RuntimeException)
+        #         CPPUNIT_ASSERT_THROW_EX (poly.GetMax (), GenICam::genicam.RuntimeException)
+        #         CPPUNIT_ASSERT_THROW_EX (poly.GetInc (), GenICam::genicam.RuntimeException)
+        #         CPPUNIT_ASSERT_THROW_EX (poly.GetRepresentation (), GenICam::genicam.RuntimeException)
+        #         CPPUNIT_ASSERT_THROW_EX (poly.GetUnit (), GenICam::genicam.RuntimeException)
+        #         CPPUNIT_ASSERT_THROW_EX (poly.GetDisplayNotation (), GenICam::genicam.RuntimeException)
+        #         CPPUNIT_ASSERT_THROW_EX (poly.GetDisplayPrecision (), GenICam::genicam.RuntimeException)
+        #         CPPUNIT_ASSERT_THROW_EX (poly.GetCachingMode (), GenICam::genicam.RuntimeException)
         #         self.assertEqual (poly.HasInc (), false)
-        # CPPUNIT_ASSERT_THROW_EX (poly.IsValueCacheValid(), GenICam::RuntimeException)
+        # CPPUNIT_ASSERT_THROW_EX (poly.IsValueCacheValid(), GenICam::genicam.RuntimeException)
         #         poly = 1.0
         #         gcstring bar
         #         GenApi::Value2String( poly, bar )
@@ -908,9 +908,9 @@ class FloatTestSuite(GenicamTestCase):
         #         self.assertEqual (true, poly.IsInitialized())
         #         self.assertEqual (false, poly.IsPointer())
         #         self.assertEqual((INodePrivate*)NULL, poly.GetPointer())
-        #         self.assertEqual (WriteThrough, poly.GetCachingMode())
-        #         CPPUNIT_ASSERT_THROW_EX (poly.GetInc (), GenICam::RuntimeException)
-        # CPPUNIT_ASSERT_THROW_EX (poly.IsValueCacheValid(), GenICam::RuntimeException)
+        #         self.assertEqual (genicam.WriteThrough, poly.GetCachingMode())
+        #         CPPUNIT_ASSERT_THROW_EX (poly.GetInc (), GenICam::genicam.RuntimeException)
+        # CPPUNIT_ASSERT_THROW_EX (poly.IsValueCacheValid(), GenICam::genicam.RuntimeException)
         #         gcstring str
         #         Value2String (poly, str)
         #         self.assertEqual (gcstring("1"), str)
@@ -967,7 +967,7 @@ class FloatTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestPolyPointers")
 
         # test float.integer
@@ -975,8 +975,8 @@ class FloatTestSuite(GenicamTestCase):
         intValue = Camera.GetNode("Int")
 
         self.assertAlmostEqual(1.0, floatFromInt.GetValue(), delta=self.FLOAT64_EPSILON)
-        with self.assertRaises(OutOfRangeException):   floatFromInt.SetValue(1e200)
-        with self.assertRaises(OutOfRangeException):   floatFromInt.SetValue(-1e200)
+        with self.assertRaises(genicam.OutOfRangeException):   floatFromInt.SetValue(1e200)
+        with self.assertRaises(genicam.OutOfRangeException):   floatFromInt.SetValue(-1e200)
         floatFromInt.SetValue(2.4)
         self.assertEqual(1, intValue.GetValue())
         self.assertAlmostEqual(1.0, floatFromInt.GetValue(), delta=self.FLOAT64_EPSILON)
@@ -996,7 +996,7 @@ class FloatTestSuite(GenicamTestCase):
     #         CNodePtr ptrNode = Camera._GetNode ("SimpleNode")
     #         CPPUNIT_ASSERT( ptrNode.IsValid() )
     #         CFloatPolyRef polyFloatFromNode
-    #         CPPUNIT_ASSERT_THROW_EX (polyFloatFromNode = (INode*)ptrNode, RuntimeException)
+    #         CPPUNIT_ASSERT_THROW_EX (polyFloatFromNode = (INode*)ptrNode, genicam.RuntimeException)
     #         self.assertEqual (false, polyFloatFromNode.IsInitialized())
 
     # test float.enum
@@ -1006,11 +1006,11 @@ class FloatTestSuite(GenicamTestCase):
     #         CPPUNIT_ASSERT( ptrEnum.IsValid() )
     #
     #         self.assertEqual (gcstring(), ptrFloatFromEnum.GetUnit())
-    #         self.assertEqual (PureNumber, ptrFloatFromEnum.GetRepresentation())
+    #         self.assertEqual (genicam.PureNumber, ptrFloatFromEnum.GetRepresentation())
     #         self.assertEqual (fnAutomatic, ptrFloatFromEnum.GetDisplayNotation())
     #         self.assertEqual ((int64_t)6LL, ptrFloatFromEnum.GetDisplayPrecision())
     #         self.assertEqual (false, ptrFloatFromEnum.HasInc())
-    #         CPPUNIT_ASSERT_THROW_EX (ptrFloatFromEnum.GetInc (), GenICam::RuntimeException)
+    #         CPPUNIT_ASSERT_THROW_EX (ptrFloatFromEnum.GetInc (), GenICam::genicam.RuntimeException)
     #         CPPUNIT_ASSERT_DOUBLES_EQUAL (1.0, ptrFloatFromEnum.GetValue(), std::numeric_limits<double>::epsilon())
     #         ptrFloatFromEnum.SetValue (2.0)
     #         self.assertEqual (gcstring("EnumValue2"), ptrEnum.ToString())
@@ -1020,14 +1020,14 @@ class FloatTestSuite(GenicamTestCase):
     #         self.assertEqual (true, polyFloatFromEnum.IsInitialized())
     #         self.assertEqual (true, polyFloatFromEnum.IsPointer())
     #         self.assertEqual (2.0, polyFloatFromEnum.GetValue())
-    #         CPPUNIT_ASSERT_THROW_EX (polyFloatFromEnum.GetInc(), RuntimeException)
+    #         CPPUNIT_ASSERT_THROW_EX (polyFloatFromEnum.GetInc(), genicam.RuntimeException)
     #
     #         CEnumerationPtr ptrEnumNA = Camera._GetNode("EnumNA")
     #         CPPUNIT_ASSERT( ptrEnumNA.IsValid() )
     #         CFloatPolyRef polyFloatFromEnumNA
     #         polyFloatFromEnumNA = (IEnumeration*)ptrEnumNA
     #         self.assertEqual (true, polyFloatFromEnumNA.IsInitialized())
-    #         CPPUNIT_ASSERT_THROW_EX (polyFloatFromEnumNA.SetValue(1.0), AccessException)
+    #         CPPUNIT_ASSERT_THROW_EX (polyFloatFromEnumNA.SetValue(1.0), genicam.AccessException)
 
 
     """! Make sure laoding a flaot constant works even if the global lacale of 
@@ -1056,7 +1056,7 @@ class FloatTestSuite(GenicamTestCase):
 
         print("French locale = " + setlocale(LC_ALL, None) + "\n")
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestTheFrenchWay")
         value = Camera.GetNode("Value")
         value.GetValue()
@@ -1212,7 +1212,7 @@ class FloatTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestTicket785")
 
         self.TestTicket785_TestStep(Camera, "TestFixedMax")
@@ -1278,13 +1278,13 @@ class FloatTestSuite(GenicamTestCase):
             """
 
             Port = CTestPort()
-            Port.CreateEntry(0x0000, "float32_t", 42, RW, LittleEndian)
-            Camera = CNodeMapRef()
+            Port.CreateEntry(0x0000, "float32_t", 42, genicam.RW, genicam.LittleEndian)
+            Camera = genicam.CNodeMapRef()
             Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestListOfValidValues")
             Camera._Connect(Port, "MyPort")
 
             value = Camera.GetNode("ValueWithPValue")
-            self.assertEqual(listIncrement, value.GetIncMode())
+            self.assertEqual(genicam.listIncrement, value.GetIncMode())
 
             valueList = value.GetListOfValidValues()
 
@@ -1295,7 +1295,7 @@ class FloatTestSuite(GenicamTestCase):
             self.assertAlmostEqual(22, valueList[2], self.FLOAT64_EPSILON)
 
             value = Camera.GetNode("ValueWithIndex")
-            self.assertEqual(listIncrement, value.GetIncMode())
+            self.assertEqual(genicam.listIncrement, value.GetIncMode())
 
             valueList = value.GetListOfValidValues()
             self.assertEqual(3, len(valueList))
@@ -1312,7 +1312,7 @@ class FloatTestSuite(GenicamTestCase):
             self.assertEqual(0, len(valueList))
 
             index.SetValue(0)
-            # self.assertEqual(listIncrement, value.GetIncMode())
+            # self.assertEqual(genicam.listIncrement, value.GetIncMode())
 
             valueList = value.GetListOfValidValues()
             self.assertEqual(3, len(valueList))
@@ -1373,11 +1373,11 @@ class FloatTestSuite(GenicamTestCase):
         </IntReg>
         <Port Name="Port"/>
         """
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "FloatTestSuite_TestAccessModeNoCache")
 
         Port = CTestPort()
-        Port.CreateEntry(0x4, "int32_t", 1, RW, LittleEndian)
+        Port.CreateEntry(0x4, "int32_t", 1, genicam.RW, genicam.LittleEndian)
         Camera._Connect(Port, "Port")
 
 

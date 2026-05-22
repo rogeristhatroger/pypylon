@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 from testport import CTestPort
@@ -47,11 +47,11 @@ class IntegerTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "IntegerTestSuite_TestValueAccess")
 
         value = Camera.GetNode("Value")
-        self.assertEqual(intfIInteger, value.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIInteger, value.Node.GetPrincipalInterfaceType())
 
         valueMin = Camera.GetNode("ValueMin")
 
@@ -79,15 +79,15 @@ class IntegerTestSuite(GenicamTestCase):
 
         # value too small
 
-        with self.assertRaises(OutOfRangeException):
+        with self.assertRaises(genicam.OutOfRangeException):
             value.Value = 0
 
         # value too large
-        with self.assertRaises(OutOfRangeException):
+        with self.assertRaises(genicam.OutOfRangeException):
             value.Value = 40
 
         # value not fitting the increment
-        with self.assertRaises(OutOfRangeException):
+        with self.assertRaises(genicam.OutOfRangeException):
             value.Value = 21
 
         # With another Min the Value 21 is now fitting
@@ -100,20 +100,20 @@ class IntegerTestSuite(GenicamTestCase):
         value.SetValue(21,  False)
 
         # get with verify
-        with self.assertRaises(OutOfRangeException):
+        with self.assertRaises(genicam.OutOfRangeException):
             value.GetValue(True)
 
         # make a node in a deeper layer inconsistent (Min = 0)
         valueValue.SetValue(-1,  False)
 
         # get with verify
-        with self.assertRaises(OutOfRangeException):
+        with self.assertRaises(genicam.OutOfRangeException):
             value.GetValue(Verify=True)
 
         # play around with strings
         value.FromString("18")
         self.assertEqual("18", value.ToString())
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             value.FromString("abc")
 
         # exercise the invalid case of Inc==0
@@ -121,9 +121,9 @@ class IntegerTestSuite(GenicamTestCase):
         value.Value = 28
         valueInc.Value = 0
         self.assertEqual(0, value.Inc)
-        with self.assertRaises(OutOfRangeException):   value.Value = 1
+        with self.assertRaises(genicam.OutOfRangeException):   value.Value = 1
         # note that on reading Inc is only checked if Verify=
-        with self.assertRaises(LogicalErrorException):   value.GetValue(True)
+        with self.assertRaises(genicam.LogicalErrorException):   value.GetValue(True)
         self.assertEqual(28, value.Value)
 
     def test_RegValueAccess(self):
@@ -149,27 +149,27 @@ class IntegerTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "IntegerTestSuite_TestRegValueAccess")
 
         Port = CTestPort()
-        Port.CreateEntry(0x0104, "uint32_t", 1024, RW, LittleEndian)
+        Port.CreateEntry(0x0104, "uint32_t", 1024, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
 
         value = Camera.GetNode("Value")
 
-        self.assertEqual(Linear, value.GetRepresentation())
-        self.assertEqual(WO, value.GetAccessMode())
-        self.assertEqual(WO, value.GetAccessMode())
-        with self.assertRaises(AccessException):   value.Value
+        self.assertEqual(genicam.Linear, value.GetRepresentation())
+        self.assertEqual(genicam.WO, value.GetAccessMode())
+        self.assertEqual(genicam.WO, value.GetAccessMode())
+        with self.assertRaises(genicam.AccessException):   value.Value
 
         value.Value = 0
 
-        with self.assertRaises(AccessException):   value.Value
+        with self.assertRaises(genicam.AccessException):   value.Value
 
-        with self.assertRaises(OutOfRangeException):   value.Value = -1
+        with self.assertRaises(genicam.OutOfRangeException):   value.Value = -1
         value.SetValue(-1,  False)
 
     def test_RegValueAccessRO(self):
@@ -195,11 +195,11 @@ class IntegerTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "IntegerTestSuite_TestRegValueAccessRO")
 
         Port = CTestPort()
-        Port.CreateEntry(0x0104, "uint32_t", 1024, RW, LittleEndian)
+        Port.CreateEntry(0x0104, "uint32_t", 1024, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -208,7 +208,7 @@ class IntegerTestSuite(GenicamTestCase):
 
         self.assertEqual(1024, value.GetValue(True))
 
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             value.Value = 0
 
     def test_RepresentationValueAccess(self):
@@ -227,14 +227,14 @@ class IntegerTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "IntegerTestSuite_TestRepresentationValueAccess")
 
         value = Camera.GetNode("Value")
-        self.assertEqual(PureNumber, value.GetRepresentation())
+        self.assertEqual(genicam.PureNumber, value.GetRepresentation())
 
         value2 = Camera.GetNode("Value2")
-        self.assertEqual(PureNumber, value2.GetRepresentation())
+        self.assertEqual(genicam.PureNumber, value2.GetRepresentation())
 
     def test_ValueCache(self):
         """[ GenApiTest@IntegerTestSuite_TestValueCache.xml|gxml
@@ -249,7 +249,7 @@ class IntegerTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "IntegerTestSuite_TestValueCache")
 
         value = Camera.GetNode("Value")
@@ -326,11 +326,11 @@ class IntegerTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "IntegerTestSuite_TestUnit")
 
         Port = CTestPort()
-        Port.CreateEntry(0x0000, "int64_t", 117, RW, LittleEndian)
+        Port.CreateEntry(0x0000, "int64_t", 117, genicam.RW, genicam.LittleEndian)
         Camera._Connect(Port, "Port")
 
         value = Camera.GetNode("Value")
@@ -406,7 +406,7 @@ class IntegerTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "IntegerTestSuite_TestNumberRepresentation")
 
         linear = Camera.GetNode("Linear")
@@ -467,7 +467,7 @@ class IntegerTestSuite(GenicamTestCase):
         MACAddress.FromString("12:34:56:78:9A:BC")
         self.assertEqual(Result, MACAddress.Value)
 
-        self.assertEqual(Logarithmic, logarithmicKnife.GetRepresentation())
+        self.assertEqual(genicam.Logarithmic, logarithmicKnife.GetRepresentation())
 
     def test_PolyReference(self):
         # test artificially the hard-to-test code paths
@@ -475,15 +475,15 @@ class IntegerTestSuite(GenicamTestCase):
 
     #         CIntegerPolyRef poly
     #         self.assertEqual (False, poly.IsInitialized())
-    #         self.assertRaises (poly.SetValue (1), GenICam::RuntimeException)
-    #         self.assertRaises (poly.GetValue (), GenICam::RuntimeException)
-    #         self.assertRaises (poly.GetMin (), GenICam::RuntimeException)
-    #         self.assertRaises (poly.GetMax (), GenICam::RuntimeException)
-    #         self.assertRaises (poly.GetInc (), GenICam::RuntimeException)
-    #         self.assertRaises (poly.GetRepresentation (), GenICam::RuntimeException)
-    #         self.assertRaises (poly.GetUnit (), GenICam::RuntimeException)
-    #         self.assertRaises (poly.GetCachingMode (), GenICam::RuntimeException)
-    #         self.assertRaises (poly.IsValueCacheValid(), GenICam::RuntimeException)
+    #         self.assertRaises (poly.SetValue (1), GenICam::genicam.RuntimeException)
+    #         self.assertRaises (poly.GetValue (), GenICam::genicam.RuntimeException)
+    #         self.assertRaises (poly.GetMin (), GenICam::genicam.RuntimeException)
+    #         self.assertRaises (poly.GetMax (), GenICam::genicam.RuntimeException)
+    #         self.assertRaises (poly.GetInc (), GenICam::genicam.RuntimeException)
+    #         self.assertRaises (poly.GetRepresentation (), GenICam::genicam.RuntimeException)
+    #         self.assertRaises (poly.GetUnit (), GenICam::genicam.RuntimeException)
+    #         self.assertRaises (poly.GetCachingMode (), GenICam::genicam.RuntimeException)
+    #         self.assertRaises (poly.IsValueCacheValid(), GenICam::genicam.RuntimeException)
     #         poly = 1
     #         gcstring foo
     #         GenApi::Value2String(poly, foo)
@@ -491,7 +491,7 @@ class IntegerTestSuite(GenicamTestCase):
     #         self.assertEqual (True, poly.IsInitialized())
     #         self.assertEqual (False, poly.IsPointer())
     #         self.assertEqual ((INodePrivate*)NULL, poly.GetPointer())
-    #         self.assertEqual (WriteThrough, poly.GetCachingMode())
+    #         self.assertEqual (genicam.WriteThrough, poly.GetCachingMode())
     #         self.assertEqual ((int64_t)1LL, poly.Value)
     #         self.assertEqual (True, poly.IsValueCacheValid())
     #         gcstring str
@@ -579,7 +579,7 @@ class IntegerTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "IntegerTestSuite_TestPolyPointers")
 
         # test integer.floatValue
@@ -591,35 +591,35 @@ class IntegerTestSuite(GenicamTestCase):
         self.assertEqual(3, intFromFloat.Max)
         floatMax.Value = 1e200
 
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             intFromFloat.Max
 
         floatMax.Value = -1e200
 
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             intFromFloat.Max
 
         floatMax.Value = 3.0
         self.assertEqual(0, intFromFloat.Min)
         floatMin.Value = 1e200
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             intFromFloat.Min
 
         floatMin.Value = -1e200
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             intFromFloat.Min
 
         floatMin.Value = 0.0
-        self.assertEqual(PureNumber, intFromFloat.GetRepresentation())
+        self.assertEqual(genicam.PureNumber, intFromFloat.GetRepresentation())
         self.assertEqual("foo", intFromFloat.GetUnit())
         self.assertEqual(1, intFromFloat.Value)
         floatMax.Value = 1e200
         floatMin.Value = -1e200
         floatValue.Value = 1e200
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             intFromFloat.Value
         floatValue.Value = -1e200
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             intFromFloat.Value
         floatValue.Value = -1e200
         floatMax.Value = 3.0
@@ -643,10 +643,10 @@ class IntegerTestSuite(GenicamTestCase):
 
         node = Camera.GetNode("SimpleNode")
         #         CIntegerPolyRef polyIntFromNode
-        #         self.assertRaises (polyIntFromNode = (INode*)ptrNode, RuntimeException)
+        #         self.assertRaises (polyIntFromNode = (INode*)ptrNode, genicam.RuntimeException)
         #         self.assertEqual (False, polyIntFromNode.IsInitialized())
         #         CStringPolyRef polyStrFromNode
-        #         self.assertRaises (polyStrFromNode = (INode*)ptrNode, RuntimeException)
+        #         self.assertRaises (polyStrFromNode = (INode*)ptrNode, genicam.RuntimeException)
         #         self.assertEqual (False, polyStrFromNode.IsInitialized())
         #
         # test integer.boolValue
@@ -686,7 +686,7 @@ class IntegerTestSuite(GenicamTestCase):
         #         self.assertEqual (True, polyIntFromEnum.IsValueCacheValid())
 
         intFromEnumWithoutEntry = Camera.GetNode("IntFromEnumWithoutEntry")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             intFromEnumWithoutEntry.Value = 2
         enumWithoutEntry = Camera.GetNode("EnumWithoutEntry")
 
@@ -694,7 +694,7 @@ class IntegerTestSuite(GenicamTestCase):
     #         polyIntFromEnumWithoutEntry = (IEnumeration*)ptrEnumWithoutEntry
     #         self.assertEqual (True, polyIntFromEnumWithoutEntry.IsInitialized())
     #         self.assertEqual (True, polyIntFromEnumWithoutEntry.IsPointer())
-    #         CPPUNIT_ASSERT_THROW (polyIntFromEnumWithoutEntry.SetValue (5), GenericException)
+    #         CPPUNIT_ASSERT_THROW (polyIntFromEnumWithoutEntry.SetValue (5), genicam.GenericException)
 
 
 
@@ -735,13 +735,13 @@ class IntegerTestSuite(GenicamTestCase):
 
             """
 
-            Camera = CNodeMapRef()
+            Camera = genicam.CNodeMapRef()
 
             Camera._LoadXMLFromFile("GenApiTest", "IntegerTestSuite_TestListOfValidValue")
 
             value = Camera.GetNode("ValueRaw")
 
-            self.assertEqual(listIncrement, value.GetIncMode())
+            self.assertEqual(genicam.listIncrement, value.GetIncMode())
 
             valueList = value.GetListOfValidValues()
 
@@ -752,7 +752,7 @@ class IntegerTestSuite(GenicamTestCase):
             self.assertEqual(22, valueList[2])
 
             value = Camera.GetNode("ValueWithPValue")
-            self.assertEqual(listIncrement, value.GetIncMode())
+            self.assertEqual(genicam.listIncrement, value.GetIncMode())
 
             valueList = value.GetListOfValidValues()
             self.assertEqual(2, len(valueList))
@@ -761,7 +761,7 @@ class IntegerTestSuite(GenicamTestCase):
             self.assertEqual(16, valueList[1])
 
             value = Camera.GetNode("ValueOverload")
-            # self.assertEqual(listIncrement, value.GetIncMode())
+            # self.assertEqual(genicam.listIncrement, value.GetIncMode())
 
             valueList = value.GetListOfValidValues()
             self.assertEqual(5, len(valueList))
@@ -772,7 +772,7 @@ class IntegerTestSuite(GenicamTestCase):
             self.assertEqual(32, valueList[4])
 
             value = Camera.GetNode("ValueWithIndex")
-            # self.assertEqual(listIncrement, value.GetIncMode())
+            # self.assertEqual(genicam.listIncrement, value.GetIncMode())
 
             valueList = value.GetListOfValidValues()
             self.assertEqual(2, len(valueList))
@@ -788,7 +788,7 @@ class IntegerTestSuite(GenicamTestCase):
             valueList = value.GetListOfValidValues()
             self.assertEqual(0, len(valueList))
             indexNode.Value = 0
-            # self.assertEqual(listIncrement, value.GetIncMode())
+            # self.assertEqual(genicam.listIncrement, value.GetIncMode())
 
             valueList = value.GetListOfValidValues()
             self.assertEqual(2, len(valueList))

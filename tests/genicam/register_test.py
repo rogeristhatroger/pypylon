@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 from testport import CTestPort, cast_buffer, cast_data
@@ -54,13 +54,13 @@ class RegisterTestSuite(GenicamTestCase):
 
         # LOG4CPP_NS::Category pLogger.Value = &CLog::GetLogger( "CppUnit.Performance" )
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "RegisterTestSuite_TestValueAccessSwiss")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, RW, LittleEndian)
-        Port.CreateEntry(0xfff0, "uint32_t", 0x87654321, RW, LittleEndian)
+        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0xfff0, "uint32_t", 0x87654321, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -73,7 +73,7 @@ class RegisterTestSuite(GenicamTestCase):
 
         self.assertEqual(0xff00, Register.GetAddress())
 
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x12345678, Result)
 
         Index.Value = 1
@@ -82,7 +82,7 @@ class RegisterTestSuite(GenicamTestCase):
 
         # from the other one read less bytes
         # Result = 0xFEDCBA98
-        # Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        # Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         # print(hex(Result))
         # self.assertEqual( 0xFEDC4321, Result )
 
@@ -125,13 +125,13 @@ class RegisterTestSuite(GenicamTestCase):
 
         # LOG4CPP_NS::Category pLogger.Value = &CLog::GetLogger( "CppUnit.Performance" )
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "RegisterTestSuite_TestValueAccessIndex")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, RW, LittleEndian)
-        Port.CreateEntry(0xfff0, "uint32_t", 0x87654321, RW, LittleEndian)
+        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0xfff0, "uint32_t", 0x87654321, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -143,13 +143,13 @@ class RegisterTestSuite(GenicamTestCase):
         self.assertEqual(4, Register.GetLength())
 
         Result = 0
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x12345678, Result)
 
         Index.Value = 1
         self.assertEqual(1, Index.Value)
 
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x87654321, Result)
 
         # GCLOGINFO( pLogger, "-------------------------------------------------" )
@@ -200,13 +200,13 @@ class RegisterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "RegisterTestSuite_TestValueAccessIndexPOffset")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, RW, LittleEndian)
-        Port.CreateEntry(0xfff0, "uint32_t", 0x87654321, RW, LittleEndian)
+        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0xfff0, "uint32_t", 0x87654321, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -220,17 +220,17 @@ class RegisterTestSuite(GenicamTestCase):
         self.assertEqual(4, Register.GetLength())
 
         Result = 0
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x12345678, Result)
 
         Index.Value = 1
         self.assertEqual(1, Index.Value)
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x12345678, Result)
 
         Offset.Value = 0xf0
         self.assertEqual(0xf0, Offset.Value)
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x87654321, Result)
 
     def test_ValueAccessIndexNoOffset(self):
@@ -263,13 +263,13 @@ class RegisterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "RegisterTestSuite_TestValueAccessIndexNoOffset")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, RW, LittleEndian)
-        Port.CreateEntry(0xff04, "uint32_t", 0x87654321, RW, LittleEndian)
+        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0xff04, "uint32_t", 0x87654321, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -281,13 +281,13 @@ class RegisterTestSuite(GenicamTestCase):
         self.assertEqual(4, Register.GetLength())
 
         Result = 0
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x12345678, Result)
 
         Index.Value = 1
         self.assertEqual(1, Index.Value)
 
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x87654321, Result)
 
     def test_ValueAccess(self):
@@ -322,13 +322,13 @@ class RegisterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "RegisterTestSuite_TestValueAccess")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, RW, LittleEndian)
-        Port.CreateEntry(0xfff0, "uint32_t", 0x87654321, RW, LittleEndian)
+        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0xfff0, "uint32_t", 0x87654321, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -340,12 +340,12 @@ class RegisterTestSuite(GenicamTestCase):
         self.assertEqual(4, Register.GetLength())
 
         Result = 0
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x12345678, Result)
 
         Enum.Value = "EnumValue2"
 
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x87654321, Result)
 
     def test_EmbeddedSwissKnife(self):
@@ -392,13 +392,13 @@ class RegisterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "RegisterTestSuite_TestEmbeddedSwissKnife")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, RW, LittleEndian)
-        Port.CreateEntry(0xfff0, "uint32_t", 0x87654321, RW, LittleEndian)
+        Port.CreateEntry(0xff00, "uint32_t", 0x12345678, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0xfff0, "uint32_t", 0x87654321, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -409,12 +409,12 @@ class RegisterTestSuite(GenicamTestCase):
         self.assertEqual(4, Register.GetLength())
 
         Result = 0
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x12345678, Result)
 
         Enum.Value = "EnumValue2"
 
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x87654321, Result)
 
     def test_EmbeddedSwissKnife2(self):
@@ -446,12 +446,12 @@ class RegisterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "RegisterTestSuite_TestEmbeddedSwissKnife2")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x400, "uint32_t", 0x12345678, RW, LittleEndian)
+        Port.CreateEntry(0x400, "uint32_t", 0x12345678, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -461,7 +461,7 @@ class RegisterTestSuite(GenicamTestCase):
         self.assertEqual(4, Register.GetLength())
 
         Result = 0
-        Result = cast_buffer("uint32_t", LittleEndian, Register.Get(4))
+        Result = cast_buffer("uint32_t", genicam.LittleEndian, Register.Get(4))
         self.assertEqual(0x12345678, Result)
 
     def test_RegisterNode(self):
@@ -496,21 +496,21 @@ class RegisterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "RegisterTestSuite_TestRegisterNode")
 
         LenVal = 1
         AddrVal = 0x100
 
         Port = CTestPort()
-        Port.CreateEntry(0x0, "uint32_t", LenVal, RW, LittleEndian)
-        Port.CreateEntry(0x4, "uint32_t", AddrVal, RW, LittleEndian)
+        Port.CreateEntry(0x0, "uint32_t", LenVal, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x4, "uint32_t", AddrVal, genicam.RW, genicam.LittleEndian)
         RegVal = 0x11
-        Port.CreateEntry(0x100, "uint8_t", RegVal, RW, LittleEndian)
+        Port.CreateEntry(0x100, "uint8_t", RegVal, genicam.RW, genicam.LittleEndian)
         RegVal = 0x22
-        Port.CreateEntry(0x101, "uint8_t", RegVal, RW, LittleEndian)
+        Port.CreateEntry(0x101, "uint8_t", RegVal, genicam.RW, genicam.LittleEndian)
         RegVal2 = 0x3344
-        Port.CreateEntry(0x102, "uint16_t", RegVal2, RW, LittleEndian)
+        Port.CreateEntry(0x102, "uint16_t", RegVal2, genicam.RW, genicam.LittleEndian)
         Camera._Connect(Port, "Port")
 
         Len = Camera.GetNode("Length")
@@ -518,22 +518,22 @@ class RegisterTestSuite(GenicamTestCase):
         Register = Camera.GetNode("Register")
 
         # excercise pAddress and pLength
-        Byte = cast_buffer("uint8_t", LittleEndian, Register.Get(1))
+        Byte = cast_buffer("uint8_t", genicam.LittleEndian, Register.Get(1))
         self.assertEqual(0x11, Byte)
         Addr.Value = 0x101
-        Byte = cast_buffer("uint8_t", LittleEndian, Register.Get(1))
+        Byte = cast_buffer("uint8_t", genicam.LittleEndian, Register.Get(1))
         self.assertEqual(0x22, Byte)
         Addr.Value = 0x102
         Len.Value = 2
-        Word = cast_buffer("uint16_t", LittleEndian, Register.Get(2))
+        Word = cast_buffer("uint16_t", genicam.LittleEndian, Register.Get(2))
         self.assertEqual(0x3344, Word)
         Addr.Value = 0x100
         Len.Value = 1
         # try to get/set more data than register length
-        with self.assertRaises(OutOfRangeException):
+        with self.assertRaises(genicam.OutOfRangeException):
             Register.Get(2)
-        with self.assertRaises(OutOfRangeException):
-            Register.Set(cast_data("uint16_t", LittleEndian, 0xaa55))
+        with self.assertRaises(genicam.OutOfRangeException):
+            Register.Set(cast_data("uint16_t", genicam.LittleEndian, 0xaa55))
 
     def test_AccessModeNoCache(self):
         """[ GenApiTest@RegisterTestSuite_TestAccessModeNoCache.xml|gxml
@@ -570,11 +570,11 @@ class RegisterTestSuite(GenicamTestCase):
         </IntReg>
         <Port Name="Port"/>
         """
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "RegisterTestSuite_TestAccessModeNoCache")
 
         Port = CTestPort()
-        Port.CreateEntry(0x4, "int32_t", 1, RW, LittleEndian)
+        Port.CreateEntry(0x4, "int32_t", 1, genicam.RW, genicam.LittleEndian)
         Camera._Connect(Port, "Port")
 
         RegisterA = Camera.GetNode("RegisterA")
@@ -582,16 +582,16 @@ class RegisterTestSuite(GenicamTestCase):
         RegisterC = Camera.GetNode("RegisterC")
         NoCachableIntReg = Camera.GetNode("NoCachableIntReg")
 
-        self.assertEqual(NoCache, NoCachableIntReg.Node.GetCachingMode())
-        self.assertEqual(Yes, NoCachableIntReg.Node.IsAccessModeCacheable())
+        self.assertEqual(genicam.NoCache, NoCachableIntReg.Node.GetCachingMode())
+        self.assertEqual(genicam.Yes, NoCachableIntReg.Node.IsAccessModeCacheable())
 
-        self.assertEqual(No, RegisterA.Node.IsAccessModeCacheable())
-        self.assertEqual(No, RegisterB.Node.IsAccessModeCacheable())
-        self.assertEqual(No, RegisterC.Node.IsAccessModeCacheable())
+        self.assertEqual(genicam.No, RegisterA.Node.IsAccessModeCacheable())
+        self.assertEqual(genicam.No, RegisterB.Node.IsAccessModeCacheable())
+        self.assertEqual(genicam.No, RegisterC.Node.IsAccessModeCacheable())
 
-        self.assertEqual(RW, RegisterA.GetAccessMode())
-        self.assertEqual(RW, RegisterB.GetAccessMode())
-        self.assertEqual(RO, RegisterC.GetAccessMode())
+        self.assertEqual(genicam.RW, RegisterA.GetAccessMode())
+        self.assertEqual(genicam.RW, RegisterB.GetAccessMode())
+        self.assertEqual(genicam.RO, RegisterC.GetAccessMode())
 
 
 if __name__ == "__main__":

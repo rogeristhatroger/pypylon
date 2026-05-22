@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 from testport import CTestPort
@@ -25,20 +25,20 @@ class BooleanTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "BooleanTestSuite_TestValueAccess")
 
         # create and initialize a test port
         value = Camera._GetNode("Trigger")
         value = Camera.GetNode("Trigger")
 
-        self.assertEqual(intfIBoolean, value.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIBoolean, value.Node.GetPrincipalInterfaceType())
 
         ##### getproperty of boolean pointer - 
         try:
             AttributeStr = value.Node.GetProperty("ValueIndexed")
             print("ValueIndexed = ", " : ", AttributeStr, "\n")
-        except LogicalErrorException:
+        except genicam.LogicalErrorException:
             pass
 
         self.assertEqual(1, value.Value)
@@ -58,10 +58,10 @@ class BooleanTestSuite(GenicamTestCase):
 
         self.assertEqual("1", value.ToString())
 
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             value.FromString("X")
 
-        self.assertEqual(RW, value.GetAccessMode())
+        self.assertEqual(genicam.RW, value.GetAccessMode())
 
         # operators
         value.Value = False
@@ -98,13 +98,13 @@ class BooleanTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "BooleanTestSuite_TestRegAccess")
 
         # create and initialize a test port
         Port = CTestPort()
 
-        Port.CreateEntry(0x00ff, "uint8_t", 0, RW, LittleEndian)
+        Port.CreateEntry(0x00ff, "uint8_t", 0, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -123,7 +123,7 @@ class BooleanTestSuite(GenicamTestCase):
         value.FromString("0")
         self.assertEqual("0", value.ToString())
 
-        self.assertEqual(RW, value.GetAccessMode())
+        self.assertEqual(genicam.RW, value.GetAccessMode())
 
     def test_RegAccess1(self):
         """[ GenApiTest@BooleanTestSuite_TestRegAccess1.xml|gxml
@@ -147,19 +147,19 @@ class BooleanTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "BooleanTestSuite_TestRegAccess1")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x00ff, "uint8_t", 3, RW, LittleEndian)  # for LOGICAL_ERROR_EXCEPTION in GetValue
+        Port.CreateEntry(0x00ff, "uint8_t", 3, genicam.RW, genicam.LittleEndian)  # for LOGICAL_ERROR_EXCEPTION in GetValue
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
 
         value = Camera._GetNode("Trigger")
 
-        with self.assertRaises(LogicalErrorException):   value.Value
+        with self.assertRaises(genicam.LogicalErrorException):   value.Value
 
     def test_AccessMode(self):
         """[ GenApiTest@BooleanTestSuite_TestAccessMode.xml|gxml
@@ -180,7 +180,7 @@ class BooleanTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "BooleanTestSuite_TestAccessMode")
 
         # create and initialize a test port
@@ -188,12 +188,12 @@ class BooleanTestSuite(GenicamTestCase):
 
         self.assertEqual(1, value.Value)
 
-        with self.assertRaises(AccessException):   value.Value = False
+        with self.assertRaises(genicam.AccessException):   value.Value = False
 
         # now the WO value
         valueWO = Camera._GetNode("TriggerWO")
         valueWO.Value = True
-        with self.assertRaises(GenericException):   valueWO.Value
+        with self.assertRaises(genicam.GenericException):   valueWO.Value
 
     def test_CornerCases(self):
         """[ GenApiTest@BooleanTestSuite_TestCornerCases.xml|gxml
@@ -208,8 +208,8 @@ class BooleanTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
-        with self.assertRaises(RuntimeException):
+        Camera = genicam.CNodeMapRef()
+        with self.assertRaises(genicam.RuntimeException):
             Camera._LoadXMLFromFile("GenApiTest", "BooleanTestSuite_TestCornerCases")
 
     def test_PolyReference(self):
@@ -220,9 +220,9 @@ class BooleanTestSuite(GenicamTestCase):
     #         CBooleanPolydef poly;
     #         CPPUNIT_ASSERT_EQUAL (false, poly.IsInitialized());
     #         CPPUNIT_ASSERT_EQUAL (false, poly.IsPointer());
-    #         CPPUNIT_ASSERT_THROW_EX (poly.SetValue (false), GenICam::RuntimeException);
-    #         CPPUNIT_ASSERT_THROW_EX (poly.GetValue (), GenICam::RuntimeException);
-    #         CPPUNIT_ASSERT_THROW_EX (poly.GetCachingMode (), GenICam::RuntimeException);
+    #         CPPUNIT_ASSERT_THROW_EX (poly.SetValue (false), GenICam::genicam.RuntimeException);
+    #         CPPUNIT_ASSERT_THROW_EX (poly.GetValue (), GenICam::genicam.RuntimeException);
+    #         CPPUNIT_ASSERT_THROW_EX (poly.GetCachingMode (), GenICam::genicam.RuntimeException);
     #         poly = false;
     #         CPPUNIT_ASSERT_EQUAL (true, poly.IsInitialized());
     #         CPPUNIT_ASSERT_EQUAL (false, poly.IsPointer());
@@ -234,7 +234,7 @@ class BooleanTestSuite(GenicamTestCase):
     #         CPPUNIT_ASSERT_EQUAL (true, poly.GetValue());
     #         CPPUNIT_ASSERT_NO_THROW (poly.SetValue (false));
     #         CPPUNIT_ASSERT_EQUAL (false, poly.GetValue());
-    #         CPPUNIT_ASSERT_EQUAL (WriteThrough, poly.GetCachingMode());
+    #         CPPUNIT_ASSERT_EQUAL (genicam.WriteThrough, poly.GetCachingMode());
     #         CPPUNIT_ASSERT (!String2Value (gcstring("grrrgh"), &poly));
 
     def test_OnOffValue(self):
@@ -252,14 +252,14 @@ class BooleanTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "BooleanTestSuite_TestOnOffValue")
 
         # test value which is not On or Off-value
         boolValue = Camera._GetNode("BoolValue")
         intValue = Camera._GetNode("IntValue")
 
-        with self.assertRaises(LogicalErrorException):   boolValue.GetValue()
+        with self.assertRaises(genicam.LogicalErrorException):   boolValue.GetValue()
 
         boolValue.SetValue(False)
         self.assertEqual(3, intValue.GetValue())
@@ -295,7 +295,7 @@ class BooleanTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "BooleanTestSuite_TestPolyPointers")
 
         # test bool->int
@@ -315,7 +315,7 @@ class BooleanTestSuite(GenicamTestCase):
 #         CNodePtr ptrNode = Camera._GetNode ("SimpleNode");
 #         CPPUNIT_ASSERT( ptrNode.IsValid() );
 #         CBooleanPolydef polyBoolFromNode;
-#         CPPUNIT_ASSERT_THROW_EX (polyBoolFromNode = (INode*)ptrNode, RuntimeException);
+#         CPPUNIT_ASSERT_THROW_EX (polyBoolFromNode = (INode*)ptrNode, genicam.RuntimeException);
 #         CPPUNIT_ASSERT_EQUAL (false, polyBoolFromNode.IsInitialized());
 #     
 #         # test bool->bool
@@ -344,7 +344,7 @@ class BooleanTestSuite(GenicamTestCase):
 #         CPPUNIT_ASSERT_EQUAL (gcstring("EnumValue0"), ptrEnum->ToString());
 #         polyBoolFromEnum.SetValue (true);
 #         CPPUNIT_ASSERT_EQUAL (gcstring("EnumValue1"), ptrEnum->ToString());
-#         CPPUNIT_ASSERT_EQUAL (WriteThrough, polyBoolFromEnum.GetCachingMode());
+#         CPPUNIT_ASSERT_EQUAL (genicam.WriteThrough, polyBoolFromEnum.GetCachingMode());
 
 
 

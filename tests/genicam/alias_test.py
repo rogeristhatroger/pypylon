@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 
@@ -37,7 +37,7 @@ class AliasTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "AliasTestSuite_TestBasics")
 
         Abs = Camera.GetNode("Abs")
@@ -66,7 +66,7 @@ class AliasTestSuite(GenicamTestCase):
     #         CIntegerRef refRaw
     #         refRaw.SetReference( ptrRaw )
     #         CFloatRef refAbs
-    #         CPPUNIT_ASSERT_THROW_EX (refAbs.GetEnumAlias(), AccessException)
+    #         CPPUNIT_ASSERT_THROW_EX (refAbs.GetEnumAlias(), genicam.AccessException)
     #         refAbs.SetReference( ptrAbs )
     #         CIntegerRef refNoAlias
     #         refNoAlias.SetReference( ptrNoAlias )
@@ -100,7 +100,7 @@ class AliasTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "AliasTestSuite_TestWithSwissKnife")
 
         Abs = Camera.GetNode("Abs")
@@ -180,7 +180,7 @@ class AliasTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "AliasTestSuite_TestSliderUseCases")
 
         # Get the "Gain" node
@@ -294,7 +294,7 @@ class AliasTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "AliasTestSuite_TestJoeCustomer")
 
         GainA = Camera.GetNode("GainA")
@@ -380,7 +380,7 @@ class AliasTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "AliasTestSuite_TestVeronicaVendor")
 
         GainA = Camera.GetNode("GainA")
@@ -396,12 +396,12 @@ class AliasTestSuite(GenicamTestCase):
 
         try:
             GainRaw = Gain.GetIntAlias()
-        except LogicalErrorException:
+        except genicam.LogicalErrorException:
             GainRaw = None
 
         try:
             GainList = Gain.GetEnumAlias()
-        except LogicalErrorException:
+        except genicam.LogicalErrorException:
             GainList = None
 
         if (GainRaw):
