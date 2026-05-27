@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 from _locale import LC_ALL
@@ -117,7 +117,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestSwissKnife")
 
         Int0 = Camera.GetNode("Int0")
@@ -158,14 +158,14 @@ class SwissKnifeTestSuite(GenicamTestCase):
         powersDbl = 2.0
         negSgnDbl = -0.5
 
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             SwsNoVarInt.Value = 77
         self.assertEqual(noVarInt, SwsNoVarInt.Value)
         self.assertEqual(multDivInt, SwsMultDivInt.Value)
         self.assertEqual(addSubInt, SwsAddSubInt.Value)
         self.assertEqual(bitsInt, SwsBitsInt.Value)
 
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             SwsNoVarDbl.Value = 7.7
         self.assertEqual(noVarDbl, SwsNoVarDbl.Value)
         self.assertEqual(multDivDbl, SwsMultDivDbl.Value)
@@ -187,7 +187,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestMinimum")
         SwsConstFormula = Camera.GetNode("SwsConstFormula")
         minimum = SwsConstFormula.Min
@@ -195,7 +195,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
         value = SwsConstFormula.Value
         self.assertAlmostEqual(-minimum, maximum, delta=1e-6)
         self.assertEqual(value, 1)
-        self.assertEqual(intfIFloat, SwsConstFormula.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIFloat, SwsConstFormula.Node.GetPrincipalInterfaceType())
 
     def test_SwissKnifeBrokenBitOps(self):
         """[ GenApiTest@SwissKnifeTestSuite_TestSwissKnifeBrokenBitOps.xml|gxml
@@ -219,7 +219,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestSwissKnifeBrokenBitOps")
         SwsBrokenBitOpsInt = Camera.GetNode("SwsBrokenBitOpsInt")
         # Check additional bit operations
@@ -248,7 +248,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestSwissKnifeVariableMinMax")
         SwsMultDivDbl = Camera.GetNode("SwsMultDivDbl")
         # Check that variable ranges are respected when loading variables into formulas
@@ -274,7 +274,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestSwissKnifeVariableValue")
         SwsMultDivDbl = Camera.GetNode("SwsMultDivDbl")
         # Check that variable values are defined
@@ -300,7 +300,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestSwissKnifeArgumentType")
         SwsMultDivDbl = Camera.GetNode("SwsMultDivDbl")
         # Check that the arguments in the formula are all supported types
@@ -330,7 +330,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestSwissKnifeGetSetProperties")
 
         Result = Camera.GetNode("Result")
@@ -372,7 +372,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestValueAccess")
 
         Result = Camera.GetNode("Result")
@@ -416,7 +416,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "TestIntSwissKnifeTrig")
 
         SwsMultDivInt = Camera.GetNode("SwsMultDivInt")
@@ -427,7 +427,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
         self.assertEqual(multDivInt, SwsMultDivInt.GetValue())
 
         # Beware: an IntSwissKnife does not support float functions like sin, cos etc.
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             SwsTrigInt.GetValue()
 
     # Pleora FG
@@ -493,39 +493,39 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestVariableDelegates")
 
         # Regular float
         SwsAdd = Camera.GetNode("SwsAdd")
-        self.assertTrue(SwsAdd.GetAccessMode() == RO)
-        self.assertTrue(SwsAdd.GetRepresentation() == Linear)
+        self.assertTrue(SwsAdd.GetAccessMode() == genicam.RO)
+        self.assertTrue(SwsAdd.GetRepresentation() == genicam.Linear)
         """double lMin = """
         SwsAdd.Min
         """double lMax = """
         SwsAdd.Max
         lUnit = SwsAdd.GetUnit()
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             SwsAdd.SetValue(1.0)
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             SwsAdd.FromString("1.0")
         lStrVal = SwsAdd.ToString()
 
         # NI float
         SwsAddNI = Camera.GetNode("SwsAddNI")
-        self.assertTrue(SwsAddNI.GetAccessMode() == NI)
+        self.assertTrue(SwsAddNI.GetAccessMode() == genicam.NI)
 
         # NA float
         SwsAddNA = Camera.GetNode("SwsAddNA")
-        self.assertTrue(SwsAddNA.GetAccessMode() == NA)
+        self.assertTrue(SwsAddNA.GetAccessMode() == genicam.NA)
 
         # RO float
         SwsAddRO = Camera.GetNode("SwsAddRO")
-        self.assertTrue(SwsAddRO.GetAccessMode() == RO)
+        self.assertTrue(SwsAddRO.GetAccessMode() == genicam.RO)
 
         # Bad formula
         SwsBadFormula = Camera.GetNode("SwsBadFormula")
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             SwsBadFormula.GetValue()
 
     def test_VariableNames(self):
@@ -552,7 +552,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_VariableNames_GoodExamples")
 
         Blade = Camera.GetNode("Knife1")
@@ -576,8 +576,8 @@ class SwissKnifeTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
-        with self.assertRaises(GenericException):
+        Camera = genicam.CNodeMapRef()
+        with self.assertRaises(genicam.GenericException):
             Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_VariableNames_BadExamples")
 
     # Mantis #288
@@ -609,7 +609,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
                 </Integer>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestVariableNames")
 
         Blade = Camera.GetNode("Knife1")
@@ -626,7 +626,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
 
         Blade = Camera.GetNode("Knife4")
         self.assertTrue(bool(Blade))
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Blade.GetValue()
 
     def test_ConstantAndExpression(self):
@@ -653,7 +653,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestConstantAndExpression")
 
         Result = Camera.GetNode("Result")
@@ -710,7 +710,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestBig")
 
         lSelector = Camera.GetNode("MySelector")
@@ -813,7 +813,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestVariableExtensions")
 
         Knife = Camera.GetNode("Knife")
@@ -846,14 +846,14 @@ class SwissKnifeTestSuite(GenicamTestCase):
         self.assertAlmostEqual(4.0, BladeAccessMode.GetValue(), delta=FLOAT64_EPSILON)
 
         BladeCachingMode = Camera.GetNode("BladeCachingMode")
-        self.assertAlmostEqual(WriteAround, BladeCachingMode.GetValue(), delta=FLOAT64_EPSILON)
+        self.assertAlmostEqual(genicam.WriteAround, BladeCachingMode.GetValue(), delta=FLOAT64_EPSILON)
 
         DaggerNoEnum = Camera.GetNode("DaggerNoEnum")
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             DaggerNoEnum.GetValue()
 
         DaggerNoEnumEntry = Camera.GetNode("DaggerNoEnumEntry")
-        with self.assertRaises(RuntimeException):
+        with self.assertRaises(genicam.RuntimeException):
             DaggerNoEnumEntry.GetValue()
 
     def test_MathParser(self):
@@ -1241,7 +1241,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestMathParser")
 
         A = Camera.GetNode("A")
@@ -1384,7 +1384,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
         B.SetValue(6)
         self.assertAlmostEqual(2.5, Div.GetValue(), delta=FLOAT64_EPSILON)
         B.SetValue(0)
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Div.GetValue()
 
         Mod = Camera.GetNode("Mod")
@@ -1393,7 +1393,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
         # self.assertAlmostEqual (4.2, Mod.GetValue(), delta=FLOAT64_EPSILON ) # lacks precision
         self.assertAlmostEqual(4.2, Mod.GetValue(), delta=10e-10)
         B.SetValue(0)
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Mod.GetValue()
 
         Ternary = Camera.GetNode("Ternary")
@@ -1568,91 +1568,91 @@ class SwissKnifeTestSuite(GenicamTestCase):
 
         # some invalid stuff
         Invalid1 = Camera.GetNode("Invalid1")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid1.GetValue()
 
         Invalid2 = Camera.GetNode("Invalid2")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid2.GetValue()
 
         Invalid3 = Camera.GetNode("Invalid3")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid3.GetValue()
 
         Invalid4 = Camera.GetNode("Invalid4")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid4.GetValue()
 
         Invalid5 = Camera.GetNode("Invalid5")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid5.GetValue()
 
         Invalid6 = Camera.GetNode("Invalid6")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid6.GetValue()
 
         Invalid7 = Camera.GetNode("Invalid7")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid7.GetValue()
 
         Invalid8 = Camera.GetNode("Invalid8")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid8.GetValue()
 
         Invalid9 = Camera.GetNode("Invalid9")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid9.GetValue()
 
         Invalid10 = Camera.GetNode("Invalid10")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid10.GetValue()
 
         Invalid11 = Camera.GetNode("Invalid11")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid11.GetValue()
 
         Invalid12 = Camera.GetNode("Invalid12")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid12.GetValue()
 
         Invalid13 = Camera.GetNode("Invalid13")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid13.GetValue()
 
         Invalid14 = Camera.GetNode("Invalid14")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid14.GetValue()
 
         Invalid15 = Camera.GetNode("Invalid15")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid15.GetValue()
 
         Invalid16 = Camera.GetNode("Invalid16")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid16.GetValue()
 
         Invalid17 = Camera.GetNode("Invalid17")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid17.GetValue()
 
         Invalid18 = Camera.GetNode("Invalid18")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid18.GetValue()
 
         Invalid19 = Camera.GetNode("Invalid19")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid19.GetValue()
 
         Invalid20 = Camera.GetNode("Invalid20")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid20.GetValue()
 
         Invalid21 = Camera.GetNode("Invalid21")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid21.GetValue()
 
         Invalid22 = Camera.GetNode("Invalid22")
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Invalid22.GetValue()
 
     def test_TheFrenchWay(self):
@@ -1689,7 +1689,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
         # denotes float numbers as 1,234 instead of 1.234.
         # However this does not fail. I tried to set the locale in DMain directly
         # but it made no difference
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestTheFrenchWay")
 
         setlocale(LC_ALL, OldLocale )
@@ -1739,7 +1739,7 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestTickets_788_789_790")
 
         Ticket788 = Camera.GetNode("Ticket788")
@@ -1750,18 +1750,18 @@ class SwissKnifeTestSuite(GenicamTestCase):
         Ticket789_Float = Camera.GetNode("Ticket789_Float")
         Ticket790_Float = Camera.GetNode("Ticket790_Float")
 
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Ticket788.GetValue()
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Ticket789.GetValue()
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Ticket790.GetValue()
 
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Ticket788_Float.GetValue()
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Ticket789_Float.GetValue()
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Ticket790_Float.GetValue()
 
     def test_ListOfValidValue(self):
@@ -1773,12 +1773,12 @@ class SwissKnifeTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
 
         Camera._LoadXMLFromFile("GenApiTest", "SwissKnifeTestSuite_TestListOfValidValue")
         Value = Camera.GetNode("Value")
 
-        self.assertEqual(noIncrement, Value.GetIncMode())
+        self.assertEqual(genicam.noIncrement, Value.GetIncMode())
 
         valueList = Value.GetListOfValidValues()
         self.assertEqual(0, len(valueList))

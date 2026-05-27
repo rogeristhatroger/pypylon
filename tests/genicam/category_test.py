@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 
@@ -34,11 +34,11 @@ class CategoryTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CategoryTestSuite_Test1")
 
         Cat = Camera.GetNode("ScalarFeatures")
-        self.assertEqual(intfICategory, Cat.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfICategory, Cat.Node.GetPrincipalInterfaceType())
 
         strMainCat = "ScalarFeatures"
         self.assertEqual(strMainCat, Cat.ToString())
@@ -53,7 +53,7 @@ class CategoryTestSuite(GenicamTestCase):
             i += 1
 
         strName = "toto"
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             Cat.FromString(strName)
 
         # Reference
@@ -61,7 +61,7 @@ class CategoryTestSuite(GenicamTestCase):
 
         # self.assertRaises(
         #    refCategory.GetFeatures(pFeatureList),
-        #    GenICam::AccessException
+        #    GenICam::genicam.AccessException
         # )
 
         # CPPUNIT_ASSERT_NO_THROW(refCategory.SetReference( ptrCat ) )
@@ -99,7 +99,7 @@ class CategoryTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CategoryTestSuite_FeatureTest_NoRootNode")
 
         Gain = Camera.GetNode("Gain")
@@ -132,7 +132,7 @@ class CategoryTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CategoryTestSuite_FeatureTest_WithRootNode")
 
         Gain = Camera.GetNode("Gain")
@@ -166,7 +166,7 @@ class CategoryTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CategoryTestSuite_FeatureTest_WithRootNode2")
 
         Gain = Camera.GetNode("Gain")
@@ -201,7 +201,7 @@ class CategoryTestSuite(GenicamTestCase):
 
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CategoryTestSuite_FeatureTest_OverrideAccessmode")
         Gain = Camera.GetNode("Gain")
         GainImpl = Camera.GetNode("GainImpl")
@@ -209,9 +209,9 @@ class CategoryTestSuite(GenicamTestCase):
         ScalarFeatures = Camera.GetNode("ScalarFeatures")
         self.assertTrue(Gain.Node.IsFeature())
         self.assertFalse(GainImpl.Node.IsFeature())
-        self.assertEqual(Beginner, ScalarFeatures.Node.GetVisibility())
-        self.assertEqual(Beginner, Root.Node.GetVisibility())
-        self.assertEqual(Beginner, Gain.Node.GetVisibility())
+        self.assertEqual(genicam.Beginner, ScalarFeatures.Node.GetVisibility())
+        self.assertEqual(genicam.Beginner, Root.Node.GetVisibility())
+        self.assertEqual(genicam.Beginner, Gain.Node.GetVisibility())
 
         """[ GenApiTest@CategoryTestSuite_FeatureTest_EmptyCategories_Invisible.xml|gxml
         
@@ -232,16 +232,16 @@ class CategoryTestSuite(GenicamTestCase):
         
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CategoryTestSuite_FeatureTest_EmptyCategories_Invisible")
         EmptyOne = Camera.GetNode("EmptyOne")
         ContainsEmptyOne = Camera.GetNode("ContainsEmptyOne")
         Root = Camera.GetNode("Root")
         Gain = Camera.GetNode("Gain")
-        self.assertEqual(Invisible, Gain.Node.GetVisibility())
-        self.assertEqual(Invisible, ContainsEmptyOne.Node.GetVisibility())
-        self.assertEqual(Invisible, EmptyOne.Node.GetVisibility())
-        self.assertEqual(Invisible, Root.Node.GetVisibility())
+        self.assertEqual(genicam.Invisible, Gain.Node.GetVisibility())
+        self.assertEqual(genicam.Invisible, ContainsEmptyOne.Node.GetVisibility())
+        self.assertEqual(genicam.Invisible, EmptyOne.Node.GetVisibility())
+        self.assertEqual(genicam.Invisible, Root.Node.GetVisibility())
 
         """[ GenApiTest@CategoryTestSuite_FeatureTest_EmptyCategories_Guru.xml|gxml
         
@@ -262,16 +262,16 @@ class CategoryTestSuite(GenicamTestCase):
         
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CategoryTestSuite_FeatureTest_EmptyCategories_Guru")
         EmptyOne = Camera.GetNode("EmptyOne")
         ContainsEmptyOne = Camera.GetNode("ContainsEmptyOne")
         Root = Camera.GetNode("Root")
         Gain = Camera.GetNode("Gain")
-        self.assertEqual(Guru, Gain.Node.GetVisibility())
-        self.assertEqual(Guru, ContainsEmptyOne.Node.GetVisibility())
-        self.assertEqual(Invisible, EmptyOne.Node.GetVisibility())
-        self.assertEqual(Guru, Root.Node.GetVisibility())
+        self.assertEqual(genicam.Guru, Gain.Node.GetVisibility())
+        self.assertEqual(genicam.Guru, ContainsEmptyOne.Node.GetVisibility())
+        self.assertEqual(genicam.Invisible, EmptyOne.Node.GetVisibility())
+        self.assertEqual(genicam.Guru, Root.Node.GetVisibility())
 
         """[ GenApiTest@CategoryTestSuite_FeatureTest_EmptyCategories_Beginner.xml|gxml
         
@@ -292,16 +292,16 @@ class CategoryTestSuite(GenicamTestCase):
         
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CategoryTestSuite_FeatureTest_EmptyCategories_Beginner")
         EmptyOne = Camera.GetNode("EmptyOne")
         ContainsEmptyOne = Camera.GetNode("ContainsEmptyOne")
         Root = Camera.GetNode("Root")
         Gain = Camera.GetNode("Gain")
-        self.assertEqual(Beginner, Gain.Node.GetVisibility())
-        self.assertEqual(Beginner, ContainsEmptyOne.Node.GetVisibility())
-        self.assertEqual(Invisible, EmptyOne.Node.GetVisibility())
-        self.assertEqual(Beginner, Root.Node.GetVisibility())
+        self.assertEqual(genicam.Beginner, Gain.Node.GetVisibility())
+        self.assertEqual(genicam.Beginner, ContainsEmptyOne.Node.GetVisibility())
+        self.assertEqual(genicam.Invisible, EmptyOne.Node.GetVisibility())
+        self.assertEqual(genicam.Beginner, Root.Node.GetVisibility())
 
         """[ GenApiTest@CategoryTestSuite_FeatureTest_EmptyCategories_Expert.xml|gxml
         
@@ -322,16 +322,16 @@ class CategoryTestSuite(GenicamTestCase):
         
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CategoryTestSuite_FeatureTest_EmptyCategories_Expert")
         EmptyOne = Camera.GetNode("EmptyOne")
         ContainsEmptyOne = Camera.GetNode("ContainsEmptyOne")
         Root = Camera.GetNode("Root")
         Gain = Camera.GetNode("Gain")
-        self.assertEqual(Expert, Gain.Node.GetVisibility())
-        self.assertEqual(Expert, ContainsEmptyOne.Node.GetVisibility())
-        self.assertEqual(Invisible, EmptyOne.Node.GetVisibility())
-        self.assertEqual(Expert, Root.Node.GetVisibility())
+        self.assertEqual(genicam.Expert, Gain.Node.GetVisibility())
+        self.assertEqual(genicam.Expert, ContainsEmptyOne.Node.GetVisibility())
+        self.assertEqual(genicam.Invisible, EmptyOne.Node.GetVisibility())
+        self.assertEqual(genicam.Expert, Root.Node.GetVisibility())
 
     # For debugging the access mode of categories
     def test_AccessModeTest(self):
@@ -391,23 +391,23 @@ class CategoryTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CategoryTestSuite_AccessModeTest")
 
         Root = Camera.GetNode("Root")
 
-        self.assertEqual(RO, Root.GetAccessMode())
+        self.assertEqual(genicam.RO, Root.GetAccessMode())
         # happy path (now the access mode should be cached)
-        self.assertEqual(RO, Root.GetAccessMode())
+        self.assertEqual(genicam.RO, Root.GetAccessMode())
 
         NICat1 = Camera.GetNode("NICat1")
-        self.assertEqual(NI, NICat1.GetAccessMode())
+        self.assertEqual(genicam.NI, NICat1.GetAccessMode())
         ROCat1 = Camera.GetNode("ROCat1")
-        self.assertEqual(RO, ROCat1.GetAccessMode())
+        self.assertEqual(genicam.RO, ROCat1.GetAccessMode())
 
         # since categories are never NA, if pIsImpl is not readable, leave the category implemented
         NICat2 = Camera.GetNode("NICat2")
-        self.assertEqual(RO, NICat2.GetAccessMode())
+        self.assertEqual(genicam.RO, NICat2.GetAccessMode())
 
     def test_VisibilityTest(self):
         """[ GenApiTest@CategoryTestSuite_VisibilityTest.xml|gxml
@@ -434,7 +434,7 @@ class CategoryTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CategoryTestSuite_VisibilityTest")
 
         # NODE_POINTER(Category, Root)

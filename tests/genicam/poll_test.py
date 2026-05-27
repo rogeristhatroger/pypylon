@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 from callbackhelper import CallbackObject
@@ -34,7 +34,7 @@ class PollTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "PollTestSuite_TestPolling_Integer")
         Node = Camera.GetNode("Register")
 
@@ -45,8 +45,8 @@ class PollTestSuite(GenicamTestCase):
         self.assertEqual(-1, Value.Node.GetPollingTime())
 
         CallBackTarget = CallbackObject()
-        Register(Node.Node, CallBackTarget.Callback)
-        Register(Value.Node, CallBackTarget.Callback)
+        genicam.Register(Node.Node, CallBackTarget.Callback)
+        genicam.Register(Value.Node, CallBackTarget.Callback)
 
         Camera._Poll(500)
         self.assertEqual(0, CallBackTarget.Count())
@@ -69,7 +69,7 @@ class PollTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "PollTestSuite_TestPolling_Register")
 
         Node = Camera.GetNode("Register")
@@ -77,7 +77,7 @@ class PollTestSuite(GenicamTestCase):
         self.assertEqual(1000, Node.Node.GetPollingTime())
 
         CallBackTarget = CallbackObject()
-        Register(Node.Node, CallBackTarget.Callback)
+        genicam.Register(Node.Node, CallBackTarget.Callback)
 
         Camera._Poll(500)
         self.assertEqual(0, CallBackTarget.Count())

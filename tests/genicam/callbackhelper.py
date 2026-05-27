@@ -6,8 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import Register
-
+from pypylon import genicam
 
 class CallbackObject(object):
     def __init__(self):
@@ -27,7 +26,7 @@ class CallbackObject(object):
 class CallbackTestTarget(object):
     def __init__(self, node):
         self.m_Count = 0
-        self.cb = Register(node.Node, self.Callback)
+        self.cb = genicam.Register(node.Node, self.Callback)
 
     # Reset the callback counter
     def Reset(self):

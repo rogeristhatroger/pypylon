@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 from testport import CTestPort
@@ -35,12 +35,12 @@ class StringTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "StringTestSuite_TestValueAccess")
 
         A = Camera.GetNode("A")
         # CPPUNIT_ASSERT( (bool) A )
-        self.assertEqual(intfIString, A.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIString, A.Node.GetPrincipalInterfaceType())
         self.assertEqual("Alle meine Entchen...", A.Value)
 
         A.Value = "...schwimmen auf dem See!"
@@ -53,7 +53,7 @@ class StringTestSuite(GenicamTestCase):
         RO = Camera.GetNode("RO")
         # CPPUNIT_ASSERT( (bool) ptrRO )
         self.assertEqual("Alle meine Ganschen...", RO.Value)
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             RO.FromString("Ehh? Don't understand Hungarian...")
         self.assertEqual("Alle meine Ganschen...", RO.ToString())
         RO.GetMaxLength()
@@ -61,11 +61,11 @@ class StringTestSuite(GenicamTestCase):
         WO = Camera.GetNode("WO")
         # CPPUNIT_ASSERT( (bool) ptrWO )
         # note that the access mode is checked only because Verify==True
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             WO.GetValue(True)
         WO.FromString("Hmmm, how will I verify this value?")
         # note that the access mode is checked only because Verify==True
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             WO.ToString(True)
 
             # cout << "MaxLength = " << ptrA.GetMaxLength() << "\n"
@@ -104,7 +104,7 @@ class StringTestSuite(GenicamTestCase):
         </String>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "StringTestSuite_TestPValueAccess")
 
         A = Camera.GetNode("A")
@@ -147,7 +147,7 @@ class StringTestSuite(GenicamTestCase):
                 else:
                     print("\tProperty %s = %s [%s]\n" % (p_name, ValueStr, AttributeStr))
 
-            except LogicalErrorException:
+            except genicam.LogicalErrorException:
                 print("\tProperty %s is not available\n" % (p_name))
 
         ValueStr, AttributeStr = A.Node.GetProperty("DeviceName")
@@ -201,10 +201,10 @@ class StringTestSuite(GenicamTestCase):
         # self.assertEqual( 22, C.GetMaxLength())
 
         E = Camera.GetNode("E")
-        self.assertEqual(WO, E.GetAccessMode())
+        self.assertEqual(genicam.WO, E.GetAccessMode())
 
         F = Camera.GetNode("F")
-        self.assertEqual(RO, F.GetAccessMode())
+        self.assertEqual(genicam.RO, F.GetAccessMode())
         self.assertEqual(len("...Brandejs nad Labem, to se nadlabem!"), F.GetMaxLength())
 
     def test_PValueAccessModeInheritance(self):
@@ -223,16 +223,16 @@ class StringTestSuite(GenicamTestCase):
         </String>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "StringTestSuite_TestPValueAccessModeInheritance")
 
         nodeRO = Camera.GetNode("RO")
         # CPPUNIT_ASSERT( (bool) ptrRO )
-        self.assertTrue(nodeRO.GetAccessMode() == RO)
+        self.assertTrue(nodeRO.GetAccessMode() == genicam.RO)
 
         nodePRO = Camera.GetNode("PRO")
         # CPPUNIT_ASSERT( (bool) ptrPRO )
-        self.assertTrue(nodePRO.GetAccessMode() == RO)
+        self.assertTrue(nodePRO.GetAccessMode() == genicam.RO)
 
     #       if defined(_MSC_VER) && !defined(PHARLAP_WIN32)
     # http:#rishida.net/tools/conversion/
@@ -416,15 +416,15 @@ class StringTestSuite(GenicamTestCase):
         # < Address>0x10010 < / Address >
         # < Length>4 < / Length >
         IntegerB = 42
-        Port.CreateEntry(0x10010, "uint32_t", IntegerB, RW, LittleEndian)
+        Port.CreateEntry(0x10010, "uint32_t", IntegerB, genicam.RW, genicam.LittleEndian)
 
         # <IntReg Name = "CommandC_Reg">
         # < Address>0x10014 < / Address >
         # < Length>4 < / Length >
         CommandC = 815
-        Port.CreateEntry(0x10014, "uint32_t", CommandC, RW, LittleEndian)
+        Port.CreateEntry(0x10014, "uint32_t", CommandC, genicam.RW, genicam.LittleEndian)
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "StringTestSuite_TestInvalidation")
         Camera._Connect(Port, "Device")
 
@@ -434,7 +434,7 @@ class StringTestSuite(GenicamTestCase):
 #         NODE_POINTER(Command, CommandC)
 #     
 #         CallbackUtility::Reset()
-#         Register(ptrIntegerB.GetNode(), &CallbackUtility::Callback)
+#         genicam.Register(ptrIntegerB.GetNode(), &CallbackUtility::Callback)
 #     
 #         *ptrStringA = "Bla"
 #     

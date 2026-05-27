@@ -6,10 +6,10 @@ Created on 03.08.2015
 import snipper
 import inspect
 import unittest
-from genicam import *
+from pypylon import genicam
 import os
 
-CNodeMapRef__LoadXMLFromFile = CNodeMapRef._LoadXMLFromFile
+CNodeMapRef__LoadXMLFromFile = genicam.CNodeMapRef._LoadXMLFromFile
 
 
 def _LoadXMLFromFile(self, vendor, model):
@@ -29,11 +29,11 @@ class GenicamTestCase(unittest.TestCase):
         super(GenicamTestCase, cls).setUpClass()
         # run snipper on current test
         snipper.createXMLSnippet(inspect.getsource(cls))
-        CNodeMapRef._LoadXMLFromFile = _LoadXMLFromFile
+        genicam.CNodeMapRef._LoadXMLFromFile = _LoadXMLFromFile
 
     @classmethod
     def tearDownClass(cls):
-        CNodeMapRef._LoadXMLFromFile = CNodeMapRef__LoadXMLFromFile
+        genicam.CNodeMapRef._LoadXMLFromFile = CNodeMapRef__LoadXMLFromFile
         super(GenicamTestCase, cls).tearDownClass()
 
 

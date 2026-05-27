@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 from testport import CTestPort, cast_data, cast_buffer, CStructTestPort
@@ -71,11 +71,11 @@ class EnumerationTestSuite(GenicamTestCase):
 
         # LOG4CPP_NS::Category *pLogger = &CLog::GetLogger( "CppUnit.Performance" )
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "EnumerationTestSuite_TestValueAccess")
 
         Enum = Camera.GetNode("Enum")
-        self.assertEqual(intfIEnumeration, Enum.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIEnumeration, Enum.Node.GetPrincipalInterfaceType())
 
         Value = Camera.GetNode("Value")
 
@@ -94,11 +94,11 @@ class EnumerationTestSuite(GenicamTestCase):
 
         # Ahaem - this should not change over time :-)
         EnumEntry.Node.InvalidateNode()
-        self.assertEqual(RO, EnumEntry.GetAccessMode())
-        self.assertEqual(RO, EnumEntry.GetAccessMode())
+        self.assertEqual(genicam.RO, EnumEntry.GetAccessMode())
+        self.assertEqual(genicam.RO, EnumEntry.GetAccessMode())
 
         # value too small
-        with self.assertRaises(InvalidArgumentException):   Enum.FromString("BlaBla")
+        with self.assertRaises(genicam.InvalidArgumentException):   Enum.FromString("BlaBla")
 
         # GCLOGINFO( pLogger, "-------------------------------------------------")
         # GCLOGINFO( pLogger, "Setup : Enumeration <=> Integer")
@@ -113,13 +113,13 @@ class EnumerationTestSuite(GenicamTestCase):
 
         # now some tests with the other enum, connected to a real port
         Port = CTestPort()
-        Port.CreateEntry(0x000, "int32_t", 10, RW, LittleEndian)
+        Port.CreateEntry(0x000, "int32_t", 10, genicam.RW, genicam.LittleEndian)
         Camera._Connect(Port, "Port")
         Enum2 = Camera.GetNode("Enum2")
         self.assertEqual(10, Enum2.GetIntValue())
         # modify the underlying value, not visible through the cache
         Value = 20
-        Port.Write(0x00, cast_data("uint32_t", LittleEndian, Value))
+        Port.Write(0x00, cast_data("uint32_t", genicam.LittleEndian, Value))
         self.assertEqual(10, Enum2.GetIntValue())
         self.assertEqual("EnumValue1", Enum2.ToString())
         # but visible when bypassing the cache
@@ -127,14 +127,14 @@ class EnumerationTestSuite(GenicamTestCase):
         self.assertEqual("EnumValue2", Enum2.ToString(False, True))
         # now change it to point to the NA entry
         Value = 30
-        Port.Write(0x00, cast_data("uint32_t", LittleEndian, Value))
+        Port.Write(0x00, cast_data("uint32_t", genicam.LittleEndian, Value))
         # and test without/with verification
         self.assertEqual(30, Enum2.GetIntValue(False, True))
-        with self.assertRaises(AccessException):   Enum2.SetIntValue(30)
+        with self.assertRaises(genicam.AccessException):   Enum2.SetIntValue(30)
         self.assertEqual("EnumValue3", Enum2.ToString(False, True))
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Enum2.GetIntValue(True, True)
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             Enum2.ToString(True, True)
 
     def test_EnumEntry(self):
@@ -186,7 +186,7 @@ class EnumerationTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "EnumerationTestSuite_TestEnumEntry")
 
         featureNode = Camera.GetNode("Value")
@@ -226,7 +226,7 @@ class EnumerationTestSuite(GenicamTestCase):
         Str = MyEntry.ToString(MyEntry.Value != 0)
         print(Str, type(Str))
         # entries are not writeable
-        with self.assertRaises(GenericException):
+        with self.assertRaises(genicam.GenericException):
             MyEntry.FromString(Str)
 
         gstr = MyEntry.GetSymbolic()
@@ -234,12 +234,12 @@ class EnumerationTestSuite(GenicamTestCase):
 
         # CEnumEntryRef refEnumEntry
         # self.assertTrue_NO_THROW(refEnumEntry.SetReference( Value ) )
-        # with self.assertRaises( refEnumEntry.GetSymbolic()):  AccessException
-        # with self.assertRaises( refEnumEntry.Value):  AccessException
+        # with self.assertRaises( refEnumEntry.GetSymbolic()):  genicam.AccessException
+        # with self.assertRaises( refEnumEntry.Value):  genicam.AccessException
         # self.assertTrue_NO_THROW( refEnumEntry.SetReference( MyEntry ) )
         # self.assertEqual( (gcstring)"MyEnumEntry1", refEnumEntry.GetSymbolic())
         # self.assertEqual( 1,refEnumEntry.Value)
-        # self.assertEqual (RO, refEnumEntry.GetAccessMode())
+        # self.assertEqual (genicam.RO, refEnumEntry.GetAccessMode())
 
         # now do some additional tests with the terminal node
         Enum = Camera.GetNode("OtherValue")
@@ -247,18 +247,18 @@ class EnumerationTestSuite(GenicamTestCase):
         self.assertEqual(1, Enum.GetIntValue())
         Enum.GetIntValue(True)
 
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             Enum.SetIntValue(100)
         # note that the Verify=False does not disable the checking against valid enum values...
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             Enum.SetIntValue(100, False)
 
         # what if value points to a NI entry?
         IntVal = Camera.GetNode("Value2")
         IntVal.Value = 3  # this entry is NA
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             Value.ToString(True)
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             Value.FromString("MyEnumEntry4")
 
     def test_EnumFalseEntry(self):
@@ -276,14 +276,14 @@ class EnumerationTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "EnumerationTestSuite_TestEnumFalseEntry")
 
         # gcstring_vector symbolics
         FalsePtr = Camera.GetNode("NoValue")
-        self.assertEqual(RW, FalsePtr.GetAccessMode())
+        self.assertEqual(genicam.RW, FalsePtr.GetAccessMode())
         symbolics = FalsePtr.GetSymbolics()
-        with self.assertRaises(InvalidArgumentException):   FalsePtr.ToString()
+        with self.assertRaises(genicam.InvalidArgumentException):   FalsePtr.ToString()
         FalsePtr.SetIntValue(3)
         self.assertEqual("MyEnumEntry1", FalsePtr.ToString())
 
@@ -308,11 +308,11 @@ class EnumerationTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "EnumerationTestSuite_TestEnumRef")
 
         Port = CTestPort()
-        Port.CreateEntry(0x0104, "uint32_t", 1024, RW, LittleEndian)
+        Port.CreateEntry(0x0104, "uint32_t", 1024, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -326,11 +326,11 @@ class EnumerationTestSuite(GenicamTestCase):
         # self.assertTrue_NO_THROW( refEnumT.SetReference( Value ) )
         # self.assertTrue_NO_THROW( refEnumT.SetEnumReference(0, "PixelFormat" ) )
 
-        # with self.assertRaises( refFalse.IsValueCacheValid()):  AccessException
+        # with self.assertRaises( refFalse.IsValueCacheValid()):  genicam.AccessException
         # self.assertTrue(  not refEnumT.IsValueCacheValid() )
 
         # Value = refEnumT.GetNode()
-        # with self.assertRaises( refFalse.GetNode()):  AccessException
+        # with self.assertRaises( refFalse.GetNode()):  genicam.AccessException
 
         # CEnumerationTRef<EAccessMode> refEnumAcc
         # EAccessMode AMode = RW
@@ -339,7 +339,7 @@ class EnumerationTestSuite(GenicamTestCase):
         # self.assertEqual( AMode, refEnumAcc.GetAccessMode())
 
         # gcstring_vector symbolics
-        # with self.assertRaises( refFalse.GetSymbolics(symbolics)):  AccessException
+        # with self.assertRaises( refFalse.GetSymbolics(symbolics)):  genicam.AccessException
         # refEnumT.GetSymbolics(symbolics)
         # int i(0)
         # self.assertEqual( gcstring("Mono8"), symbolics[i++] )
@@ -352,7 +352,7 @@ class EnumerationTestSuite(GenicamTestCase):
         # gcstring str1 = "EnumEntry_PixelFormat_Mono8",
         #    str2 = "EnumEntry_PixelFormat_Mono16",
         #    str3 = "EnumEntry_PixelFormat_RGB24"
-        # with self.assertRaises( refFalse.GetEntries(entries)):  AccessException
+        # with self.assertRaises( refFalse.GetEntries(entries)):  genicam.AccessException
         # refEnumT.GetEntries(entries)
         # self.assertEqual( str1, entries[i++].GetName() )
         # self.assertEqual( str2, entries[i++].GetName() )
@@ -364,54 +364,54 @@ class EnumerationTestSuite(GenicamTestCase):
         self.assertEqual(  1234LL,refEnumT.GetIntValue() )
         """
 
-        # with self.assertRaises( refFalse.SetIntValue(5432)):  AccessException
+        # with self.assertRaises( refFalse.SetIntValue(5432)):  genicam.AccessException
 
         """* AH: no longer allowed since Mantis #9 is fixed
         refEnumT.SetIntValue(5432) # AH: now checked in test EnumerationTestSuite::TestInvalidValues()
         self.assertEqual(  5432LL,refEnumT.GetIntValue() )
         """
 
-        # with self.assertRaises( refFalse.GetEntry(0)):   GenericException
-        # with self.assertRaises( refFalse.GetCurrentEntry()):   GenericException
-        # with self.assertRaises( refFalse.GetEntry((int)0), GenericException ) # falls into the EnumT version of GetEntry (EnumT=int):   above
+        # with self.assertRaises( refFalse.GetEntry(0)):   genicam.GenericException
+        # with self.assertRaises( refFalse.GetCurrentEntry()):   genicam.GenericException
+        # with self.assertRaises( refFalse.GetEntry((int)0), genicam.GenericException ) # falls into the EnumT version of GetEntry (EnumT=int):   above
 
         # IEnumEntry *MyEntry
-        # with self.assertRaises( refFalse.GetEntryByName("RGB24")):  AccessException
+        # with self.assertRaises( refFalse.GetEntryByName("RGB24")):  genicam.AccessException
         # MyEntry = refEnumT.GetEntryByName("RGB24")
         # self.assertTrue(MyEntry)
         # self.assertEqual((gcstring)"2", MyEntry.ToString())
 
         #    self.assertEqual(  10LL, refEnumT.GetIntValue(MyEntry.Value)) # *JS* removed warning
         # with self.assertRaises( refEnumT.GetIntValue(MyEntry.Value  not = 0)):   OutOfRangeException
-        #    with self.assertRaises( refFalse.GetIntValue(MyEntry.Value)):  AccessException  # *JS* removed warning
-        # with self.assertRaises( refFalse.GetIntValue(MyEntry.Value  not = 0)):  AccessException
+        #    with self.assertRaises( refFalse.GetIntValue(MyEntry.Value)):  genicam.AccessException  # *JS* removed warning
+        # with self.assertRaises( refFalse.GetIntValue(MyEntry.Value  not = 0)):  genicam.AccessException
 
-        # with self.assertRaises( refEnumT.ToString(0)):   InvalidArgumentException
+        # with self.assertRaises( refEnumT.ToString(0)):   genicam.InvalidArgumentException
         # refEnumT.SetIntValue(1)
         # self.assertEqual((gcstring)"Mono16",refEnumT.ToString(0) )
         # self.assertEqual ((gcstring)"Mono16",refEnumT.GetCurrentEntry().GetSymbolic())
         # self.assertEqual ((gcstring)"Mono8",refEnumT.GetEntry(0).GetSymbolic())
         # self.assertEqual ((IEnumEntry*)NULL,refEnumT.GetEntry(234))
-        # with self.assertRaises( refFalse.ToString(0)):  AccessException
+        # with self.assertRaises( refFalse.ToString(0)):  genicam.AccessException
 
         # refEnumT.FromString("Mono8") # ???
-        # with self.assertRaises( refFalse.FromString("Mono8")):  AccessException
+        # with self.assertRaises( refFalse.FromString("Mono8")):  genicam.AccessException
 
-        # with self.assertRaises( refEnumT.Value):  AccessException
+        # with self.assertRaises( refEnumT.Value):  genicam.AccessException
 
         # refEnumT.SetNumEnums(3)
         #   undef max
-        # with self.assertRaises( refEnumT.Value = int(MyEntry.Value & numeric_limits<unsigned>::max() )):  AccessException
-        # with self.assertRaises( refFalse.Value = int(MyEntry.Value & numeric_limits<unsigned>::max() )):  AccessException
+        # with self.assertRaises( refEnumT.Value = int(MyEntry.Value & numeric_limits<unsigned>::max() )):  genicam.AccessException
+        # with self.assertRaises( refFalse.Value = int(MyEntry.Value & numeric_limits<unsigned>::max() )):  genicam.AccessException
 
 
         # With the fix of Mantis 376, the following assertion would fail.
         #    self.assertEqual( 0, refEnumT.Value )
 
         # Since no enum references are set, GetValue() must throw an exception
-        # with self.assertRaises( refEnumT.Value):   AccessException  # checks if Mantis 376 works
+        # with self.assertRaises( refEnumT.Value):   genicam.AccessException  # checks if Mantis 376 works
 
-        # with self.assertRaises( refFalse.Value):  AccessException
+        # with self.assertRaises( refFalse.Value):  genicam.AccessException
 
         # refEnumT.SetEnumReference(0, "Mono8")
         # refEnumT.SetEnumReference(1, "Mono16")
@@ -426,17 +426,17 @@ class EnumerationTestSuite(GenicamTestCase):
 
         # refEnumT = "Mono16"
         # self.assertEqual( 1, refEnumT.GetIntValue() )
-        # with self.assertRaises( refFalse = "Mono16"):   AccessException
+        # with self.assertRaises( refFalse = "Mono16"):   genicam.AccessException
 
         # refEnumT = gcstring("RGB24")
         # self.assertEqual( 2, refEnumT.GetIntValue() )
-        # with self.assertRaises( refFalse = gcstring("Mono16")):   AccessException
+        # with self.assertRaises( refFalse = gcstring("Mono16")):   genicam.AccessException
 
         # self.assertEqual( gcstring("RGB24"), *refEnumT )
-        # with self.assertRaises( *refFalse):   AccessException
+        # with self.assertRaises( *refFalse):   genicam.AccessException
 
         # self.assertEqual( 2, refEnumT() )
-        # with self.assertRaises( refFalse()):  AccessException
+        # with self.assertRaises( refFalse()):  genicam.AccessException
 
         Camera.GetNode("PixelFormat")
 
@@ -465,7 +465,7 @@ class EnumerationTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "EnumerationTestSuite_TestDisplayName")
 
         Enumeration = Camera.GetNode("Enumeration")
@@ -507,7 +507,7 @@ class EnumerationTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "EnumerationTestSuite_TestNumericValue")
 
         Enum = Camera.GetNode("Enum")
@@ -520,7 +520,7 @@ class EnumerationTestSuite(GenicamTestCase):
 
         # the same through reference
         # CEnumEntryRef refEnumEntry1, refEnumEntry2
-        # self.assertRaises (refEnumEntry1.GetNumericValue(), GenICam::AccessException)
+        # self.assertRaises (refEnumEntry1.GetNumericValue(), GenICam::genicam.AccessException)
         # self.assertTrue_NO_THROW(refEnumEntry1.SetReference( EnumEntry1 ) )
         # self.assertTrue_NO_THROW(refEnumEntry2.SetReference( EnumEntry2 ) )
         # self.assertAlmostEqual( 1.5, refEnumEntry1.GetNumericValue(), delta=self.FLOAT64_EPSILON )
@@ -555,8 +555,8 @@ class EnumerationTestSuite(GenicamTestCase):
             Continuous = 3
 
         """============ Setup the register space ========== """
-        regs = [("Gain", "uint32_t", 0, RW, LittleEndian),
-                ("GainAutoReg", "uint8_t", 0, RW, LittleEndian),
+        regs = [("Gain", "uint32_t", 0, genicam.RW, genicam.LittleEndian),
+                ("GainAutoReg", "uint8_t", 0, genicam.RW, genicam.LittleEndian),
                 ]
 
         GainAutoFeaturePort = CStructTestPort(regs)
@@ -612,7 +612,7 @@ class EnumerationTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "EnumerationTestSuite_TestAutoGain")
         Camera._Connect(GainAutoFeaturePort, "Port")
 
@@ -835,7 +835,7 @@ class EnumerationTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "EnumerationTestSuite_TestGetEntry")
 
         Enum = Camera.GetNode("Enum")
@@ -871,7 +871,7 @@ class EnumerationTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "EnumerationTestSuite_TestAccessMode")
 
         # Fetch node pointers
@@ -882,34 +882,34 @@ class EnumerationTestSuite(GenicamTestCase):
         ToggleImplementationAvailabilty = Camera.GetNode("Toggle_I")
 
         # What happens if both EnumEntries become not available?
-        self.assertEqual(RW, Enum.GetAccessMode())
+        self.assertEqual(genicam.RW, Enum.GetAccessMode())
         ToggleAvailabilty.SetValue(0)
-        self.assertEqual(NA, Enum.GetAccessMode())
+        self.assertEqual(genicam.NA, Enum.GetAccessMode())
         # Repeat the same test to see if correct access mode was cached
-        self.assertEqual(NA, Enum.GetAccessMode())
-        with self.assertRaises(GenericException):   Enum.GetIntValue()
+        self.assertEqual(genicam.NA, Enum.GetAccessMode())
+        with self.assertRaises(genicam.GenericException):   Enum.GetIntValue()
         ToggleAvailabilty.SetValue(1)
-        self.assertEqual(RW, Enum.GetAccessMode())
+        self.assertEqual(genicam.RW, Enum.GetAccessMode())
 
         # What happens if both EnumEntries become not implemented?
-        self.assertEqual(RW, Enum.GetAccessMode())
+        self.assertEqual(genicam.RW, Enum.GetAccessMode())
         ToggleImplementationAvailabilty.SetValue(0)
-        self.assertEqual(NI, Enum.GetAccessMode())
+        self.assertEqual(genicam.NI, Enum.GetAccessMode())
         ToggleImplementationAvailabilty.SetValue(1)
-        self.assertEqual(RW, Enum.GetAccessMode())
+        self.assertEqual(genicam.RW, Enum.GetAccessMode())
 
         # Same questions but triggered using ImposeAccessMode
-        self.assertEqual(RW, Enum.GetAccessMode())
-        Enum.Node.ImposeAccessMode(RO)
-        self.assertEqual(RO, Enum.GetAccessMode())
-        EnumEntry1.Node.ImposeAccessMode(NA)
-        self.assertEqual(RO, Enum.GetAccessMode())
-        EnumEntry2.Node.ImposeAccessMode(NA)
-        self.assertEqual(NA, Enum.GetAccessMode())
-        EnumEntry1.Node.ImposeAccessMode(NI)
-        self.assertEqual(NA, Enum.GetAccessMode())
-        EnumEntry2.Node.ImposeAccessMode(NI)
-        self.assertEqual(NI, Enum.GetAccessMode())
+        self.assertEqual(genicam.RW, Enum.GetAccessMode())
+        Enum.Node.ImposeAccessMode(genicam.RO)
+        self.assertEqual(genicam.RO, Enum.GetAccessMode())
+        EnumEntry1.Node.ImposeAccessMode(genicam.NA)
+        self.assertEqual(genicam.RO, Enum.GetAccessMode())
+        EnumEntry2.Node.ImposeAccessMode(genicam.NA)
+        self.assertEqual(genicam.NA, Enum.GetAccessMode())
+        EnumEntry1.Node.ImposeAccessMode(genicam.NI)
+        self.assertEqual(genicam.NA, Enum.GetAccessMode())
+        EnumEntry2.Node.ImposeAccessMode(genicam.NI)
+        self.assertEqual(genicam.NI, Enum.GetAccessMode())
 
     def test_Ticket778(self):
         # create and initialize node map
@@ -961,7 +961,7 @@ class EnumerationTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "EnumerationTestSuite_TestTicket778")
 
         EnumA = Camera.GetNode("EnumA")
@@ -974,17 +974,17 @@ class EnumerationTestSuite(GenicamTestCase):
         EnumEntry_EnumB_EnumValue2 = Camera.GetNode("EnumEntry_EnumB_EnumValue2")
         AvailableB = Camera.GetNode("AvailableB")
 
-        self.assertEqual(NoCache, AvailableA.Node.GetCachingMode())
-        self.assertEqual(WriteThrough, AvailableB.Node.GetCachingMode())
+        self.assertEqual(genicam.NoCache, AvailableA.Node.GetCachingMode())
+        self.assertEqual(genicam.WriteThrough, AvailableB.Node.GetCachingMode())
 
-        self.assertEqual(No, EnumEntry_EnumA_EnumValue1.Node.IsAccessModeCacheable())
-        self.assertEqual(Yes, EnumEntry_EnumB_EnumValue1.Node.IsAccessModeCacheable())
+        self.assertEqual(genicam.No, EnumEntry_EnumA_EnumValue1.Node.IsAccessModeCacheable())
+        self.assertEqual(genicam.Yes, EnumEntry_EnumB_EnumValue1.Node.IsAccessModeCacheable())
 
-        self.assertEqual(Yes, EnumEntry_EnumA_EnumValue2.Node.IsAccessModeCacheable())
-        self.assertEqual(Yes, EnumEntry_EnumB_EnumValue2.Node.IsAccessModeCacheable())
+        self.assertEqual(genicam.Yes, EnumEntry_EnumA_EnumValue2.Node.IsAccessModeCacheable())
+        self.assertEqual(genicam.Yes, EnumEntry_EnumB_EnumValue2.Node.IsAccessModeCacheable())
 
-        self.assertEqual(No, EnumA.Node.IsAccessModeCacheable())
-        self.assertEqual(Yes, EnumB.Node.IsAccessModeCacheable())
+        self.assertEqual(genicam.No, EnumA.Node.IsAccessModeCacheable())
+        self.assertEqual(genicam.Yes, EnumB.Node.IsAccessModeCacheable())
 
 
 if __name__ == "__main__":

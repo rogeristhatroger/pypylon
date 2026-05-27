@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 from testport import CTestPort, cast_buffer, cast_data, sizeof, CStructTestPort
@@ -39,12 +39,12 @@ class CommandTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCommand01")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x00ff, "uint32_t", 42, RW, BigEndian)
+        Port.CreateEntry(0x00ff, "uint32_t", 42, genicam.RW, genicam.BigEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -58,7 +58,7 @@ class CommandTestSuite(GenicamTestCase):
         Cmd = Node
         self.assertTrue(bool(Node))
         self.assertTrue(bool(Cmd))
-        self.assertEqual(intfICommand, Cmd.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfICommand, Cmd.Node.GetPrincipalInterfaceType())
 
         ##### getproperty of command pointer -
         try:
@@ -73,15 +73,15 @@ class CommandTestSuite(GenicamTestCase):
         # manipulate the command register in order to simulate a self-resetting toggle
         # CLittleEndian<int32_t> tmp
         tmp_data = Port.Read(0x00ff, sizeof("int32_t"))
-        self.assertEqual(0x21430000, cast_buffer("int32_t", LittleEndian, tmp_data))
+        self.assertEqual(0x21430000, cast_buffer("int32_t", genicam.LittleEndian, tmp_data))
         tmp = 0
-        Port.Write(0x00ff, cast_data("int32_t", LittleEndian, tmp))
+        Port.Write(0x00ff, cast_data("int32_t", genicam.LittleEndian, tmp))
         self.assertEqual(True, Cmd.IsDone())
 
         # once again with verification
         Cmd.Execute()
         self.assertEqual(False, Cmd.IsDone(True))
-        Port.Write(0x00ff, cast_data("int32_t", LittleEndian, tmp))
+        Port.Write(0x00ff, cast_data("int32_t", genicam.LittleEndian, tmp))
         self.assertEqual(True, Cmd.IsDone(True))
 
         # happy path (what to test on execution without verification?)
@@ -93,13 +93,13 @@ class CommandTestSuite(GenicamTestCase):
         self.assertEqual(False, Cmd.IsDone())
         # manipulate the command register in order to simulate a self-resetting toggle
         tmp_data = Port.Read(0x00ff, sizeof("int32_t"))
-        self.assertEqual(0x21430000, cast_buffer("int32_t", LittleEndian, tmp_data))
+        self.assertEqual(0x21430000, cast_buffer("int32_t", genicam.LittleEndian, tmp_data))
         tmp = 0
-        Port.Write(0x00ff, cast_data("int32_t", LittleEndian, tmp))
+        Port.Write(0x00ff, cast_data("int32_t", genicam.LittleEndian, tmp))
         self.assertEqual(True, Cmd.IsDone())
 
         # TestAccessMode
-        self.assertEqual(RW, Cmd.GetAccessMode())
+        self.assertEqual(genicam.RW, Cmd.GetAccessMode())
 
         #
         # Test the IValue interface
@@ -116,7 +116,7 @@ class CommandTestSuite(GenicamTestCase):
         self.assertTrue(None != Value.Node)
 
         # try to use an illegal string
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             Value.FromString("foo")
 
         Value.FromString("true")
@@ -131,7 +131,7 @@ class CommandTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCommand02")
 
         #
@@ -156,7 +156,7 @@ class CommandTestSuite(GenicamTestCase):
         # Execute function
         # 1st Method
         strExec = "0"
-        with self.assertRaises(InvalidArgumentException):
+        with self.assertRaises(genicam.InvalidArgumentException):
             Value.FromString(strExec)
 
         # 2nd Method
@@ -188,7 +188,7 @@ class CommandTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCommand03")
 
         Command = Camera.GetNode("Command")
@@ -201,7 +201,7 @@ class CommandTestSuite(GenicamTestCase):
         self.assertTrue(bool(CommandValue))
 
         CallbackTarget = CallbackObject()
-        Register(Command.Node, CallbackTarget.Callback)
+        genicam.Register(Command.Node, CallbackTarget.Callback)
 
         # nothing happened so no callback expected
         self.assertEqual(True, Command.IsDone())
@@ -244,7 +244,7 @@ class CommandTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCommand04")
 
         Command = Camera.GetNode("Command")
@@ -257,7 +257,7 @@ class CommandTestSuite(GenicamTestCase):
         self.assertTrue(bool(CommandValue))
 
         CallbackTarget = CallbackObject()
-        Register(Command.Node, CallbackTarget.Callback)
+        genicam.Register(Command.Node, CallbackTarget.Callback)
 
         # due to the execute a callback is fired
         Command.Execute()
@@ -304,7 +304,7 @@ class CommandTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCommand05")
 
         Command = Camera.GetNode("Command")
@@ -317,7 +317,7 @@ class CommandTestSuite(GenicamTestCase):
         self.assertTrue(bool(CommandValue))
 
         CallbackTarget = CallbackObject()
-        Register(Command.Node, CallbackTarget.Callback)
+        genicam.Register(Command.Node, CallbackTarget.Callback)
 
         Command.Execute()
         self.assertEqual(1, CallbackTarget.Count())
@@ -345,7 +345,7 @@ class CommandTestSuite(GenicamTestCase):
         self.assertTrue(bool(CommandWO))
 
         CallbackTargetWO = CallbackObject()
-        Register(CommandWO.Node, CallbackTargetWO.Callback)
+        genicam.Register(CommandWO.Node, CallbackTargetWO.Callback)
 
         CommandWO.Execute()
         self.assertEqual(1, CallbackTargetWO.Count())
@@ -360,7 +360,7 @@ class CommandTestSuite(GenicamTestCase):
         self.assertTrue(bool(Command_ValueWO))
 
         CallbackTarget_ValueWO = CallbackObject()
-        Register(Command_ValueWO.Node, CallbackTarget_ValueWO.Callback)
+        genicam.Register(Command_ValueWO.Node, CallbackTarget_ValueWO.Callback)
 
         Command_ValueWO.Execute()
         self.assertEqual(1, CallbackTarget_ValueWO.Count())
@@ -404,16 +404,16 @@ class CommandTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCommand06")
 
         Command = Camera.GetNode("Command")
 
-        self.assertEqual(NA, Command.GetAccessMode())
+        self.assertEqual(genicam.NA, Command.GetAccessMode())
 
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             Command.FromString("42")
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             Command.Execute()
 
         # disable the command value
@@ -421,15 +421,15 @@ class CommandTestSuite(GenicamTestCase):
         LockCommand = Camera.GetNode("LockIt")
         LockCommand.Value = 0
         CmdValueAvailability.Value = 0
-        self.assertEqual(NA, Command.GetAccessMode())
-        with self.assertRaises(AccessException):
+        self.assertEqual(genicam.NA, Command.GetAccessMode())
+        with self.assertRaises(genicam.AccessException):
             Command.FromString("42")
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             Command.Execute()
 
         CmdValueImpl = Camera.GetNode("CommandValueIsImpl")
         CmdValueImpl.Value = 0
-        self.assertEqual(NI, Command.GetAccessMode())
+        self.assertEqual(genicam.NI, Command.GetAccessMode())
 
     def test_Command07(self):
         """[ GenApiTest@CommandTestSuite_TestCommand07.xml|gxml
@@ -456,7 +456,7 @@ class CommandTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCommand07")
 
         CommandRO = Camera.GetNode("CommandRO")
@@ -464,9 +464,9 @@ class CommandTestSuite(GenicamTestCase):
         Command_ValueWO = Camera.GetNode("Command_ValueWO")
         self.assertTrue(bool(Command_ValueWO))
 
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             CommandRO.Execute()
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             Command_ValueWO.Execute()
 
     def test_CommandMantis250(self):
@@ -509,13 +509,13 @@ class CommandTestSuite(GenicamTestCase):
         <Port Name="MyPort"/>
     
         """
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
 
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCommandMantis250")
 
         Port = CTestPort()
-        Port.CreateEntry(0x0004, "uint32_t", 2, RW, BigEndian)  # VerticalBinningReg
-        Port.CreateEntry(0x0008, "uint64_t", 0, RW, BigEndian)  # UserSetLoadReg
+        Port.CreateEntry(0x0004, "uint32_t", 2, genicam.RW, genicam.BigEndian)  # VerticalBinningReg
+        Port.CreateEntry(0x0008, "uint64_t", 0, genicam.RW, genicam.BigEndian)  # UserSetLoadReg
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -525,10 +525,10 @@ class CommandTestSuite(GenicamTestCase):
         Binning = Camera.GetNode("BinningVertical")
 
         CallbackBinning = CallbackObjectMantis250()
-        Register(Binning.Node, CallbackBinning.Callback)
+        genicam.Register(Binning.Node, CallbackBinning.Callback)
 
         CallbackCommand = CallbackObjectMantis250()
-        Register(Command.Node, CallbackCommand.Callback)
+        genicam.Register(Command.Node, CallbackCommand.Callback)
 
         # this writes 42 to the UserSetLoadReg
         # because VerticalBinningReg has a pInvalidates pointer to UserSetLoadReg it is invalidated
@@ -543,8 +543,8 @@ class CommandTestSuite(GenicamTestCase):
 
         # now we reset UserSetLoadReg
         value = 0
-        AccessMode = RO
-        Port.UpdateEntry(0x0008, cast_data("uint64_t", LittleEndian, value), AccessMode)
+        AccessMode = genicam.RO
+        Port.UpdateEntry(0x0008, cast_data("uint64_t", genicam.LittleEndian, value), AccessMode)
 
         # on the next IsDone the callback fires
         self.assertEqual(True, Command.IsDone())
@@ -569,7 +569,7 @@ class CommandTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCommandMantis257")
 
         Command = Camera.GetNode("Command")
@@ -579,7 +579,7 @@ class CommandTestSuite(GenicamTestCase):
         CommandValue = Camera.GetNode("CommandValue")
 
         CallbackTarget = CallbackObjectMantis257()
-        Register(Command.Node, CallbackTarget.Callback)
+        genicam.Register(Command.Node, CallbackTarget.Callback)
 
         # due to the execute a callback is fired
         Command.Execute()
@@ -641,13 +641,13 @@ class CommandTestSuite(GenicamTestCase):
         <Port Name="MyPort"/>
     
         """
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
 
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCommandMantis250_sch11")
 
         Port = CTestPort()
-        Port.CreateEntry(0x0004, "uint32_t", 2, RW, BigEndian)
-        Port.CreateEntry(0x0008, "uint64_t", 0, RW, BigEndian)
+        Port.CreateEntry(0x0004, "uint32_t", 2, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(0x0008, "uint64_t", 0, genicam.RW, genicam.BigEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -657,10 +657,10 @@ class CommandTestSuite(GenicamTestCase):
         Binning = Camera.GetNode("BinningVertical")
 
         CallbackBinning = CallbackObjectMantis250()
-        Register(Binning.Node, CallbackBinning.Callback)
+        genicam.Register(Binning.Node, CallbackBinning.Callback)
 
         CallbackCommand = CallbackObjectMantis250()
-        Register(Command.Node, CallbackCommand.Callback)
+        genicam.Register(Command.Node, CallbackCommand.Callback)
 
         Command.Execute()
         self.assertEqual(1, CallbackBinning.Count())
@@ -671,8 +671,8 @@ class CommandTestSuite(GenicamTestCase):
         self.assertEqual(1, CallbackCommand.Count())
 
         value = 0
-        AccessMode = RO
-        Port.UpdateEntry(0x0008, cast_data("uint64_t", LittleEndian, value), AccessMode)
+        AccessMode = genicam.RO
+        Port.UpdateEntry(0x0008, cast_data("uint64_t", genicam.LittleEndian, value), AccessMode)
 
         self.assertEqual(True, Command.IsDone(False))
         self.assertEqual(True, Command.IsDone())
@@ -712,24 +712,24 @@ class CommandTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCornerCases")
 
         # test command which does not have readable command value
         CommandValWO = Camera.GetNode("CommandValWO")
         self.assertTrue(bool(CommandValWO))
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             CommandValWO.Execute()
-        # ??self.assertRaises (ptrCommandValWO.IsDone(), AccessException)
-        self.assertEqual(NA, CommandValWO.GetAccessMode())
+        # ??self.assertRaises (ptrCommandValWO.IsDone(), genicam.AccessException)
+        self.assertEqual(genicam.NA, CommandValWO.GetAccessMode())
 
         # test command which has command value NI
         CommandValNI = Camera.GetNode("CommandValNI")
         self.assertTrue(bool(CommandValNI))
-        with self.assertRaises(AccessException):
+        with self.assertRaises(genicam.AccessException):
             CommandValNI.Execute()
-        self.assertEqual(NI, CommandValNI.GetAccessMode())
-        with self.assertRaises(AccessException):
+        self.assertEqual(genicam.NI, CommandValNI.GetAccessMode())
+        with self.assertRaises(genicam.AccessException):
             CommandValNI.IsDone()
 
     def test_CommandCaching(self):
@@ -758,10 +758,10 @@ class CommandTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestCommandCaching")
 
-        regs = [("ValueCommand", "uint32_t", 0, RW, LittleEndian),
+        regs = [("ValueCommand", "uint32_t", 0, genicam.RW, genicam.LittleEndian),
                 ]
 
         Port = CStructTestPort(regs)
@@ -832,12 +832,12 @@ class CommandTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CommandTestSuite_TestTicket768")
 
-        regs = [("ValueCommand1", "uint32_t", 0, RW, LittleEndian),
-                ("ValueCommand2", "uint32_t", 0, RW, LittleEndian),
-                ("ValueCommand3", "uint32_t", 0, RW, LittleEndian), ]
+        regs = [("ValueCommand1", "uint32_t", 0, genicam.RW, genicam.LittleEndian),
+                ("ValueCommand2", "uint32_t", 0, genicam.RW, genicam.LittleEndian),
+                ("ValueCommand3", "uint32_t", 0, genicam.RW, genicam.LittleEndian), ]
 
         Port = CStructTestPort(regs)
         Camera._Connect(Port, "Device")

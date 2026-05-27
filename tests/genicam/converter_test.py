@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 
@@ -108,7 +108,7 @@ class ConverterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_test_PixelFormat")
 
         ColorCode = Camera.GetNode("ColorCode")
@@ -265,11 +265,11 @@ class ConverterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestReadModifyWrite")
 
         ShutterAbs = Camera.GetNode("ShutterAbs")
-        self.assertEqual(intfIFloat, ShutterAbs.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIFloat, ShutterAbs.Node.GetPrincipalInterfaceType())
 
         ShutterRaw = Camera.GetNode("ShutterRaw")
 
@@ -314,12 +314,12 @@ class ConverterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestReadModifyWriteInt")
 
         ShutterAbs = Camera.GetNode("ShutterAbs")
 
-        self.assertEqual(intfIInteger, ShutterAbs.Node.GetPrincipalInterfaceType())
+        self.assertEqual(genicam.intfIInteger, ShutterAbs.Node.GetPrincipalInterfaceType())
 
         ShutterRaw = Camera.GetNode("ShutterRaw")
 
@@ -451,7 +451,7 @@ class ConverterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestAutomatic")
 
         IntInc = Camera.GetNode("IntInc")
@@ -495,12 +495,12 @@ class ConverterTestSuite(GenicamTestCase):
         self.assertTrue(FloatDec.GetValue() == 6)
 
         # Check the representations
-        self.assertTrue(IntDec.GetRepresentation() == Linear)
-        self.assertTrue(FloatInc.GetRepresentation() == PureNumber)
-        self.assertTrue(FloatInc.GetRepresentation() == PureNumber)  # second call for happy path
+        self.assertTrue(IntDec.GetRepresentation() == genicam.Linear)
+        self.assertTrue(FloatInc.GetRepresentation() ==genicam.PureNumber)
+        self.assertTrue(FloatInc.GetRepresentation() == genicam.PureNumber)  # second call for happy path
         IntDec_OwnRepre = Camera.GetNode("IntDec_OwnRepre")
 
-        self.assertTrue(IntDec_OwnRepre.GetRepresentation() == Logarithmic)
+        self.assertTrue(IntDec_OwnRepre.GetRepresentation() == genicam.Logarithmic)
 
         # Check the units
         IntCToFloat = Camera.GetNode("IntCToFloat")
@@ -563,7 +563,7 @@ class ConverterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestIntAutomatic")
 
         IntInc = Camera.GetNode("IntInc")
@@ -577,11 +577,11 @@ class ConverterTestSuite(GenicamTestCase):
         self.assertTrue(IntDec.Min == 5)
         self.assertTrue(IntDec.Max == 9)
 
-        self.assertTrue(IntDec.GetRepresentation() == Linear)
-        self.assertTrue(IntDec.GetRepresentation() == Linear)  # second call for happy path
+        self.assertTrue(IntDec.GetRepresentation() == genicam.Linear)
+        self.assertTrue(IntDec.GetRepresentation() == genicam.Linear)  # second call for happy path
         IntDec_OwnRepre = Camera.GetNode("IntDec_OwnRepre")
 
-        self.assertTrue(IntDec_OwnRepre.GetRepresentation() == HexNumber)
+        self.assertTrue(IntDec_OwnRepre.GetRepresentation() == genicam.HexNumber)
 
     def test_Slope(self):
         # ESlope SlopVal
@@ -616,7 +616,7 @@ class ConverterTestSuite(GenicamTestCase):
         # gcstring strVal
         # self.self.assertRaises(
         #    ESlopeClass::ToString(strVal, pSlopVal),
-        #    GenICam::InvalidArgumentException
+        #    GenICam::genicam.InvalidArgumentException
         # )
 
         # self.assertEqual(gcstring("Increasing"), ESlopeClass::ToString(Increasing))
@@ -661,17 +661,17 @@ class ConverterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestInvalidFormulas")
 
         Result = Camera.GetNode("Result")
 
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             Result.GetValue()
 
         IntResult = Camera.GetNode("IntResult")
 
-        with self.assertRaises(LogicalErrorException):
+        with self.assertRaises(genicam.LogicalErrorException):
             IntResult.GetValue()
 
     def test_CaseInsensitive(self):
@@ -712,7 +712,7 @@ class ConverterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestCaseInsensitive")
 
         # upper case
@@ -728,14 +728,14 @@ class ConverterTestSuite(GenicamTestCase):
         # lower case
         IntResult = Camera.GetNode("IntResult2")
 
-        with self.assertRaises(LogicalErrorException):   IntResult.SetValue(1)
-        with self.assertRaises(LogicalErrorException):   IntResult.GetValue()
+        with self.assertRaises(genicam.LogicalErrorException):   IntResult.SetValue(1)
+        with self.assertRaises(genicam.LogicalErrorException):   IntResult.GetValue()
 
         # mixed case
         IntResult = Camera.GetNode("IntResult3")
 
-        with self.assertRaises(LogicalErrorException):   IntResult.SetValue(1)
-        with self.assertRaises(LogicalErrorException):   IntResult.GetValue()
+        with self.assertRaises(genicam.LogicalErrorException):   IntResult.SetValue(1)
+        with self.assertRaises(genicam.LogicalErrorException):   IntResult.GetValue()
 
     def test_UseTOinFROM(self):
         """[ GenApiTest@ConverterTestSuite_TestUseTOinFROM.xml|gxml
@@ -754,7 +754,7 @@ class ConverterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestUseTOinFROM")
 
         IntResult = Camera.GetNode("IntResult")
@@ -795,7 +795,7 @@ class ConverterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestFormulaProperty")
 
         IntResult = Camera.GetNode("IntResult")
@@ -873,7 +873,7 @@ class ConverterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestConstantAndExpression")
 
         IntResult = Camera.GetNode("IntResult")
@@ -931,7 +931,7 @@ class ConverterTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestLimits")
 
         IntResult = Camera.GetNode("IntResult")
@@ -971,12 +971,12 @@ class ConverterTestSuite(GenicamTestCase):
         
             """
 
-            Camera = CNodeMapRef()
+            Camera = genicam.CNodeMapRef()
             Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestUpperLowerCase_1_0")
 
             ShutterAbs = Camera.GetNode("ShutterAbs")
 
-            self.assertEqual(intfIFloat, ShutterAbs.Node.GetPrincipalInterfaceType())
+            self.assertEqual(genicam.intfIFloat, ShutterAbs.Node.GetPrincipalInterfaceType())
 
             ShutterRaw = Camera.GetNode("ShutterRaw")
 
@@ -1023,12 +1023,12 @@ class ConverterTestSuite(GenicamTestCase):
             
             """
 
-            Camera = CNodeMapRef()
+            Camera = genicam.CNodeMapRef()
             Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestUpperLowerCase_1_1")
 
             ShutterAbs = Camera.GetNode("ShutterAbs")
 
-            self.assertEqual(intfIFloat, ShutterAbs.Node.GetPrincipalInterfaceType())
+            self.assertEqual(genicam.intfIFloat, ShutterAbs.Node.GetPrincipalInterfaceType())
 
             ShutterRaw = Camera.GetNode("ShutterRaw")
 
@@ -1143,12 +1143,12 @@ class ConverterTestSuite(GenicamTestCase):
         </Converter>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
 
         Camera._LoadXMLFromFile("GenApiTest", "ConverterTestSuite_TestListOfValidValue")
 
         Value = Camera.GetNode("Converter")
-        self.assertEqual(listIncrement, Value.GetIncMode())
+        self.assertEqual(genicam.listIncrement, Value.GetIncMode())
 
         valueList = Value.GetListOfValidValues()
         self.assertEqual(3, len(valueList))
@@ -1171,8 +1171,8 @@ class ConverterTestSuite(GenicamTestCase):
 
         FloatValue = Camera.GetNode("FloatConverter")
         # refFloatValue.SetReference(ptrFloatValue)
-        # self.assertEqual(listIncrement, FloatValue.GetIncMode())
-        # self.assertEqual(listIncrement, refFloatValue.GetIncMode())
+        # self.assertEqual(genicam.listIncrement, FloatValue.GetIncMode())
+        # self.assertEqual(genicam.listIncrement, refFloatValue.GetIncMode())
 
         floatList = FloatValue.GetListOfValidValues()
         self.assertEqual(3, len(floatList))
@@ -1190,7 +1190,7 @@ class ConverterTestSuite(GenicamTestCase):
         self.assertAlmostEqual(2.2, floatList[2], delta=self.FLOAT64_EPSILON)
 
         FloatValue = Camera.GetNode("FloatConverter2")
-        # self.assertEqual( listIncrement, FloatValue.GetIncMode() )
+        # self.assertEqual( genicam.listIncrement, FloatValue.GetIncMode() )
 
         floatList = FloatValue.GetListOfValidValues()
         self.assertEqual(3, len(floatList))

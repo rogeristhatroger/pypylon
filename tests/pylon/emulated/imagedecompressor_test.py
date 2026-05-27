@@ -7,7 +7,7 @@ import gc
 import unittest
 
 # These Mono8 decompression fixtures were copied from
-# `tests/pylon_tests/utils/decompression_test.py` so this emulated suite stays
+# `tests/pylon/decompression_test.py` so this emulated suite stays
 # self-contained while still using the same documented descriptor/payload pair.
 COMPRESSION_DESCRIPTOR_MONO8 = (
     b"\x01\x00\x01\x00\x01\x00\x00\x00\x08\x00\x0a\x00\x02\x00\x01\x00"
@@ -664,14 +664,14 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
         self.assertEqual(bytes(first.GetBuffer()), bytes(second.GetBuffer()))
 
     def test_decompress_image_grab_variant_success_path_requires_real_camera(self):
-        """DecompressImage(grab_result) success path is only reachable with a compression-capable camera; covered in tests/pylon_tests/usb/decompression_test.py."""
+        """DecompressImage(grab_result) success path is only reachable with a compression-capable camera; covered in tests/pylon/usb/decompression_test.py."""
         # The Basler camera emulator does not produce compressed grabs, so
         # the (CGrabResultPtr) overload's success branch cannot be driven
         # from this emulated suite.  The failure path for this overload is
         # verified by test_decompress_image_grab_variant_on_uncompressed_grab_raises.
         self.skipTest(
             "emulator cannot produce compressed grab results; "
-            "success path exercised in tests/pylon_tests/usb/decompression_test.py"
+            "success path exercised in tests/pylon/usb/decompression_test.py"
         )
 
     # ------------------------------------------------------------------

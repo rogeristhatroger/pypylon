@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase, CDFHeader, CDFFooter
 from testport import CTestPort, cast_buffer, cast_data
@@ -46,7 +46,7 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback01")
 
         CallbackUtility.Reset()
@@ -54,11 +54,11 @@ class CallbackTestSuite(GenicamTestCase):
         Float01 = Camera.GetNode("MyFloat")
 
         # register function pointer
-        Register(Float01.Node, CallbackUtility.Callback)
+        genicam.Register(Float01.Node, CallbackUtility.Callback)
 
         # register invalid function pointer - nothing should get broken
         with self.assertRaises(TypeError):
-            Register(Float01.Node, None)
+            genicam.Register(Float01.Node, None)
 
         # register member function
         # CallbackObject obj
@@ -85,7 +85,7 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback01String")
 
         CallbackUtility.Reset()
@@ -93,7 +93,7 @@ class CallbackTestSuite(GenicamTestCase):
         String01 = Camera.GetNode("MyString")
 
         # register function pointer
-        Register(String01.Node, CallbackUtility.Callback)
+        genicam.Register(String01.Node, CallbackUtility.Callback)
 
         # check if callbacks are fired
         numCalls = 42
@@ -116,12 +116,12 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback01Register")
 
         RegVal = 0
         Port = CTestPort()
-        Port.CreateEntry(0x0000, "uint8_t", RegVal, RW, LittleEndian)
+        Port.CreateEntry(0x0000, "uint8_t", RegVal, genicam.RW, genicam.LittleEndian)
         Camera._Connect(Port, "Port")
 
         CallbackUtility.Reset()
@@ -129,7 +129,7 @@ class CallbackTestSuite(GenicamTestCase):
         Register01 = Camera.GetNode("MyRegister")
 
         # register function pointer
-        Register(Register01.Node, CallbackUtility.Callback)
+        genicam.Register(Register01.Node, CallbackUtility.Callback)
 
         # check if callbacks are fired
         numCalls = 42
@@ -138,7 +138,7 @@ class CallbackTestSuite(GenicamTestCase):
         self.assertEqual(numCalls, CallbackUtility.Count())
         RegVal = 17
         for i in range(0, numCalls):
-            Register01.Set(cast_data("uint8_t", LittleEndian, RegVal))
+            Register01.Set(cast_data("uint8_t", genicam.LittleEndian, RegVal))
         self.assertEqual(2 * numCalls, CallbackUtility.Count())
 
     # ---------------------------------------------------------------------------
@@ -161,7 +161,7 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback02")
 
         Float01 = Camera.GetNode("MyFloat")
@@ -169,8 +169,8 @@ class CallbackTestSuite(GenicamTestCase):
         O1 = CallbackObject()
         O2 = CallbackObject()
 
-        hCbk1 = Register(Float01.Node, O1.Callback)
-        hCbk2 = Register(Float01.Node, O2.Callback)
+        hCbk1 = genicam.Register(Float01.Node, O1.Callback)
+        hCbk2 = genicam.Register(Float01.Node, O2.Callback)
 
         numCalls = 42
         for i in range(0, numCalls):
@@ -180,7 +180,7 @@ class CallbackTestSuite(GenicamTestCase):
         self.assertEqual(numCalls, O2.Count())
 
         # de-register callback
-        Deregister(hCbk1)
+        genicam.Deregister(hCbk1)
         self.assertFalse(Float01.Node.DeregisterCallback(hCbk1))
 
         Float01.Value = 33
@@ -206,7 +206,7 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback03")
 
         O1 = CallbackObject()
@@ -214,9 +214,9 @@ class CallbackTestSuite(GenicamTestCase):
 
         Bool = Camera.GetNode("MyBoolean")
 
-        Register(Bool.Node, CallbackUtility.Callback)
-        Register(Bool.Node, O1.Callback)
-        Register(Bool.Node, O2.Callback)
+        genicam.Register(Bool.Node, CallbackUtility.Callback)
+        genicam.Register(Bool.Node, O1.Callback)
+        genicam.Register(Bool.Node, O2.Callback)
 
         numCalls = 42
         CallbackUtility.Reset()
@@ -245,7 +245,7 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback04")
 
         O1 = CallbackObject()
@@ -253,9 +253,9 @@ class CallbackTestSuite(GenicamTestCase):
 
         Cmd = Camera.GetNode("MyCommand")
 
-        Register(Cmd.Node, CallbackUtility.Callback)
-        Register(Cmd.Node, O1.Callback)
-        Register(Cmd.Node, O2.Callback)
+        genicam.Register(Cmd.Node, CallbackUtility.Callback)
+        genicam.Register(Cmd.Node, O1.Callback)
+        genicam.Register(Cmd.Node, O2.Callback)
 
         numCalls = 42
         CallbackUtility.Reset()
@@ -295,7 +295,7 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback05")
 
         O1 = CallbackObject()
@@ -303,9 +303,9 @@ class CallbackTestSuite(GenicamTestCase):
 
         Enum = Camera.GetNode("MyFood")
 
-        Register(Enum.Node, CallbackUtility.Callback)
-        Register(Enum.Node, O1.Callback)
-        Register(Enum.Node, O2.Callback)
+        genicam.Register(Enum.Node, CallbackUtility.Callback)
+        genicam.Register(Enum.Node, O1.Callback)
+        genicam.Register(Enum.Node, O2.Callback)
 
         numCalls = 42
         CallbackUtility.Reset()
@@ -368,14 +368,14 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback06")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x000, "float32_t", 42, RW, BigEndian)
-        Port.CreateEntry(0x004, "float32_t", 42, RW, BigEndian)
-        Port.CreateEntry(0x008, "float32_t", 42, RW, BigEndian)
+        Port.CreateEntry(0x000, "float32_t", 42, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(0x004, "float32_t", 42, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(0x008, "float32_t", 42, genicam.RW, genicam.BigEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -391,13 +391,13 @@ class CallbackTestSuite(GenicamTestCase):
         try:
             ValueStr, AttributeStr = B.Node.GetProperty("ValueIndexed")
             print("ValueIndexed = " + ValueStr + " : " + AttributeStr + "\n")
-        except LogicalErrorException:
+        except genicam.LogicalErrorException:
             pass
 
-        Register(A.Node, CallbackUtility.Callback)
-        Register(B.Node, CallbackUtility.Callback)
-        Register(C.Node, CallbackUtility.Callback)
-        Register(D.Node, CallbackUtility.Callback)
+        genicam.Register(A.Node, CallbackUtility.Callback)
+        genicam.Register(B.Node, CallbackUtility.Callback)
+        genicam.Register(C.Node, CallbackUtility.Callback)
+        genicam.Register(D.Node, CallbackUtility.Callback)
 
         C.Value = 0.0
         D.Value = 1.0
@@ -502,17 +502,17 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback07")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0, "uint64_t", 42, RW, BigEndian)
-        Port.CreateEntry(8, "uint32_t", 10, RW, BigEndian)
-        Port.CreateEntry(12, "uint32_t", 20, RW, BigEndian)
-        Port.CreateEntry(16, "uint32_t", 40, RW, BigEndian)
-        Port.CreateEntry(20, "uint32_t", 50, RW, BigEndian)
-        Port.CreateEntry(24, "uint32_t", 60, RW, BigEndian)
+        Port.CreateEntry(0, "uint64_t", 42, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(8, "uint32_t", 10, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(12, "uint32_t", 20, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(16, "uint32_t", 40, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(20, "uint32_t", 50, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(24, "uint32_t", 60, genicam.RW, genicam.BigEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -528,9 +528,9 @@ class CallbackTestSuite(GenicamTestCase):
 
         NumPersons = Camera.GetNode("NumPersons")
 
-        Register(Enum.Node, cbFood.Callback)
-        Register(Price.Node, cbPrice.Callback)
-        Register(NumPersons.Node, cbPerson.Callback)
+        genicam.Register(Enum.Node, cbFood.Callback)
+        genicam.Register(Price.Node, cbPrice.Callback)
+        genicam.Register(NumPersons.Node, cbPerson.Callback)
 
         numCalls = 1
 
@@ -636,17 +636,17 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback08")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0, "uint64_t", 42, RW, BigEndian)
-        Port.CreateEntry(8, "uint32_t", 10, RW, BigEndian)
-        Port.CreateEntry(12, "uint32_t", 20, RW, BigEndian)
-        Port.CreateEntry(16, "uint32_t", 40, RW, BigEndian)
-        Port.CreateEntry(20, "uint32_t", 50, RW, BigEndian)
-        Port.CreateEntry(24, "uint32_t", 60, RW, BigEndian)
+        Port.CreateEntry(0, "uint64_t", 42, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(8, "uint32_t", 10, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(12, "uint32_t", 20, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(16, "uint32_t", 40, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(20, "uint32_t", 50, genicam.RW, genicam.BigEndian)
+        Port.CreateEntry(24, "uint32_t", 60, genicam.RW, genicam.BigEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -661,13 +661,13 @@ class CallbackTestSuite(GenicamTestCase):
         F = Camera.GetNode("F")
         G = Camera.GetNode("G")
 
-        Register(A.Node, cbA.Callback)
-        Register(B.Node, cbB.Callback)
-        Register(C.Node, cbC.Callback)
-        Register(D.Node, cbD.Callback)
-        Register(E.Node, cbE.Callback)
-        Register(F.Node, cbF.Callback)
-        Register(G.Node, cbG.Callback)
+        genicam.Register(A.Node, cbA.Callback)
+        genicam.Register(B.Node, cbB.Callback)
+        genicam.Register(C.Node, cbC.Callback)
+        genicam.Register(D.Node, cbD.Callback)
+        genicam.Register(E.Node, cbE.Callback)
+        genicam.Register(F.Node, cbF.Callback)
+        genicam.Register(G.Node, cbG.Callback)
 
         # set A => cb of A, B, D, E F, G not C
         numCalls = 1
@@ -902,7 +902,7 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback09")
 
         # create and initialize a test port
@@ -912,10 +912,10 @@ class CallbackTestSuite(GenicamTestCase):
         # for(uint32_t i=0 i < sizeof(sfvalue) i++) {
         #    sfvalue[i] = (int8_t)0xFF
         # }
-        Port.CreateEntry(0x000, "uint32_t", -1, RW, LittleEndian)
-        Port.CreateEntry(0x004, "uint32_t", -1, RW, LittleEndian)
+        Port.CreateEntry(0x000, "uint32_t", -1, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x004, "uint32_t", -1, genicam.RW, genicam.LittleEndian)
         Port.CreateEntry(0x008, "raw", 24, sfvalue, RW)
-        Port.CreateEntry(0x020, "uint32_t", -1, RW, LittleEndian)
+        Port.CreateEntry(0x020, "uint32_t", -1, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -934,11 +934,11 @@ class CallbackTestSuite(GenicamTestCase):
         # Register( D.GetNode(), cbD.Callback )
         # Register( F.GetNode(), cbF.Callback )
 
-        self.assertEqual(RO, F.GetAccessMode())
-        self.assertEqual(NA, B.GetAccessMode())
-        self.assertEqual(NA, A.GetAccessMode())
-        self.assertEqual(NA, C.GetAccessMode())
-        self.assertEqual(NA, D.GetAccessMode())
+        self.assertEqual(genicam.RO, F.GetAccessMode())
+        self.assertEqual(genicam.NA, B.GetAccessMode())
+        self.assertEqual(genicam.NA, A.GetAccessMode())
+        self.assertEqual(genicam.NA, C.GetAccessMode())
+        self.assertEqual(genicam.NA, D.GetAccessMode())
 
         # enable advanced feature and set address 0x20in quad 5
         Port.EnableAdvFeature(True)
@@ -951,10 +951,10 @@ class CallbackTestSuite(GenicamTestCase):
         B.Node.InvalidateNode()  # invalidate smart feature B
         # cbA.Reset(), cbB.Reset(), cbC.Reset(), cbD.Reset(), cbE.Reset(), cbF.Reset()
 
-        self.assertEqual(RO, B.GetAccessMode())
-        self.assertEqual(RO, A.GetAccessMode())
-        self.assertEqual(RW, C.GetAccessMode())
-        self.assertEqual(RW, D.GetAccessMode())
+        self.assertEqual(genicam.RO, B.GetAccessMode())
+        self.assertEqual(genicam.RO, A.GetAccessMode())
+        self.assertEqual(genicam.RW, C.GetAccessMode())
+        self.assertEqual(genicam.RW, D.GetAccessMode())
 
         # no callbacks although B and F write implicitly
         numCalls = 0
@@ -1031,7 +1031,7 @@ class CallbackTestSuite(GenicamTestCase):
             + CDFFooter
         )
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromString(CameraDescription)
         self._TestCallback10(Camera)
 
@@ -1039,9 +1039,9 @@ class CallbackTestSuite(GenicamTestCase):
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x000, "uint32_t", 42, RW, LittleEndian)
-        Port.CreateEntry(0x004, "uint32_t", 42, RW, LittleEndian)
-        Port.CreateEntry(0x008, "uint32_t", 42, RW, LittleEndian)
+        Port.CreateEntry(0x000, "uint32_t", 42, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x004, "uint32_t", 42, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x008, "uint32_t", 42, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -1054,12 +1054,12 @@ class CallbackTestSuite(GenicamTestCase):
         MyPort = Camera.GetNode("MyPort")
 
         obA, obB, obC, obD, obE, obMyPort = [CallbackObject() for i in range(6)]
-        Register(A.Node, obA.Callback)
-        Register(B.Node, obB.Callback)
-        Register(C.Node, obC.Callback)
-        Register(D.Node, obD.Callback)
-        Register(E.Node, obE.Callback)
-        Register(MyPort.Node, obMyPort.Callback)
+        genicam.Register(A.Node, obA.Callback)
+        genicam.Register(B.Node, obB.Callback)
+        genicam.Register(C.Node, obC.Callback)
+        genicam.Register(D.Node, obD.Callback)
+        genicam.Register(E.Node, obE.Callback)
+        genicam.Register(MyPort.Node, obMyPort.Callback)
 
         # Check number of callbacks triggered by SetValue
         # Use C und D first, because they serve as pMin and pMax for A
@@ -1228,7 +1228,7 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback10")
         self._TestCallback10(Camera)
 
@@ -1262,15 +1262,15 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback11")
 
         # create and initialize a test port
         Port = CTestPort()
         testvalue = "foobar "
         testlength = 7
-        Port.CreateEntry(0x000, "int32_t", testlength, RW, LittleEndian)  # StringLenght
-        Port.CreateEntry(0x004, "str", testvalue, RW, LittleEndian)  # StringValue
+        Port.CreateEntry(0x000, "int32_t", testlength, genicam.RW, genicam.LittleEndian)  # StringLenght
+        Port.CreateEntry(0x004, "str", testvalue, genicam.RW, genicam.LittleEndian)  # StringValue
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -1280,7 +1280,7 @@ class CallbackTestSuite(GenicamTestCase):
         String = Camera.GetNode("MyString")
         Length = Camera.GetNode("StringLength")
 
-        Register(String.Node, CallbackUtility.Callback)
+        genicam.Register(String.Node, CallbackUtility.Callback)
 
         Port.ShowMap()
         self.assertEqual(testvalue, String.Value)
@@ -1307,13 +1307,13 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback12")
 
         Node = Camera.GetNode("Node")
 
         cbEvent = CallbackObject()
-        Register(Node.Node, cbEvent.Callback)
+        genicam.Register(Node.Node, cbEvent.Callback)
 
         self.assertEqual(0, cbEvent.Count())
         Node.Value = 0
@@ -1349,14 +1349,14 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback13")
 
         Node = Camera.GetNode("Node")
 
         cbEvent = CallbackObject()
-        Register(Node.Node, self.Callback13_inside, cbPostInsideLock)
-        Register(Node.Node, self.Callback13_outside, cbPostOutsideLock)
+        genicam.Register(Node.Node, self.Callback13_inside, genicam.cbPostInsideLock)
+        genicam.Register(Node.Node, self.Callback13_outside, genicam.cbPostOutsideLock)
 
         Node.Value = 0
 
@@ -1403,12 +1403,12 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestCallback14")
 
         Port = CTestPort()
-        Port.CreateEntry(0x10000000, "uint32_t", 0, RW, LittleEndian)
-        Port.CreateEntry(0x10000004, "uint32_t", 0, RW, LittleEndian)
+        Port.CreateEntry(0x10000000, "uint32_t", 0, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x10000004, "uint32_t", 0, genicam.RW, genicam.LittleEndian)
 
         Camera._Connect(Port, "Port")
         # CallbackObject O1
@@ -1416,7 +1416,7 @@ class CallbackTestSuite(GenicamTestCase):
         Cmd = Camera.GetNode("MyCommand")
         Feature = Camera.GetNode("Feature")
 
-        Register(Feature.Node, CallbackUtility.Callback)
+        genicam.Register(Feature.Node, CallbackUtility.Callback)
         CallbackUtility.Reset()
 
         # Executing writes MyCommandReg which in turn invalidates FeatureReg and Feature
@@ -1431,9 +1431,9 @@ class CallbackTestSuite(GenicamTestCase):
 
         # change both registers 
         value = 0
-        Port.Write(0x10000000, cast_data("uint32_t", LittleEndian, value))
+        Port.Write(0x10000000, cast_data("uint32_t", genicam.LittleEndian, value))
         value = 1234
-        Port.Write(0x10000004, cast_data("uint32_t", LittleEndian, value))
+        Port.Write(0x10000004, cast_data("uint32_t", genicam.LittleEndian, value))
 
         # Polling the command invalidates the command
         self.assertTrue(Cmd.IsDone())
@@ -1477,13 +1477,13 @@ class CallbackTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "CallbackTestSuite_TestPortInvalidate")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x000, "int32_t", 42, RW, LittleEndian)
-        Port.CreateEntry(0x004, "int32_t", 42, RW, LittleEndian)
+        Port.CreateEntry(0x000, "int32_t", 42, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x004, "int32_t", 42, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "Port")
@@ -1494,7 +1494,7 @@ class CallbackTestSuite(GenicamTestCase):
         FloatingInvalidator = Camera.GetNode("FloatingInvalidator")
         Invalidated = Camera.GetNode("Invalidated")
 
-        Register(Invalidated.Node, CallbackUtility.Callback)
+        genicam.Register(Invalidated.Node, CallbackUtility.Callback)
 
         # touch the invalidator
         Invalidator.Value = 80
@@ -1502,7 +1502,7 @@ class CallbackTestSuite(GenicamTestCase):
         # ie. cache bypassed
 
         Value = 88
-        Port.Write(0x04, cast_data("uint32_t", LittleEndian, Value))
+        Port.Write(0x04, cast_data("uint32_t", genicam.LittleEndian, Value))
         self.assertEqual(88, Invalidated.Value)
         # check if the callback was fired
         self.assertEqual(1, CallbackUtility.Count())
@@ -1510,7 +1510,7 @@ class CallbackTestSuite(GenicamTestCase):
         # the same with floating invalidator
         FloatingInvalidator.Value = 80
         Value = 99
-        Port.Write(0x04, cast_data("uint32_t", LittleEndian, Value))
+        Port.Write(0x04, cast_data("uint32_t", genicam.LittleEndian, Value))
         self.assertEqual(99, Invalidated.Value)
         self.assertEqual(2, CallbackUtility.Count())
 

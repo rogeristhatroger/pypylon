@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 from testport import CTestPort
@@ -76,12 +76,12 @@ class SelectorTestSuite(GenicamTestCase):
         <Port Name="myPort"/>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SelectorTestSuite_TestSelector01")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x2000, "uint32_t", 42, RW, LittleEndian)
+        Port.CreateEntry(0x2000, "uint32_t", 42, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -156,12 +156,12 @@ class SelectorTestSuite(GenicamTestCase):
         <Port Name="myPort"/>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SelectorTestSuite_TestSelector02")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x2000, "uint32_t", 42, RW, LittleEndian)
+        Port.CreateEntry(0x2000, "uint32_t", 42, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -230,12 +230,12 @@ class SelectorTestSuite(GenicamTestCase):
         <Port Name="myPort"/>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SelectorTestSuite_TestSelector03")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x2000, "uint32_t", 42, RW, LittleEndian)
+        Port.CreateEntry(0x2000, "uint32_t", 42, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -254,8 +254,8 @@ class SelectorTestSuite(GenicamTestCase):
         self.assertEqual(name02, Node02.GetName())
 
         c = cb()
-        Register(Node01, c.doCount)
-        Register(Node02, c.doCount)
+        genicam.Register(Node01, c.doCount)
+        genicam.Register(Node02, c.doCount)
 
         SelectorNode = Selector.Node
         SelectorNode.InvalidateNode()
@@ -311,12 +311,12 @@ class SelectorTestSuite(GenicamTestCase):
         <Port Name="myPort"/>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SelectorTestSuite_TestSelector04")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x2000, "uint32_t", 42, RW, LittleEndian)
+        Port.CreateEntry(0x2000, "uint32_t", 42, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -375,13 +375,13 @@ class SelectorTestSuite(GenicamTestCase):
         <Port Name="myPort"/>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SelectorTestSuite_TestSelector05")
 
         # create and initialize a test port
         Port = CTestPort()
         for i in range(40, 50):
-            Port.CreateEntry(i, "uint8_t", 42, RW, LittleEndian)
+            Port.CreateEntry(i, "uint8_t", 42, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -397,7 +397,7 @@ class SelectorTestSuite(GenicamTestCase):
         self.assertEqual(name01, Node01.GetName())
 
         c = cb()
-        Register(Node01, c.doCount)
+        genicam.Register(Node01, c.doCount)
 
         for i in range(Selector.Min, Selector.Max + 1, Selector.Inc):
             print(i)
@@ -429,7 +429,7 @@ class SelectorTestSuite(GenicamTestCase):
         </Integer>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SelectorTestSuite_TestSelector06")
 
         SelectedFeature = Camera.GetNode("ASelectedFeature")
@@ -474,7 +474,7 @@ class SelectorTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SelectorTestSuite_TestSelector07")
 
         Integer = Camera.GetNode("Integer")
@@ -567,14 +567,14 @@ class SelectorTestSuite(GenicamTestCase):
         <Port Name="myPort"/>
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SelectorTestSuite_TestBooleanSelector")
 
         # create and initialize a test port
         Port = CTestPort()
-        Port.CreateEntry(0x0, "uint32_t", 0x1000, RW, LittleEndian)
-        Port.CreateEntry(0x1000, "int32_t", 42, RW, LittleEndian)
-        Port.CreateEntry(0x2000, "int32_t", 24, RW, LittleEndian)
+        Port.CreateEntry(0x0, "uint32_t", 0x1000, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x1000, "int32_t", 42, genicam.RW, genicam.LittleEndian)
+        Port.CreateEntry(0x2000, "int32_t", 24, genicam.RW, genicam.LittleEndian)
 
         # connect the node map to the port
         Camera._Connect(Port, "MyPort")
@@ -609,7 +609,7 @@ class SelectorTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef("TestCamera")
+        Camera = genicam.CNodeMapRef("TestCamera")
         Camera._LoadXMLFromFile("GenApiTest", "SelectorTestSuite_TestSelecting")
 
         print("Dumping PropertyNames:\n")
@@ -622,7 +622,7 @@ class SelectorTestSuite(GenicamTestCase):
             for Property in PropertyNames:
                 try:
                     ValueStr, AttributeStr = Node.Node.GetProperty(Property)
-                except LogicalErrorException:
+                except genicam.LogicalErrorException:
                     print("\t  Property '", Property, "' is not available\n")
                 if AttributeStr == "":
                     print("\t  Property '", Property, "' = '", ValueStr, "'\n")
@@ -664,7 +664,7 @@ class SelectorTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "SelectorTestSuite_TestSelectorPropagation")
 
         Nodes = Camera._GetNodes()

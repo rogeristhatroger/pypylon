@@ -6,7 +6,7 @@
 #  $Header:
 # -----------------------------------------------------------------------------
 
-from genicam import *
+from pypylon import genicam
 import unittest
 from genicamtestcase import GenicamTestCase
 
@@ -48,7 +48,7 @@ class StreamingTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "StreamingTestSuite_TestSimpleStreaming")
 
         Streaming = Camera.GetNode("Streaming")
@@ -137,7 +137,7 @@ class StreamingTestSuite(GenicamTestCase):
     
         """
 
-        Camera = CNodeMapRef()
+        Camera = genicam.CNodeMapRef()
         Camera._LoadXMLFromFile("GenApiTest", "StreamingTestSuite_VeryTestSimpleStreaming")
 
         Selector1 = Camera.GetNode("Selector1")

@@ -9,9 +9,9 @@ test-requires = "pytest numpy"
 
 [tool.pytest.ini_options]
 testpaths = [
-    "tests/genicam_tests",
-    "tests/pylon_tests/emulated",
-    "tests/pylondataprocessing_tests",
+    "tests/genicam",
+    "tests/pylon/emulated",
+    "tests/pylondataprocessing",
 ]
 
 [tool.cibuildwheel.windows]

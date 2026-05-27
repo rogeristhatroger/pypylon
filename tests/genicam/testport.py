@@ -15,7 +15,7 @@ import functools
 """!
 \file
 """
-import genicam
+from pypylon import genicam
 import struct
 import CSR
 
