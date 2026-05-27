@@ -32,9 +32,82 @@ namespace Pylon
 %}
 
 
+// Typemap to return a heap-allocated CPylonImage* with Python-owned lifetime.
+// (Mirrors the same typemap in ImageDecompressor.i; defined here too because
+// ImageFormatConverter.i is included before ImageDecompressor.i.)
+%typemap(out) Pylon::CPylonImage*
+    %{
+        $result = SWIG_NewPointerObj($1, $descriptor(Pylon::CPylonImage*), SWIG_POINTER_OWN);
+    %}
+
 // Not all overloads of 'Convert' and 'ImageHasDestinationFormat' are usable. So we ignore all of them and
 // redefine those that we want.
 %extend Pylon::CImageFormatConverter {
+
+    // Since '_Unpack' allocates a CPylonImage, it must not be called without
+    // the GIL being held. Therefore we have to tell SWIG not to release the GIL
+    // when calling it (%nothread).
+    %nothread _Unpack;
+
+    // Unpack any packed-format image into a CPylonImage.
+    //
+    // Accepts any image type (GrabResult, PylonDataComponent, PylonImage, …)
+    // by taking the generic const IImage& interface.
+    //
+    // Throws Pylon::InvalidArgumentException when:
+    //   * the source pixel type is not a packed format (IsPacked() == false), or
+    //   * the packed format has no known unpacking target
+    //     (GetPixelTypesForUnpacking() returns false).
+    //
+    // The returned CPylonImage is owned by the caller (Python GC manages it).
+    static Pylon::CPylonImage* _Unpack(const Pylon::IImage& src)
+    {
+        const EPixelType pixelType = src.GetPixelType();
+
+        // Validate: source must be a packed format
+        if (!IsPacked(pixelType))
+            throw INVALID_ARGUMENT_EXCEPTION(
+                "Image pixel type is not packed, unable to unpack.");
+
+        // Resolve the conversion types.
+        // For Bayer packed formats GetPixelTypesForUnpacking returns a Mono
+        // source-impose type so the converter treats the raw bits as Mono
+        // (the geometry / metadata of the resulting CPylonImage still reflects
+        // the original pixel type).
+        EPixelType pixelTypeSourceImpose = PixelType_Undefined;
+        EPixelType pixelTypeTarget       = PixelType_Undefined;
+        if (!GetPixelTypesForUnpacking(pixelType, pixelTypeSourceImpose, pixelTypeTarget))
+            throw INVALID_ARGUMENT_EXCEPTION(
+                "Packed pixel format is not supported for unpacking.");
+
+        CImageFormatConverter converter;
+        converter.OutputPixelFormat  = pixelTypeTarget;
+        converter.OutputBitAlignment = OutputBitAlignment_LsbAligned;
+
+        Pylon::CPylonImage* pResult = new Pylon::CPylonImage();
+        try
+        {
+            // Use the buffer-level Convert overload so we can pass
+            // pixelTypeSourceImpose instead of the original pixelType.
+            converter.Convert(
+                *pResult,
+                src.GetBuffer(),
+                src.GetImageSize(),
+                pixelTypeSourceImpose,
+                src.GetWidth(),
+                src.GetHeight(),
+                src.GetPaddingX(),
+                src.GetOrientation()
+            );
+        }
+        catch (...)
+        {
+            delete pResult;
+            throw;
+        }
+
+        return pResult;
+    }
 
     // Repeat conversion from IImage.
     void Convert(IReusableImage& dst, const IImage& src)

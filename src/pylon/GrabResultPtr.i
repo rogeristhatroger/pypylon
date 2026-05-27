@@ -2,93 +2,36 @@
 %ignore operator IImage&;
 %rename(GrabResult) Pylon::CGrabResultPtr;
 
-%pythoncode %{
-    from contextlib import contextmanager
-    import sys
-%} 
-
 %extend Pylon::CGrabResultPtr {
 %pythoncode %{
-    @needs_numpy
-    def GetImageFormat(self, pt = None):
-        if pt is None:
-            pt = self.GetPixelType()
-        if IsPacked(pt):
-            raise ValueError("Packed Formats are not supported with numpy interface")
-        if pt in ( PixelType_Mono8, PixelType_BayerGR8, PixelType_BayerRG8, PixelType_BayerGB8, PixelType_BayerBG8, PixelType_Confidence8, PixelType_Coord3D_C8 ):
-            shape = (self.GetHeight(), self.GetWidth())
-            format = "B"
-            dtype = _pylon_numpy.uint8
-        elif pt in ( PixelType_Mono10, PixelType_BayerGR10, PixelType_BayerRG10, PixelType_BayerGB10, PixelType_BayerBG10 ):
-            shape = (self.GetHeight(), self.GetWidth())
-            format = "H"
-            dtype = _pylon_numpy.uint16
-        elif pt in ( PixelType_Mono12, PixelType_BayerGR12, PixelType_BayerRG12, PixelType_BayerGB12, PixelType_BayerBG12 ):
-            shape = (self.GetHeight(), self.GetWidth())
-            format = "H"
-            dtype = _pylon_numpy.uint16
-        elif pt in ( PixelType_Mono16, PixelType_BayerGR16, PixelType_BayerRG16, PixelType_BayerGB16, PixelType_BayerBG16, PixelType_Confidence16, PixelType_Coord3D_C16 ):
-            shape = (self.GetHeight(), self.GetWidth())
-            format = "H"
-            dtype = _pylon_numpy.uint16
-        elif pt in ( PixelType_RGB8packed, PixelType_BGR8packed ):
-            shape = (self.GetHeight(), self.GetWidth(), 3)
-            dtype = _pylon_numpy.uint8
-            format = "B"
-        elif pt in ( PixelType_RGB12packed, PixelType_BGR12packed, PixelType_RGB10packed, PixelType_BGR10packed ):
-            shape = (self.GetHeight(), self.GetWidth(), 3)
-            format = "H"
-            dtype = _pylon_numpy.uint16            
-        elif pt in ( PixelType_YUV422_YUYV_Packed, PixelType_YUV422packed ):
-            shape = (self.GetHeight(), self.GetWidth(), 2)
-            dtype = _pylon_numpy.uint8
-            format = "B"
-        elif pt in ( PixelType_Coord3D_ABC32f, ):
-            shape = (self.GetHeight(), self.GetWidth(), 3)
-            dtype = _pylon_numpy.float32
-            format = "f"
-        elif pt in ( PixelType_Data32f, ):
-            shape = (self.GetHeight(), self.GetWidth(), 1)
-            dtype = _pylon_numpy.float32
-            format = "f"
-        elif pt in ( PixelType_BiColorRGBG8, PixelType_BiColorBGRG8 ):
-            shape = (self.GetHeight(), self.GetWidth() * 2)
-            format = "B"
-            dtype = _pylon_numpy.uint8
-        elif pt in ( PixelType_BiColorRGBG10, PixelType_BiColorBGRG10, PixelType_BiColorRGBG12, PixelType_BiColorBGRG12 ):
-            shape = (self.GetHeight(), self.GetWidth() * 2)
-            format = "H"
-            dtype = _pylon_numpy.uint16
-        else:
-            raise ValueError("Pixel format currently not supported")
-
-        return (shape, dtype, format)
+    GetImageFormat = needs_numpy(_image_get_image_format)
 
     @needs_numpy
     def GetArray(self, raw = False):
-
         # Raw case => Simple byte wrapping of buffer
         if raw:
-            shape, dtype, format = ( self.GetPayloadSize() ), _pylon_numpy.uint8, "B"
+            shape = self.GetPayloadSize()
             buf = self.GetBuffer()
-            return _pylon_numpy.ndarray(shape, dtype = dtype, buffer=buf)
+            return _pylon_numpy.ndarray(shape, dtype=_pylon_numpy.uint8, buffer=buf)
 
         pt = self.GetPixelType()
         if IsPacked(pt):
-            buf, new_pt = self._Unpack10or12BitPacked()
-            shape, dtype, format = self.GetImageFormat(new_pt)
+            unpacked = ImageFormatConverter._Unpack(self)
+            shape, dtype, format = _image_get_image_format(unpacked)
+            buf = unpacked.GetBuffer()
+            strides = None
         else:
             shape, dtype, format = self.GetImageFormat(pt)
             buf = self.GetImageBuffer()
 
-        strides = None
-        if self.PaddingX > 0:
-            # If padding is present, we need to calculate the strides
-            # strides = (bytes per row, bytes per pixel)
-            strides = self.Width * _pylon_numpy.dtype(dtype).itemsize + self.PaddingX, _pylon_numpy.dtype(dtype).itemsize
+            strides = None
+            if self.PaddingX > 0:
+                # If padding is present, we need to calculate the strides
+                # strides = (bytes per row, bytes per pixel)
+                strides = self.Width * _pylon_numpy.dtype(dtype).itemsize + self.PaddingX, _pylon_numpy.dtype(dtype).itemsize
 
         # Now we will copy the data into an array:
-        return _pylon_numpy.ndarray(shape, dtype = dtype, buffer=buf, strides=strides)
+        return _pylon_numpy.ndarray(shape, dtype=dtype, buffer=buf, strides=strides)
 
     def GetChunkNode( self, nodeName ):
         return self.GetChunkDataNodeMap().GetNode(nodeName)
@@ -152,32 +95,7 @@
         Get a numpy array for the image buffer as zero copy reference to the underlying buffer.
         Note: The context manager variable MUST be released before leaving the scope.
         '''
-
-        # For packed formats, we cannot zero-copy, so use GetArray
-        pt = self.GetPixelType()
-        if IsPacked(pt):
-            yield self.GetArray()
-            return
-
-        mv = self.GetImageMemoryView()
-        if not raw:
-            shape, dtype, format = self.GetImageFormat()
-            mv = mv.cast(format, shape)
-
-        ar = _pylon_numpy.asarray(mv)
-
-        # trace external references to array
-        initial_refcount = sys.getrefcount(ar)
-
-        # yield the array to the context code
-        yield ar
-
-        # detect if more refs than the one from the yield are held
-        if sys.getrefcount(ar) > initial_refcount + 1:
-            raise RuntimeError("Please remove any references to the array before leaving context manager scope!!!")
-
-        # release the memory view
-        mv.release()
+        yield from _image_array_zero_copy_gen(self, self.GetImageMemoryView, raw)
 
 %}
 }

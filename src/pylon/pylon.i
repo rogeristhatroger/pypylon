@@ -927,6 +927,7 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "TypeMappings.i"
 %include "Container.i"
 %include "PixelType.i"
+%include "ImageMixin.i"
 %include "PayloadType.i"
 %include "Info.i"
 %include "DeviceInfo.i"
