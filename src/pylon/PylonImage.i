@@ -8,6 +8,7 @@
 // 'Pylon::CPylonImage *', no destructor found."
 %defaultdtor Pylon::CPylonImage;
 %feature("shadow", "0") Pylon::CPylonImage::AttachMemoryView;
+%feature("shadow", "0") Pylon::CPylonImage::AttachBytesObject;
 
 %extend Pylon::CPylonImage{
 
@@ -92,6 +93,11 @@
           self._memory_view_buffer = memoryViewBuffer # Hold buffer copy to reference to prevent garbage collection
         self._memory_view = memoryView  # Hold the reference to prevent garbage collection
 
+    def AttachBytesObject(self, object, pixelType, width, height, paddingX):
+        if not isinstance(object, bytes):
+            raise RuntimeError("Expected a bytes-compatible object")
+        return _pylon.PylonImage_AttachBytesObject(self, object, pixelType, width, height, paddingX)
+
     GetImageFormat = needs_numpy(_image_get_image_format)
 
     def __enter__(self):
@@ -129,5 +135,21 @@
 %ignore GetBuffer;
 // Ignore original 'AttachUserBuffer' overloads.
 %ignore AttachUserBuffer;
+%ignore Pylon::CPylonImage::CopyImage(void*, size_t, EPixelType, uint32_t, uint32_t, size_t, EImageOrientation);
+%ignore Pylon::CPylonImage::AttachGrabResultBufferWithUserHints(const CGrabResultPtr&, EPixelType, uint32_t, uint32_t, size_t, EImageOrientation);
+%ignore Pylon::CPylonImage::AttachUserBuffer(void*, size_t, EPixelType, uint32_t, uint32_t, size_t, EImageOrientation, CPylonImageUserBufferEventHandler*);
+%ignore Pylon::CPylonImage::GetPixelData;
 
 %include <pylon/PylonImage.h>;
+
+
+ADD_PROP_GET(PylonImage, AllocatedBufferSize)
+ADD_PROP_GET(PylonImage, Array)
+ADD_PROP_GET(PylonImage, Buffer)
+ADD_PROP_GET(PylonImage, Height)
+ADD_PROP_GET(PylonImage, ImageFormat)
+ADD_PROP_GET(PylonImage, ImageSize)
+ADD_PROP_GET(PylonImage, Orientation)
+ADD_PROP_GET(PylonImage, PaddingX)
+ADD_PROP_GET(PylonImage, PixelType)
+ADD_PROP_GET(PylonImage, Width)
