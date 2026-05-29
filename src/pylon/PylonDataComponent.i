@@ -67,3 +67,16 @@
 %#endif
     }
 };
+
+ADD_PROP_GET(PylonDataComponent, ComponentType)
+ADD_PROP_GET(PylonDataComponent, PixelType)
+ADD_PROP_GET(PylonDataComponent, Width)
+ADD_PROP_GET(PylonDataComponent, Height)
+ADD_PROP_GET(PylonDataComponent, OffsetX)
+ADD_PROP_GET(PylonDataComponent, OffsetY)
+ADD_PROP_GET(PylonDataComponent, PaddingX)
+ADD_PROP_GET(PylonDataComponent, Data)
+ADD_PROP_GET(PylonDataComponent, DataSize)
+ADD_PROP_GET(PylonDataComponent, TimeStamp)
+ADD_PROP_GET(PylonDataComponent, Array)
+ADD_PROP_GET(PylonDataComponent, ImageFormat)

@@ -33,3 +33,5 @@
 
 #endif
 };
+
+ADD_PROP_GET(PylonDataContainer, DataComponentCount)
