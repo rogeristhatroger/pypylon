@@ -27,6 +27,7 @@ class DataContainerTestSuite(PylonEmuTestCase):
         """Field-by-field equality of two PylonDataComponent instances, including data bytes."""
         self.assertEqual(expected.IsValid(), actual.IsValid())
         self.assertEqual(expected.ComponentType, actual.ComponentType)
+        self.assertEqual(expected.GetComponentIndex(), actual.GetComponentIndex())
         self.assertEqual(expected.PixelType, actual.PixelType)
         self.assertEqual(expected.Width, actual.Width)
         self.assertEqual(expected.Height, actual.Height)
@@ -36,6 +37,7 @@ class DataContainerTestSuite(PylonEmuTestCase):
         self.assertEqual(expected.DataSize, actual.DataSize)
         self.assertEqual(expected.TimeStamp, actual.TimeStamp)
         self.assertEqual(expected.GetData(), actual.GetData())
+        self.assertEqual(expected.GetSourceId(), actual.GetSourceId())
 
     # ------------------------------------------------------------------
     # Default construction
@@ -72,6 +74,9 @@ class DataContainerTestSuite(PylonEmuTestCase):
         self.assertEqual(testee.PaddingX, 0)
         self.assertEqual(testee.DataSize, 0)
         self.assertEqual(testee.TimeStamp, 0)
+        self.assertEqual(testee.ComponentIndex, 0)
+        self.assertEqual(testee.SourceId, 0)
+
         self.assertEqual(testee.GetComponentType(), 0)
         self.assertEqual(testee.GetPixelType(), pylon.PixelType_Undefined)
         self.assertEqual(testee.GetWidth(), 0)
@@ -83,6 +88,8 @@ class DataContainerTestSuite(PylonEmuTestCase):
         self.assertEqual(testee.GetTimeStamp(), 0)
         self.assertIsNone(testee.GetData())
         self.assertEqual(testee.GetStride(), [False, 0])
+        self.assertEqual(testee.GetComponentIndex(), 0)
+        self.assertEqual(testee.GetSourceId(), 0)
 
     def test_empty_container_component_copy(self):
         """Copy-constructing an empty component preserves every default field."""
@@ -438,6 +445,153 @@ class DataContainerTestSuite(PylonEmuTestCase):
         finally:
             os.unlink(illegal_path)
 
+    # ------------------------------------------------------------------
+    # GetComponentIndex (PylonDataComponent.h / pylon 2605+)
+    # ------------------------------------------------------------------
+
+    def test_get_component_index_matches_position_in_container(self):
+        """GetComponentIndex() returns the zero-based position of each component within its container."""
+        thisdir = os.path.dirname(__file__)
+        filename = os.path.join(thisdir, 'little_boxes.gendc')
+        container = pylon.PylonDataContainer(filename)
+        self.assertEqual(container.DataComponentCount, 3)
+
+        for expected_index in range(container.DataComponentCount):
+            component = container.GetDataComponentByIndex(expected_index)
+            self.assertTrue(component.IsValid())
+            # Method access
+            self.assertEqual(component.GetComponentIndex(), expected_index)
+            component.Release()
+
+        container.Release()
+
+    def test_get_component_index_survives_copy(self):
+        """GetComponentIndex() is preserved when a component is copy-constructed."""
+        thisdir = os.path.dirname(__file__)
+        filename = os.path.join(thisdir, 'little_boxes.gendc')
+        container = pylon.PylonDataContainer(filename)
+
+        original = container.GetDataComponentByIndex(1)
+        copied = pylon.PylonDataComponent(original)
+
+        self.assertEqual(copied.GetComponentIndex(), original.GetComponentIndex())
+        self.assertEqual(copied.GetComponentIndex(), 1)
+
+        original.Release()
+        copied.Release()
+        container.Release()
+
+    def test_get_component_index_for_live_grab_result(self):
+        """GetComponentIndex() returns 0 for the single component of a standard image grab result."""
+        with self._grab_one() as grab_result:
+            container = pylon.PylonDataContainer(grab_result)
+            self.assertEqual(container.DataComponentCount, 1)
+            component = container.GetDataComponentByIndex(0)
+            self.assertEqual(component.GetComponentIndex(), 0)
+            component.Release()
+            container.Release()
+
+    # ------------------------------------------------------------------
+    # GetFirstImageDataComponent (PylonDataContainer.h / pylon 2605+)
+    # ------------------------------------------------------------------
+
+    def test_container_get_first_image_data_component_no_args(self):
+        """GetFirstImageDataComponent() returns a valid Intensity component from a multi-component container."""
+        thisdir = os.path.dirname(__file__)
+        filename = os.path.join(thisdir, 'little_boxes.gendc')
+        container = pylon.PylonDataContainer(filename)
+        self.assertEqual(container.DataComponentCount, 3)
+
+        component = container.GetFirstImageDataComponent()
+        self.assertTrue(component.IsValid())
+        self.assertEqual(component.ComponentType, pylon.ComponentType_Intensity)
+
+        component.Release()
+        container.Release()
+
+    def test_container_get_first_image_data_component_throw_true_succeeds_when_found(self):
+        """GetFirstImageDataComponent(True) returns a valid component without raising when one exists."""
+        thisdir = os.path.dirname(__file__)
+        filename = os.path.join(thisdir, 'little_boxes.gendc')
+        container = pylon.PylonDataContainer(filename)
+
+        component = container.GetFirstImageDataComponent(True)
+        self.assertTrue(component.IsValid())
+        self.assertEqual(component.ComponentType, pylon.ComponentType_Intensity)
+
+        component.Release()
+        container.Release()
+
+    def test_container_get_first_image_data_component_throw_false_returns_invalid_on_empty_container(self):
+        """GetFirstImageDataComponent(False) returns an invalid component when the container is empty."""
+        empty_container = pylon.PylonDataContainer()
+        component = empty_container.GetFirstImageDataComponent(False)
+        self.assertFalse(component.IsValid())
+        component.Release()
+        empty_container.Release()
+
+    def test_container_get_first_image_data_component_throw_true_raises_on_empty_container(self):
+        """GetFirstImageDataComponent(True) raises an exception when the container has no image component."""
+        empty_container = pylon.PylonDataContainer()
+        with self.assertRaises(genicam.GenericException):
+            empty_container.GetFirstImageDataComponent(True)
+        empty_container.Release()
+
+    def test_container_get_first_image_data_component_from_live_grab(self):
+        """GetFirstImageDataComponent() on a container built from a live grab returns the image component."""
+        with self._grab_one() as grab_result:
+            container = pylon.PylonDataContainer(grab_result)
+            component = container.GetFirstImageDataComponent()
+            self.assertTrue(component.IsValid())
+            self.assertEqual(component.ComponentType, pylon.ComponentType_Intensity)
+            self.assertEqual(component.Width, grab_result.Width)
+            self.assertEqual(component.Height, grab_result.Height)
+            self.assertEqual(component.PixelType, grab_result.PixelType)
+            component.Release()
+            container.Release()
+
+    def test_container_get_first_image_data_component_index_is_consistent_with_by_index(self):
+        """GetFirstImageDataComponent() returns the same component as GetDataComponentByIndex at its index."""
+        thisdir = os.path.dirname(__file__)
+        filename = os.path.join(thisdir, 'little_boxes.gendc')
+        container = pylon.PylonDataContainer(filename)
+
+        first = container.GetFirstImageDataComponent()
+        by_index = container.GetDataComponentByIndex(first.GetComponentIndex())
+
+        self.assertEqual(first.ComponentType, by_index.ComponentType)
+        self.assertEqual(first.PixelType, by_index.PixelType)
+        self.assertEqual(first.Width, by_index.Width)
+        self.assertEqual(first.Height, by_index.Height)
+
+        first.Release()
+        by_index.Release()
+        container.Release()
+
+    def test_container_get_first_image_data_component_call_variants(self):
+        """GetFirstImageDataComponent() works with all mapped overloads."""
+        thisdir = os.path.dirname(__file__)
+        filename = os.path.join(thisdir, 'little_boxes.gendc')
+        container = pylon.PylonDataContainer(filename)
+
+        component1 = container.GetFirstImageDataComponent()
+        component2 = container.GetFirstImageDataComponent(True)
+        self._assert_components_equivalent(component1, component2)
+        component2.Release()
+
+        component2 = container.GetFirstImageDataComponent(pylon.ComponentType_Intensity)
+        self._assert_components_equivalent(component1, component2)
+        component2.Release()
+
+        component2 = container.GetFirstImageDataComponent(pylon.ComponentType_Intensity, 0)
+        self._assert_components_equivalent(component1, component2)
+        component2.Release()
+
+        component2 = container.GetFirstImageDataComponent(pylon.ComponentType_Intensity, 0, True)
+        self._assert_components_equivalent(component1, component2)
+        component2.Release()
+
+        container.Release()
 
 if __name__ == "__main__":
     unittest.main()

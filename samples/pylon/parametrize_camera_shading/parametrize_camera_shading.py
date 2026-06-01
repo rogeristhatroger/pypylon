@@ -57,7 +57,11 @@ exit_code = 0
 def average_lines(camera, width, height, num_coeffs):
     """Grab one frame, average pixel intensities across lines (height) for each column."""
     with camera.GrabOne(5000) as grab_result:
-        buf = np.frombuffer(grab_result.Buffer, dtype=np.uint8).copy()
+        # Some camera models use a GenICam Generic Data Container (GenDC) format.
+        # For single grabbed images, a data component is emulated automatically.
+        # pylon provides a data component wrapper to handle both cases uniformly.
+        with grab_result.GetFirstImageDataComponent() as image_data_component:
+            buf = np.frombuffer(image_data_component.GetData(), dtype=np.uint8).copy()
 
     if num_coeffs == 3 * width:
         # RGB mode: buffer is HxWx3 interleaved.

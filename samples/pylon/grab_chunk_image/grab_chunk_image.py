@@ -105,13 +105,14 @@ try:
                     RETRIEVE_TIMEOUT_MS, pylon.TimeoutHandling_ThrowException
                 ) as grab_result:
                     if grab_result.GrabSucceeded():
-                        # The result data is automatically filled with the
-                        # received chunk data. (Note: this is not the case
-                        # when using the low-level API.)
-                        print("SizeX:", grab_result.Width)
-                        print("SizeY:", grab_result.Height)
-                        image = grab_result.Array
-                        print("Gray value of first pixel:", image[0, 0])
+                        # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                        # For single grabbed images, a data component is emulated automatically.
+                        # pylon provides a data component wrapper to handle both cases uniformly.
+                        with grab_result.GetFirstImageDataComponent() as image_data_component:
+                            print("SizeX:", image_data_component.Width)
+                            print("SizeY:", image_data_component.Height)
+                            image = image_data_component.Array
+                            print("Gray value of first pixel:", image[0, 0])
 
                         # Check that a buffer containing chunk data has been
                         # received.

@@ -36,7 +36,11 @@ class SampleImageEventHandler(pylon.ImageEventHandler):
 
     def OnImageGrabbed(self, camera, grab_result):
         if grab_result.GrabSucceeded():
-            print(f"Image event: SizeX: {grab_result.Width}; SizeY: {grab_result.Height}")
+            # Some camera models use a GenICam Generic Data Container (GenDC) format.
+            # For single grabbed images, a data component is emulated automatically.
+            # pylon provides a data component wrapper to handle both cases uniformly.
+            with grab_result.GetFirstImageDataComponent() as image_data_component:
+                print(f"Image event: SizeX: {image_data_component.Width}; SizeY: {image_data_component.Height}")
 
 
 class PixelFormatAndAoiConfiguration(pylon.ConfigurationEventHandler):
@@ -64,9 +68,13 @@ def _retrieve_one(camera):
     """Retrieve one grab result and print its dimensions and first pixel value."""
     with camera.RetrieveResult(TIMEOUT_MS, pylon.TimeoutHandling_ThrowException) as grab_result:
         if grab_result.GrabSucceeded():
-            img = grab_result.Array
-            print(f"SizeX: {grab_result.Width}; SizeY: {grab_result.Height}; "
-                f"Gray value of first pixel: {img[0, 0]}")
+            # Some camera models use a GenICam Generic Data Container (GenDC) format.
+            # For single grabbed images, a data component is emulated automatically.
+            # pylon provides a data component wrapper to handle both cases uniformly.
+            with grab_result.GetFirstImageDataComponent() as image_data_component:
+                img = image_data_component.Array
+                print(f"SizeX: {image_data_component.Width}; SizeY: {image_data_component.Height}; "
+                    f"Gray value of first pixel: {img[0, 0]}")
         else:
             print("Error: ", f"{grab_result.ErrorCode:#x}", grab_result.ErrorDescription)
 

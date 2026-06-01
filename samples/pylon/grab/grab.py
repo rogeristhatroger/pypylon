@@ -46,12 +46,16 @@ try:
             ) as grab_result:
                 # Image grabbed successfully?
                 if grab_result.GrabSucceeded():
-                    # Access the image data.
-                    img = grab_result.Array
-                    print(f"SizeX: {grab_result.Width}; SizeY: {grab_result.Height}; "
-                        f"Gray value of first pixel: {img[0, 0]}")
+                    # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                    # For single grabbed images, a data component is emulated automatically.
+                    # pylon provides a data component wrapper to handle both cases uniformly.
+                    with grab_result.GetFirstImageDataComponent() as image_data_component:
+                            # Access the image data.
+                            img = image_data_component.Array
+                            print(f"SizeX: {image_data_component.Width}; SizeY: {image_data_component.Height}; "
+                                f"Gray value of first pixel: {img[0, 0]}")
 
-                    pylon.DisplayImage(1, grab_result)
+                            pylon.DisplayImage(1, image_data_component)
                 else:
                     print("Error: ", f"{grab_result.ErrorCode:#x}", grab_result.ErrorDescription)
 

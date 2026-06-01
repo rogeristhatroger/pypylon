@@ -163,11 +163,15 @@ try:
                 RETRIEVE_TIMEOUT_MS, pylon.TimeoutHandling_ThrowException
             ) as grab_result:
                 if grab_result.GrabSucceeded():
-                    print(
-                        f"  Image {i + 1}: {grab_result.Width}x{grab_result.Height},"
-                        f" first pixel = {grab_result.Array.flat[0]}"
-                    )
-                    pylon.DisplayImage(0, grab_result)
+                    # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                    # For single grabbed images, a data component is emulated automatically.
+                    # pylon provides a data component wrapper to handle both cases uniformly.
+                    with grab_result.GetFirstImageDataComponent() as image_data_component:
+                        print(
+                            f"  Image {i + 1}: {image_data_component.Width}x{image_data_component.Height},"
+                            f" first pixel = {image_data_component.Array.flat[0]}"
+                        )
+                        pylon.DisplayImage(0, image_data_component)
                 else:
                     print(
                         f"  Image {i + 1} error:"

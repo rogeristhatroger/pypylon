@@ -141,17 +141,21 @@ def grab_images(camera):
                     if tag_list:
                         current_tag = tag_list.pop(0)
 
-                print(
-                    f"SizeX: {grab_result.Width}, "
-                    f"SizeY: {grab_result.Height}, "
-                    f"Payload: {grab_result.PayloadSize}"
-                )
+                # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                # For single grabbed images, a data component is emulated automatically.
+                # pylon provides a data component wrapper to handle both cases uniformly.
+                with grab_result.GetFirstImageDataComponent() as image_data_component:
+                    print(
+                        f"SizeX: {image_data_component.Width}, "
+                        f"SizeY: {image_data_component.Height}, "
+                        f"Payload: {grab_result.PayloadSize}"
+                    )
 
-                img = grab_result.Array
-                print(f"First pixel gray value: {img.flat[0]}")
-                print()
+                    img = image_data_component.Array
+                    print(f"First pixel gray value: {img.flat[0]}")
+                    print()
 
-                pylon.DisplayImage(int(buffer_id), grab_result)
+                    pylon.DisplayImage(int(buffer_id), image_data_component)
             else:
                 print(
                     "Grab Error:",

@@ -26,8 +26,12 @@ class SampleImageEventHandler(pylon.ImageEventHandler):
 
     def OnImageGrabbed(self, camera, grab_result):
         print("SampleImageEventHandler.OnImageGrabbed called.")
-        print(f"SizeX: {grab_result.Width}")
-        print(f"SizeY: {grab_result.Height}")
+        # Some camera models use a GenICam Generic Data Container (GenDC) format.
+        # For single grabbed images, a data component is emulated automatically.
+        # pylon provides a data component wrapper to handle both cases uniformly.
+        with grab_result.GetFirstImageDataComponent() as image_data_component:
+            print(f"SizeX: {image_data_component.Width}")
+            print(f"SizeY: {image_data_component.Height}")
 
 
 COUNT_OF_IMAGES_TO_GRAB = 100

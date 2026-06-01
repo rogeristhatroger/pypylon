@@ -64,11 +64,15 @@ def process_images(camera, width, height):
             5000, pylon.TimeoutHandling_ThrowException
         ) as grab_result:
             if grab_result.GrabSucceeded():
-                image = grab_result.Array
-                # image shape: (height, width) for Mono8
-                column_sums = image.astype(np.float64).sum(axis=0)
-                accumulator += column_sums
-                succeeded_grabs += 1
+                # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                # For single grabbed images, a data component is emulated automatically.
+                # pylon provides a data component wrapper to handle both cases uniformly.
+                with grab_result.GetFirstImageDataComponent() as image_data_component:
+                    image = image_data_component.Array
+                    # image shape: (height, width) for Mono8
+                    column_sums = image.astype(np.float64).sum(axis=0)
+                    accumulator += column_sums
+                    succeeded_grabs += 1
             else:
                 print(
                     "Error:",

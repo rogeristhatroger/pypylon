@@ -71,17 +71,21 @@ try:
                     # Camera context is set to the index of the camera in the array.
                     camera_context_value = grab_result.GetCameraContext()
 
-                    pylon.DisplayImage(camera_context_value, grab_result)
-
                     print(f"Camera {camera_context_value}: "
                         f"{cameras[camera_context_value].DeviceInfo.ModelName}")
 
-                    img = grab_result.Array
-                    print(
-                        f"GrabSucceeded: {grab_result.GrabSucceeded()} "
-                        f"SizeX: {grab_result.Width} SizeY: {grab_result.Height} "
-                        f"Gray value of first pixel: {img[0, 0]}\n"
-                    )
+                    # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                    # For single grabbed images, a data component is emulated automatically.
+                    # pylon provides a data component wrapper to handle both cases uniformly.
+                    with grab_result.GetFirstImageDataComponent() as image_data_component:
+                        pylon.DisplayImage(camera_context_value, image_data_component)
+
+                        img = image_data_component.Array
+                        print(
+                            f"GrabSucceeded: {grab_result.GrabSucceeded()} "
+                            f"SizeX: {image_data_component.Width} SizeY: {image_data_component.Height} "
+                            f"Gray value of first pixel: {img[0, 0]}\n"
+                        )
                 else:
                     print("Error:", f"{grab_result.ErrorCode:#x}", grab_result.ErrorDescription)
 
