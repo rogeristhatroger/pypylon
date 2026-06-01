@@ -58,14 +58,18 @@ try:
             )
 
             if result.GrabResult.GrabSucceeded():
-                img = result.GrabResult.Array
-                print(
-                    f"SizeX: {result.GrabResult.Width}; "
-                    f"SizeY: {result.GrabResult.Height}; "
-                    f"Gray value of first pixel: {img[0, 0]}"
-                )
+                # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                # For single grabbed images, a data component is emulated automatically.
+                # pylon provides a data component wrapper to handle both cases uniformly.
+                with result.GrabResult.GetFirstImageDataComponent() as image_data_component:
+                    img = image_data_component.Array
+                    print(
+                        f"SizeX: {image_data_component.Width}; "
+                        f"SizeY: {image_data_component.Height}; "
+                        f"Gray value of first pixel: {img[0, 0]}"
+                    )
 
-                pylon.DisplayImage(1, result.GrabResult)
+                    pylon.DisplayImage(1, image_data_component)
 
                 # Iterate over all recipe output pins.
                 print("Processing recipe outputs:")

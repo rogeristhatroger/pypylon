@@ -100,20 +100,24 @@ def grab_thread(camera):
                 buffer_id = grab_result.ImageNumber
                 is_sequence_end = image_tags.synchronize(buffer_id)
 
-                current_height = grab_result.Height
-                if is_sequence_end:
-                    print(f"THE SEQUENCE END TAG IS HERE: {buffer_id}")
-                    print(f"--Complete height was: {cumulated_height}")
-                    cumulated_height = 0
-                else:
-                    cumulated_height += current_height
+                # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                # For single grabbed images, a data component is emulated automatically.
+                # pylon provides a data component wrapper to handle both cases uniformly.
+                with grab_result.GetFirstImageDataComponent() as image_data_component:
+                    current_height = image_data_component.Height
+                    if is_sequence_end:
+                        print(f"THE SEQUENCE END TAG IS HERE: {buffer_id}")
+                        print(f"--Complete height was: {cumulated_height}")
+                        cumulated_height = 0
+                    else:
+                        cumulated_height += current_height
 
-                print(f"Actual Frame Height:  {current_height}")
-                print(f"Image Index: {buffer_id}")
+                    print(f"Actual Frame Height:  {current_height}")
+                    print(f"Image Index: {buffer_id}")
 
-                img = grab_result.Array
-                print(f"Gray value of first pixel: {img.flat[0]}")
-                print()
+                    img = image_data_component.Array
+                    print(f"Gray value of first pixel: {img.flat[0]}")
+                    print()
             else:
                 print(
                     "Error:",

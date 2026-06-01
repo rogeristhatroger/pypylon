@@ -734,5 +734,68 @@ class GrabResultTestSuite(PylonEmuTestCase):
             grab_result.this_attribute_does_not_exist = 42
         grab_result.Release()
 
+    # ------------------------------------------------------------------
+    # GetFirstImageDataComponent (GrabResultData.h / pylon 2605+)
+    # ------------------------------------------------------------------
+
+    def test_get_first_image_data_component_returns_valid_intensity_component(self):
+        """GetFirstImageDataComponent() returns a valid Intensity component for a standard image grab."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            camera.Width.Value = 64
+            camera.Height.Value = 48
+            camera.PixelFormat.Value = "Mono8"
+            grab_result = camera.GrabOne(1000)
+        component = grab_result.GetFirstImageDataComponent()
+        self.assertTrue(component.IsValid())
+        self.assertEqual(component.ComponentType, pylon.ComponentType_Intensity)
+        self.assertEqual(component.Width, 64)
+        self.assertEqual(component.Height, 48)
+        component.Release()
+        grab_result.Release()
+
+    def test_get_first_image_data_component_throw_true_succeeds_when_found(self):
+        """GetFirstImageDataComponent(True) succeeds without raising when an image component exists."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            camera.Width.Value = 64
+            camera.Height.Value = 48
+            camera.PixelFormat.Value = "Mono8"
+            grab_result = camera.GrabOne(1000)
+        component = grab_result.GetFirstImageDataComponent(True)
+        self.assertTrue(component.IsValid())
+        self.assertEqual(component.ComponentType, pylon.ComponentType_Intensity)
+        component.Release()
+        grab_result.Release()
+
+    def test_get_first_image_data_component_throw_false_returns_invalid_when_no_result(self):
+        """GetFirstImageDataComponent(False) returns an invalid component when the grab result has no image data."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            camera.Width.Value = 64
+            camera.Height.Value = 48
+            camera.PixelFormat.Value = "Mono8"
+            camera.ForceFailedBufferCount.Value = 1
+            camera.ForceFailedBuffer.Execute()
+            grab_result = camera.GrabOne(1000)
+        self.assertFalse(grab_result.GrabSucceeded())
+        component = grab_result.GetFirstImageDataComponent(False)
+        self.assertFalse(component.IsValid())
+        component.Release()
+        grab_result.Release()
+
+    def test_get_first_image_data_component_matches_grab_result_image_dimensions(self):
+        """The component returned by GetFirstImageDataComponent() has the same dimensions as the grab result."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            camera.Width.Value = 128
+            camera.Height.Value = 96
+            camera.PixelFormat.Value = "Mono8"
+            grab_result = camera.GrabOne(1000)
+        component = grab_result.GetFirstImageDataComponent()
+        self.assertEqual(component.Width, grab_result.Width)
+        self.assertEqual(component.Height, grab_result.Height)
+        self.assertEqual(component.PixelType, grab_result.PixelType)
+        self.assertEqual(component.OffsetX, grab_result.OffsetX)
+        self.assertEqual(component.OffsetY, grab_result.OffsetY)
+        component.Release()
+        grab_result.Release()
+
 if __name__ == "__main__":
     unittest.main()

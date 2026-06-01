@@ -18,10 +18,12 @@ RETRIEVE_TIMEOUT_MS = 5000
 
 exit_code = 0
 try:
-    with pylon.InstantCamera(pylon.FirstFound) as camera:
+    with pylon.InstantCamera() as camera:
 
         print("Using device:", camera.DeviceInfo.ModelName)
         print()
+
+        camera.Attach(pylon.FirstFound)
 
         # Register the standard configuration event handler for enabling software
         # triggering. The software trigger configuration handler replaces the
@@ -168,11 +170,15 @@ try:
                     RETRIEVE_TIMEOUT_MS, pylon.TimeoutHandling_ThrowException
                 ) as grab_result:
                     if grab_result.GrabSucceeded():
-                        pylon.DisplayImage(1, grab_result)
+                        # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                        # For single grabbed images, a data component is emulated automatically.
+                        # pylon provides a data component wrapper to handle both cases uniformly.
+                        with grab_result.GetFirstImageDataComponent() as image_data_component:
+                            pylon.DisplayImage(1, image_data_component)
 
-                        img = grab_result.Array
-                        print(f"SizeX: {grab_result.Width}; SizeY: {grab_result.Height}; "
-                              f"Gray value of first pixel: {img[0, 0]}")
+                            img = image_data_component.Array
+                            print(f"SizeX: {image_data_component.Width}; SizeY: {image_data_component.Height}; "
+                                  f"Gray value of first pixel: {img[0, 0]}")
                     else:
                         print("Error:", f"{grab_result.ErrorCode:#x}", grab_result.ErrorDescription)
 

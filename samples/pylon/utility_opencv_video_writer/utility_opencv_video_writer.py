@@ -76,11 +76,15 @@ try:
                 TIMEOUT_MS, pylon.TimeoutHandling_ThrowException
             ) as grab_result:
                 if grab_result.GrabSucceeded():
-                    converted = converter.Convert(grab_result)
-                    writer.write(converted.Array)
-                    frame_count += 1
+                    # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                    # For single grabbed images, a data component is emulated automatically.
+                    # pylon provides a data component wrapper to handle both cases uniformly.
+                    with grab_result.GetFirstImageDataComponent() as image_data_component:
+                        converted = converter.Convert(image_data_component)
+                        writer.write(converted.Array)
+                        frame_count += 1
 
-                    pylon.DisplayImage(1, grab_result)
+                        pylon.DisplayImage(1, image_data_component)
                 else:
                     print(
                         "Error:",

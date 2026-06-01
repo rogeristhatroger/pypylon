@@ -150,9 +150,13 @@ try:
                     image,
                 )
 
-                pixel_type = grab_result.PixelType
-                width = grab_result.Width
-                height = grab_result.Height
+                # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                # For single grabbed images, a data component is emulated automatically.
+                # pylon provides a data component wrapper to handle both cases uniformly.
+                with grab_result.GetFirstImageDataComponent() as image_data_component:
+                    pixel_type = image_data_component.PixelType
+                    width = image_data_component.Width
+                    height = image_data_component.Height
 
         # Now the grab result is released (exited context). The grab result
         # buffer is now only held by the pylon image.

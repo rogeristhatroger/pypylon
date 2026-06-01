@@ -113,10 +113,6 @@ try:
                     camera_index = grab_result.GetCameraContext()
 
                     if grab_result.GrabSucceeded():
-                        # DisplayImage supports up to 32 image windows.
-                        if camera_index <= 31:
-                            pylon.DisplayImage(camera_index, grab_result)
-
                         camera_info = cameras[camera_index].DeviceInfo
                         print(
                             f"Camera {camera_index}: "
@@ -124,9 +120,17 @@ try:
                             f"({camera_info.IpAddress})"
                         )
 
-                        img = grab_result.Array
-                        print(f"GrabSucceeded: {grab_result.GrabSucceeded()}")
-                        print(f"Gray value of first pixel: {img[0, 0]}")
+                        # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                        # For single grabbed images, a data component is emulated automatically.
+                        # pylon provides a data component wrapper to handle both cases uniformly.
+                        with grab_result.GetFirstImageDataComponent() as image_data_component:
+                            # DisplayImage supports up to 32 image windows.
+                            if camera_index <= 31:
+                                pylon.DisplayImage(camera_index, image_data_component)
+
+                            img = image_data_component.Array
+                            print(f"GrabSucceeded: {grab_result.GrabSucceeded()}")
+                            print(f"Gray value of first pixel: {img[0, 0]}")
                         print()
                     else:
                         # If a buffer has been incompletely grabbed, the
