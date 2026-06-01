@@ -21,11 +21,15 @@ class ImagePersistenceTestSuite(PylonEmuTestCase):
             grab_result = camera.GrabOne(5000)
             self.assertTrue(grab_result.GrabSucceeded(), "GrabOne() on emulator must succeed")
             self.assertEqual(grab_result.PixelType, pylon.PixelType_Mono8)
+            self._grab_results.append(grab_result)
             return grab_result
 
     def _tmp_path(self, suffix):
-        """Return a temporary file path with the given suffix (deleted on tearDown)."""
-        fd, path = tempfile.mkstemp(suffix=suffix)
+        """Return a temporary file path with a unicode prefix and the given suffix (deleted on tearDown).
+
+        The unicode prefix (e.g. 'pylön_') exercises the full unicode path support in Save/Load.
+        """
+        fd, path = tempfile.mkstemp(prefix="pylön_", suffix=suffix)
         os.close(fd)
         os.unlink(path)
         self._tmp_files.append(path)
@@ -39,8 +43,16 @@ class ImagePersistenceTestSuite(PylonEmuTestCase):
 
     def setUp(self):
         self._tmp_files = []
+        self._grab_results = []
 
     def tearDown(self):
+        for grab_result in self._grab_results:
+            try:
+                # Grab results from camera devices typically occupy a buffer pool slot or several MB of memory,
+                # so it is good practice to always release them explicitly when they are no longer needed.
+                grab_result.Release()
+            except Exception:
+                pass
         for path in self._tmp_files:
             try:
                 os.unlink(path)
@@ -325,6 +337,42 @@ class ImagePersistenceTestSuite(PylonEmuTestCase):
         self.assertIsNot(image_a, image_b)
         self.assertTrue(image_a.thisown)
         self.assertTrue(image_b.thisown)
+
+    # ------------------------------------------------------------------
+    # Save — PylonDataComponent as source
+    # ------------------------------------------------------------------
+
+    def test_save_accepts_pylon_data_component_as_source(self):
+        """Save accepts a PylonDataComponent (IImage) obtained via GrabResult.GetFirstImageDataComponent()."""
+        grab_result = self._grab_mono8()
+        component = grab_result.GetFirstImageDataComponent()
+        try:
+            path = self._tmp_path(".tiff")
+            pylon.ImagePersistence.Save(pylon.ImageFileFormat_Tiff, path, component)
+            with pylon.ImagePersistence.Load(path) as loaded:
+                self.assertEqual(loaded.Width, grab_result.Width)
+                self.assertEqual(loaded.Height, grab_result.Height)
+        finally:
+            component.Release()
+
+    # ------------------------------------------------------------------
+    # Save — PylonImage created via AttachGrabResultBuffer as source
+    # ------------------------------------------------------------------
+
+    def test_save_accepts_pylon_image(self):
+        """Save accepts a PylonImage."""
+        grab_result = self._grab_mono8()
+        image = pylon.PylonImage()
+        image.AttachGrabResultBuffer(grab_result)
+        try:
+            path = self._tmp_path(".tiff")
+            pylon.ImagePersistence.Save(pylon.ImageFileFormat_Tiff, path, image)
+            with pylon.ImagePersistence.Load(path) as loaded:
+                self.assertEqual(loaded.Width, grab_result.Width)
+                self.assertEqual(loaded.Height, grab_result.Height)
+                self.assertEqual(loaded.GetPixelType(), pylon.PixelType_Mono8)
+        finally:
+            image.Release()
 
     # ------------------------------------------------------------------
     # PylonImage.Save / PylonImage.Load convenience methods

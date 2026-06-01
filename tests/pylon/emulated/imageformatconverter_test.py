@@ -48,15 +48,28 @@ class ImageFormatConverterTestSuite(PylonEmuTestCase):
     # Helpers
     # ------------------------------------------------------------------
 
+    def setUp(self):
+        self._grab_results = []
+
+    def tearDown(self):
+        for grab_result in self._grab_results:
+            try:
+                # Grab results from camera devices typically occupy a buffer pool slot or several MB of memory,
+                # so it is good practice to always release them explicitly when they are no longer needed.
+                grab_result.Release()
+            except Exception:
+                pass
+
     def _grab_one_mono8(self):
         """Grab a single Mono8 frame from the emulator and return the grab result."""
         with pylon.InstantCamera(
             pylon.TlFactory.GetInstance().CreateFirstDevice(self.device_filter[0])
         ) as camera:
-            grab = camera.GrabOne(5000)
-        self.assertTrue(grab.GrabSucceeded(), "GrabOne() on emulator must succeed")
-        self.assertEqual(grab.PixelType, pylon.PixelType_Mono8)
-        return grab
+            grab_result = camera.GrabOne(5000)
+        self.assertTrue(grab_result.GrabSucceeded(), "GrabOne() on emulator must succeed")
+        self.assertEqual(grab_result.PixelType, pylon.PixelType_Mono8)
+        self._grab_results.append(grab_result)
+        return grab_result
 
     # ------------------------------------------------------------------
     # %rename + %ignore directives
@@ -548,21 +561,21 @@ class ImageFormatConverterTestSuite(PylonEmuTestCase):
         """Convert(grab_result) returns a newly-allocated, owned pylon.PylonImage."""
         converter = pylon.ImageFormatConverter()
         converter.OutputPixelFormat = pylon.PixelType_Mono16
-        grab = self._grab_one_mono8()
-        dst = converter.Convert(grab)
+        grab_result = self._grab_one_mono8()
+        dst = converter.Convert(grab_result)
         self.assertIsInstance(dst, pylon.PylonImage)
         self.assertTrue(dst.thisown, "returned image must own its C++ instance")
         self.assertEqual(dst.PixelType, pylon.PixelType_Mono16)
-        self.assertEqual(dst.Width,  grab.Width)
-        self.assertEqual(dst.Height, grab.Height)
+        self.assertEqual(dst.Width,  grab_result.Width)
+        self.assertEqual(dst.Height, grab_result.Height)
 
     def test_convert_from_iimage_returns_new_pylon_image(self):
         """Convert(iimage_src) also works when the source is an IImage (PylonImage)."""
         converter = pylon.ImageFormatConverter()
         converter.OutputPixelFormat = pylon.PixelType_Mono16
-        grab = self._grab_one_mono8()
+        grab_result = self._grab_one_mono8()
         # Turn the grab result into a standalone IImage (PylonImage) first.
-        src = converter.Convert(grab)
+        src = converter.Convert(grab_result)
         # Now round-trip through another converter that does Mono16 -> Mono8.
         converter2 = pylon.ImageFormatConverter()
         converter2.OutputPixelFormat = pylon.PixelType_Mono8
@@ -573,13 +586,48 @@ class ImageFormatConverterTestSuite(PylonEmuTestCase):
         self.assertEqual(dst.Width,  src.Width)
         self.assertEqual(dst.Height, src.Height)
 
+    def test_convert_from_pylon_image_attached_to_grab_result_buffer(self):
+        """Convert(pylon_image) works when the source is a PylonImage wrapping a grab result buffer."""
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = pylon.PixelType_Mono16
+        grab_result = self._grab_one_mono8()
+        image = pylon.PylonImage()
+        image.AttachGrabResultBuffer(grab_result)
+        try:
+            self.assertTrue(image.IsValid())
+            dst = converter.Convert(image)
+            self.assertIsInstance(dst, pylon.PylonImage)
+            self.assertTrue(dst.thisown)
+            self.assertEqual(dst.PixelType, pylon.PixelType_Mono16)
+            self.assertEqual(dst.Width,  grab_result.Width)
+            self.assertEqual(dst.Height, grab_result.Height)
+        finally:
+            image.Release()
+
+    def test_convert_from_pylon_data_component(self):
+        """Convert(component) works when the source is a PylonDataComponent from GetFirstImageDataComponent()."""
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = pylon.PixelType_Mono16
+        grab_result = self._grab_one_mono8()
+        component = grab_result.GetFirstImageDataComponent()
+        try:
+            self.assertTrue(component.IsValid())
+            dst = converter.Convert(component)
+            self.assertIsInstance(dst, pylon.PylonImage)
+            self.assertTrue(dst.thisown)
+            self.assertEqual(dst.PixelType, pylon.PixelType_Mono16)
+            self.assertEqual(dst.Width,  grab_result.Width)
+            self.assertEqual(dst.Height, grab_result.Height)
+        finally:
+            component.Release()
+
     def test_convert_returns_independent_images_on_each_call(self):
         """Calling Convert twice yields two distinct, independently-owned pylon.PylonImage instances."""
         converter = pylon.ImageFormatConverter()
         converter.OutputPixelFormat = pylon.PixelType_Mono16
-        grab = self._grab_one_mono8()
-        a = converter.Convert(grab)
-        b = converter.Convert(grab)
+        grab_result = self._grab_one_mono8()
+        a = converter.Convert(grab_result)
+        b = converter.Convert(grab_result)
         self.assertIsNot(a, b)
         self.assertTrue(a.thisown)
         self.assertTrue(b.thisown)
@@ -589,14 +637,14 @@ class ImageFormatConverterTestSuite(PylonEmuTestCase):
 
     def test_convert_result_outlives_source_converter(self):
         """The PylonImage returned by Convert stays valid after the converter is dropped."""
-        grab = self._grab_one_mono8()
+        grab_result = self._grab_one_mono8()
         converter = pylon.ImageFormatConverter()
         converter.OutputPixelFormat = pylon.PixelType_Mono16
-        dst = converter.Convert(grab)
+        dst = converter.Convert(grab_result)
         del converter
         self.assertEqual(dst.PixelType, pylon.PixelType_Mono16)
-        self.assertEqual(dst.Width,  grab.Width)
-        self.assertEqual(dst.Height, grab.Height)
+        self.assertEqual(dst.Width,  grab_result.Width)
+        self.assertEqual(dst.Height, grab_result.Height)
 
     def test_convert_rejects_unsupported_source_types(self):
         """Convert with a non-image argument raises a TypeError from SWIG's overload resolver."""
@@ -613,24 +661,24 @@ class ImageFormatConverterTestSuite(PylonEmuTestCase):
 
     def test_image_has_destination_format_true_when_output_matches_source(self):
         """ImageHasDestinationFormat returns True when the source already has the converter's output format."""
-        grab = self._grab_one_mono8()  # grab.PixelType == PixelType_Mono8
+        grab_result = self._grab_one_mono8()  # grab_result.PixelType == PixelType_Mono8
         converter = pylon.ImageFormatConverter()
         converter.OutputPixelFormat = pylon.PixelType_Mono8
-        self.assertTrue(converter.ImageHasDestinationFormat(grab))
+        self.assertTrue(converter.ImageHasDestinationFormat(grab_result))
 
     def test_image_has_destination_format_false_when_output_differs_from_source(self):
         """ImageHasDestinationFormat returns False when the source has a different format than the output."""
-        grab = self._grab_one_mono8()
+        grab_result = self._grab_one_mono8()
         converter = pylon.ImageFormatConverter()
         converter.OutputPixelFormat = pylon.PixelType_RGB8packed
-        self.assertFalse(converter.ImageHasDestinationFormat(grab))
+        self.assertFalse(converter.ImageHasDestinationFormat(grab_result))
 
     def test_image_has_destination_format_accepts_iimage_source(self):
         """ImageHasDestinationFormat also accepts an IImage (PylonImage) source."""
-        grab = self._grab_one_mono8()
+        grab_result = self._grab_one_mono8()
         converter = pylon.ImageFormatConverter()
         converter.OutputPixelFormat = pylon.PixelType_RGB8packed
-        converted = converter.Convert(grab)
+        converted = converter.Convert(grab_result)
         self.assertTrue(converter.ImageHasDestinationFormat(converted))
 
     def test_image_has_destination_format_rejects_unsupported_argument_types(self):

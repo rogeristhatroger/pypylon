@@ -23,6 +23,17 @@ class DataContainerTestSuite(PylonEmuTestCase):
                 camera.GenDC.Value = True
             return camera.GrabOne(5000)
 
+    def _tmp_path(self, suffix):
+        """Return a temporary file path with a unicode prefix and the given suffix.
+
+        The unicode prefix (e.g. 'pylön_') exercises unicode path support in Save/Load.
+        The file is created and immediately unlinked so the caller owns the path.
+        """
+        fd, path = tempfile.mkstemp(prefix="pylön_", suffix=suffix)
+        os.close(fd)
+        os.unlink(path)
+        return path
+
     def _assert_components_equivalent(self, expected, actual):
         """Field-by-field equality of two PylonDataComponent instances, including data bytes."""
         self.assertEqual(expected.IsValid(), actual.IsValid())
@@ -365,9 +376,7 @@ class DataContainerTestSuite(PylonEmuTestCase):
             with self.assertRaises(genicam.GenericException):
                 container_valid.Save("")
 
-            fd, save_path = tempfile.mkstemp(suffix=".gendc")
-            os.close(fd)
-            os.unlink(save_path)
+            save_path = self._tmp_path(".gendc")
             try:
                 container_valid.Save(save_path)
 
@@ -391,9 +400,7 @@ class DataContainerTestSuite(PylonEmuTestCase):
 
         with self._grab_one() as grab_result_image:
             container_from_image = pylon.PylonDataContainer(grab_result_image)
-            fd, image_path = tempfile.mkstemp(suffix=".gendc")
-            os.close(fd)
-            os.unlink(image_path)
+            image_path = self._tmp_path(".gendc")
             try:
                 container_from_image.Save(image_path)
 
@@ -425,8 +432,8 @@ class DataContainerTestSuite(PylonEmuTestCase):
                 container.Load(bad_path)
             self.assertEqual(container.DataComponentCount, 0)
 
-        fd, empty_path = tempfile.mkstemp(suffix=".gendc")
-        os.close(fd)
+        empty_path = self._tmp_path(".gendc")
+        open(empty_path, "wb").close()
         try:
             with self.assertRaises(genicam.GenericException):
                 container.Load(empty_path)
@@ -434,11 +441,11 @@ class DataContainerTestSuite(PylonEmuTestCase):
         finally:
             os.unlink(empty_path)
 
-        fd, illegal_path = tempfile.mkstemp(suffix=".gendc")
+        illegal_path = self._tmp_path(".gendc")
+        with open(illegal_path, "wb") as f:
+            for i in range(1, 10):
+                f.write(str(i).encode("ascii"))
         try:
-            with os.fdopen(fd, "wb") as f:
-                for i in range(1, 10):
-                    f.write(str(i).encode("ascii"))
             with self.assertRaises(genicam.GenericException):
                 container.Load(illegal_path)
             self.assertEqual(container.DataComponentCount, 0)
