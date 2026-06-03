@@ -18,7 +18,7 @@ class FeaturePersistenceTestSuite(PylonEmuTestCase):
         """Save writes camera features to a file and Load restores them."""
         with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
             camera.Width.SetToMinimum()
-            with tempfile.NamedTemporaryFile(suffix=".pfs", delete=False) as file:
+            with tempfile.NamedTemporaryFile(prefix="pylön_", suffix=".pfs", delete=False) as file:
                 file_path = file.name
             try:
                 pylon.FeaturePersistence.Save(file_path, camera.NodeMap)
@@ -32,7 +32,7 @@ class FeaturePersistenceTestSuite(PylonEmuTestCase):
         """Load with validate=False restores features without strict validation."""
         with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
             camera.Width.SetToMinimum()
-            with tempfile.NamedTemporaryFile(suffix=".pfs", delete=False) as file:
+            with tempfile.NamedTemporaryFile(prefix="pylön_", suffix=".pfs", delete=False) as file:
                 file_path = file.name
             try:
                 pylon.FeaturePersistence.Save(file_path, camera.NodeMap)
