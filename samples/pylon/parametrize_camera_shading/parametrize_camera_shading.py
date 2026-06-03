@@ -268,7 +268,7 @@ try:
     if gige_camera_info is None:
         raise pylon.RuntimeException("No GigE camera found.")
 
-    with pylon.InstantCamera(tl_factory.CreateDevice(gige_camera_info)) as camera:
+    with pylon.InstantCamera(gige_camera_info, pylon.Unambiguous) as camera:
         print("Using device:", camera.DeviceInfo.ModelName)
         print()
 
