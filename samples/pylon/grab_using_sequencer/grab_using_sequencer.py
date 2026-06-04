@@ -20,10 +20,10 @@ exit_code = 0
 try:
     with pylon.InstantCamera() as camera:
 
+        camera.Attach(pylon.FirstFound)
+
         print("Using device:", camera.DeviceInfo.ModelName)
         print()
-
-        camera.Attach(pylon.FirstFound)
 
         # Register the standard configuration event handler for enabling software
         # triggering. The software trigger configuration handler replaces the
