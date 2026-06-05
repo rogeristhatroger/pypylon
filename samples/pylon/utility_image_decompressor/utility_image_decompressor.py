@@ -36,14 +36,13 @@ def _print_compression_info(info):
     """Print all fields of the compression info dictionary."""
     print()
     print("Compression info:")
-    for key, val in info.items():
+    for key, val in info.to_dict().items():
         print(f"  {key}: {val}")
 
 
 exit_code = 0
 try:
     with pylon.InstantCamera(pylon.FirstFound) as camera:
-        camera.Open()
 
         print("Using device:", camera.DeviceInfo.ModelName)
         print()
@@ -88,12 +87,9 @@ try:
             # Rate option must be restored first as the rate can't be changed
             # when compression itself is turned off.
             if old_rate_option is not None:
-                camera.ImageCompressionRateOption.TrySetValue(old_rate_option)
+                camera.ImageCompressionRateOption.Value = old_rate_option
             camera.ImageCompressionMode.TrySetValue(old_compression_mode)
             sys.exit(0)
-
-        # Wait for a new image.
-        target_image = pylon.PylonImage()
 
         grab_ok = False
         with camera.GrabOne(1000) as grab_result:
@@ -102,21 +98,19 @@ try:
                 # Fetch compression info and check whether the image was compressed.
                 info = decompressor.GetCompressionInfo(grab_result)
                 if info is not None:
-                    has_compressed = info["HasCompressedImage"]
-                    compression_status = info["CompressionStatus"]
                     _print_compression_info(info)
 
-                    if has_compressed:
-                        if compression_status == "Ok":
+                    if info.hasCompressedImage:
+                        if info.compressionStatus == pylon.CompressionStatus_Ok:
                             payload = grab_result.PayloadSize
-                            decompressed_size = info.get("DecompressedPayloadSize", 0)
+                            decompressed_size = info.decompressedPayloadSize
                             if decompressed_size > 0:
                                 ratio = payload / decompressed_size * 100.0
                                 print(f"\nTransferred payload: {payload}")
                                 print(f"Compression ratio: {ratio:.1f}%")
 
                             # Decompress the image.
-                            decompressor.DecompressImage(target_image, grab_result)
+                            target_image = decompressor.DecompressImage(grab_result)
                             _show_image(target_image, "Decompressed image.")
                         else:
                             print("There was an error while the camera was compressing the image.")
@@ -149,19 +143,17 @@ try:
                     if grab_result.GrabSucceeded():
                         info = decompressor.GetCompressionInfo(grab_result)
                         if info is not None:
-                            has_compressed = info["HasCompressedImage"]
-                            compression_status = info["CompressionStatus"]
                             _print_compression_info(info)
 
-                            if has_compressed and compression_status == "Ok":
+                            if info.hasCompressedImage and info.compressionStatus == pylon.CompressionStatus_Ok:
                                 payload = grab_result.PayloadSize
-                                decompressed_size = info.get("DecompressedPayloadSize", 0)
+                                decompressed_size = info.decompressedPayloadSize
                                 if decompressed_size > 0:
                                     ratio = payload / decompressed_size * 100.0
                                     print(f"\nTransferred payload: {payload}")
                                     print(f"Compression ratio: {ratio:.1f}%")
 
-                                decompressor.DecompressImage(target_image, grab_result)
+                                target_image = decompressor.DecompressImage(grab_result)
                                 _show_image(target_image, "Decompressed image.")
                             else:
                                 # No decompression is needed because it is already an
@@ -176,7 +168,7 @@ try:
         # restored first as the rate can't be changed when compression itself
         # is turned off.
         if old_rate_option is not None:
-            camera.ImageCompressionRateOption.TrySetValue(old_rate_option)
+            camera.ImageCompressionRateOption.SetValue(old_rate_option)
         camera.ImageCompressionMode.TrySetValue(old_compression_mode)
 
 except Exception as e:
