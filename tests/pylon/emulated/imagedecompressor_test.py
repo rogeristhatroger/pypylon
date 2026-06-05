@@ -97,6 +97,7 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
     def _expected_image_decompressor_methods(self):
         return frozenset((
             "SetCompressionDescriptor",
+            "GetCompressionMode",
             "GetCompressionInfo",
             "ComputeCompressionDescriptorHash",
             "GetCurrentCompressionDescriptorHash",
@@ -104,6 +105,9 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
             "DecompressImage",
             "HasCompressionDescriptor",
             "ResetCompressionDescriptor",
+            "GetImageSizeForDecompression",
+            "GetCompressionDescriptor",
+            "GetCurrentCompressionDescriptor",
         ))
 
     def _expected_compression_info_fields(self):
@@ -150,8 +154,6 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
     # %rename + %ignore directives
     #     %rename(ImageDecompressor) Pylon::CImageDecompressor;
     #     %rename(CompressionInfo)   Pylon::CompressionInfo_t;
-    #     %ignore GetCompressionMode / GetImageSizeForDecompression /
-    #             GetCompressionDescriptor / void* overloads
     # ------------------------------------------------------------------
 
     def test_renamed_classes_are_exposed(self):
@@ -168,12 +170,6 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
         self.assertFalse(hasattr(pylon, "EEndianness"))
         self.assertFalse(hasattr(pylon, "ECompressionStatus"))
         self.assertFalse(hasattr(pylon, "ECompressionMode"))
-
-    def test_ignored_methods_are_not_exposed(self):
-        """%ignore-d node-map and descriptor-accessor methods are not exposed on ImageDecompressor."""
-        self.assertFalse(hasattr(pylon.ImageDecompressor, "GetCompressionMode"))
-        self.assertFalse(hasattr(pylon.ImageDecompressor, "GetImageSizeForDecompression"))
-        self.assertFalse(hasattr(pylon.ImageDecompressor, "GetCompressionDescriptor"))
 
     # ------------------------------------------------------------------
     # EEndianness / ECompressionStatus / ECompressionMode enums
@@ -269,7 +265,7 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
         )
 
     # ------------------------------------------------------------------
-    # ImageDecompressor construction and public-method surface
+    # ImageDecompressor construction
     # ------------------------------------------------------------------
 
     def test_image_decompressor_default_construction(self):
@@ -277,6 +273,98 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
         decompressor = pylon.ImageDecompressor()
         self.assertIsInstance(decompressor, pylon.ImageDecompressor)
         self.assertFalse(decompressor.HasCompressionDescriptor())
+
+    # ------------------------------------------------------------------
+    # CImageDecompressor(const CImageDecompressor&) – copy constructor
+    # ------------------------------------------------------------------
+
+    def test_copy_construction_of_default_decompressor_has_no_descriptor(self):
+        """Copy-constructing a default (unconfigured) ImageDecompressor yields a new instance with no descriptor."""
+        original = pylon.ImageDecompressor()
+        copy = pylon.ImageDecompressor(original)
+        self.assertIsInstance(copy, pylon.ImageDecompressor)
+        self.assertFalse(copy.HasCompressionDescriptor())
+
+    def test_copy_construction_propagates_installed_descriptor(self):
+        """Copy-constructing a configured ImageDecompressor yields a copy that also owns a compression descriptor."""
+        original = self._make_configured_decompressor()
+        copy = pylon.ImageDecompressor(original)
+        self.assertIsInstance(copy, pylon.ImageDecompressor)
+        self.assertTrue(copy.HasCompressionDescriptor())
+
+    def test_copy_construction_preserves_descriptor_hash(self):
+        """The descriptor hash of the copy equals the descriptor hash of the original."""
+        original = self._make_configured_decompressor()
+        copy = pylon.ImageDecompressor(original)
+        self.assertEqual(
+            bytes(copy.GetCurrentCompressionDescriptorHash()),
+            bytes(original.GetCurrentCompressionDescriptorHash()),
+        )
+
+    def test_copy_construction_hash_matches_documented_mono8_fixture(self):
+        """The copy's descriptor hash equals the documented Mono8 hash, confirming the descriptor was copied faithfully."""
+        original = self._make_configured_decompressor()
+        copy = pylon.ImageDecompressor(original)
+        self._assert_mono8_descriptor_hash(copy.GetCurrentCompressionDescriptorHash())
+
+    def test_copy_construction_produces_independent_instance(self):
+        """Resetting the descriptor on the copy does not affect the original, and vice versa."""
+        original = self._make_configured_decompressor()
+        copy = pylon.ImageDecompressor(original)
+        copy.ResetCompressionDescriptor()
+        self.assertFalse(copy.HasCompressionDescriptor())
+        self.assertTrue(original.HasCompressionDescriptor())
+
+    # ------------------------------------------------------------------
+    # CImageDecompressor(GenApi::INodeMap&) – node-map constructor
+    # ------------------------------------------------------------------
+
+    def test_nodemap_construction_accepts_instant_camera_nodemap(self):
+        """ImageDecompressor(nodeMap) accepts an InstantCamera.NodeMap."""
+        with pylon.InstantCamera(pylon.FirstFound) as camera:
+            if camera.ImageCompressionMode.IsWritable() and \
+               camera.DeviceInfo.DeviceClass != pylon.BaslerCamEmuDeviceClass:
+                camera.ImageCompressionMode.Value = "BaslerCompressionBeyond"
+                pylon.ImageDecompressor(camera.NodeMap)
+            else:
+                try:
+                    pylon.ImageDecompressor(camera.NodeMap)
+                    self.fail("Expected RuntimeException was not raised")
+                except pylon.RuntimeException as exc:
+                    pass
+
+    def test_nodemap_construction_raises_when_compression_is_disabled(self):
+        """ImageDecompressor(nodeMap) raises RuntimeException when the camera has compression disabled."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            try:
+                camera.ImageCompressionMode.TrySetValue("Off")
+                pylon.ImageDecompressor(camera.NodeMap)
+                self.fail("Expected RuntimeException was not raised")
+            except pylon.RuntimeException as exc:
+                self.assertIn("Compression is disabled", str(exc))
+
+    # ------------------------------------------------------------------
+    # GetImageSizeForDecompression test
+    # ------------------------------------------------------------------
+
+    def test_nodemap_construction_accepts_instant_camera_nodemap(self):
+        """ImageDecompressor provides GetImageSizeForDecompression."""
+        with pylon.InstantCamera(pylon.FirstFound) as camera:
+            if camera.ImageCompressionMode.IsWritable() and \
+                    camera.DeviceInfo.DeviceClass != pylon.BaslerCamEmuDeviceClass:
+                camera.ImageCompressionMode.Value = "BaslerCompressionBeyond"
+                image_size = pylon.ImageDecompressor.GetImageSizeForDecompression(camera.NodeMap)
+                self.assertGreaterEqual(image_size, 0)
+            else:
+                try:
+                    image_size = pylon.ImageDecompressor.GetImageSizeForDecompression(camera.NodeMap)
+                    self.fail("Expected RuntimeException was not raised")
+                except pylon.RuntimeException as exc:
+                    pass
+
+    # ------------------------------------------------------------------
+    # ImageDecompressor construction and public-method surface
+    # ------------------------------------------------------------------
 
     def test_image_decompressor_method_surface_matches_expected(self):
         """pylon.ImageDecompressor exposes exactly the expected set of public methods."""
@@ -372,17 +460,76 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
                 )
 
     # ------------------------------------------------------------------
+    # SetCompressionDescriptor(GenApi::INodeMap&) – node-map overload
+    # ------------------------------------------------------------------
+
+    def test_set_compression_descriptor_from_nodemap_accepts_instant_camera_nodemap(self):
+        """SetCompressionDescriptor(nodeMap) accepts an InstantCamera.NodeMap."""
+        decompressor = pylon.ImageDecompressor()
+        with pylon.InstantCamera(pylon.FirstFound) as camera:
+            if camera.ImageCompressionMode.IsWritable() and \
+               camera.DeviceInfo.DeviceClass != pylon.BaslerCamEmuDeviceClass:
+                camera.ImageCompressionMode.Value = "BaslerCompressionBeyond"
+                decompressor.SetCompressionDescriptor(camera.NodeMap)
+            else:
+                try:
+                    decompressor.SetCompressionDescriptor(camera.NodeMap)
+                    self.fail("Expected RuntimeException was not raised")
+                except pylon.RuntimeException as exc:
+                    pass
+
+    def test_set_compression_descriptor_from_nodemap_raises_when_compression_is_disabled(self):
+        """SetCompressionDescriptor(nodeMap) raises RuntimeException when the camera has compression disabled."""
+        decompressor = pylon.ImageDecompressor()
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            try:
+                camera.ImageCompressionMode.TrySetValue("Off")
+                decompressor.SetCompressionDescriptor(camera.NodeMap)
+                self.fail("Expected RuntimeException was not raised")
+            except pylon.RuntimeException as exc:
+                self.assertIn("Compression is disabled", str(exc))
+
+    def test_set_compression_descriptor_from_nodemap_leaves_state_unchanged_on_failure(self):
+        """A failed SetCompressionDescriptor(nodeMap) on a fresh instance leaves HasCompressionDescriptor False."""
+        decompressor = pylon.ImageDecompressor()
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            camera.ImageCompressionMode.TrySetValue("Off")
+            with self.assertRaises(pylon.RuntimeException):
+                decompressor.SetCompressionDescriptor(camera.NodeMap)
+        self.assertFalse(decompressor.HasCompressionDescriptor())
+
+    def test_set_compression_descriptor_from_nodemap_preserves_installed_descriptor_on_failure(self):
+        """A failed SetCompressionDescriptor(nodeMap) does not clobber a previously installed descriptor."""
+        decompressor = self._make_configured_decompressor()
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            camera.ImageCompressionMode.TrySetValue("Off")
+            with self.assertRaises(pylon.RuntimeException):
+                decompressor.SetCompressionDescriptor(camera.NodeMap)
+        self.assertTrue(decompressor.HasCompressionDescriptor())
+        self._assert_mono8_descriptor_hash(decompressor.GetCurrentCompressionDescriptorHash())
+
+    # ------------------------------------------------------------------
+    # ImageDecompressor.GetCompressionMode(nodeMap) – static node-map query
+    # ------------------------------------------------------------------
+
+    def test_get_compression_mode_returns_off_when_compression_is_disabled(self):
+        """GetCompressionMode(nodeMap) returns CompressionMode_Off when compression is disabled."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            camera.ImageCompressionMode.TrySetValue("Off")
+            result = pylon.ImageDecompressor.GetCompressionMode(camera.NodeMap)
+            self.assertEqual(result, pylon.CompressionMode_Off)
+
+    # ------------------------------------------------------------------
     # ImageDecompressor.ComputeCompressionDescriptorHash (pure hash over
     # the input buffer; no descriptor parsing required)
     # ------------------------------------------------------------------
 
     def test_compute_compression_descriptor_hash_rejects_non_bytes_types(self):
         """ComputeCompressionDescriptorHash rejects non-bytes/bytearray inputs with an InvalidArgumentException."""
-        decompressor = pylon.ImageDecompressor()
         for bad in ("astring", 123, 3.14, [1, 2, 3], None):
             with self.subTest(arg=repr(bad)):
                 with self.assertRaises(pylon.InvalidArgumentException):
-                    decompressor.ComputeCompressionDescriptorHash(bad)
+                    pylon.ImageDecompressor.ComputeCompressionDescriptorHash(bad)
 
     def test_compute_compression_descriptor_hash_rejects_empty_buffer(self):
         """ComputeCompressionDescriptorHash rejects an empty buffer with an InvalidArgumentException."""
@@ -458,6 +605,86 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
         )
 
     # ------------------------------------------------------------------
+    # ImageDecompressor.GetCompressionDescriptor(nodemap) (static)
+    # ImageDecompressor.GetCurrentCompressionDescriptor() (instance; requires descriptor to be set)
+    # ------------------------------------------------------------------
+
+    def test_get_compression_descriptor_without_descriptor_raises(self):
+        """GetCurrentCompressionDescriptor() raises a RuntimeException when no descriptor has been set."""
+        decompressor = pylon.ImageDecompressor()
+        self.assertFalse(decompressor.HasCompressionDescriptor())
+        with self.assertRaises(pylon.RuntimeException):
+            decompressor.GetCurrentCompressionDescriptor()
+
+    def test_get_compression_descriptor_returns_bytearray(self):
+        """GetCurrentCompressionDescriptor() returns a non-empty bytearray after a valid descriptor has been installed."""
+        decompressor = self._make_configured_decompressor()
+        result = decompressor.GetCurrentCompressionDescriptor()
+        self.assertIsInstance(result, bytearray)
+        self.assertGreater(len(result), 0)
+
+    def test_get_compression_descriptor_matches_installed_descriptor(self):
+        """GetCurrentCompressionDescriptor() returns the exact bytes of the installed descriptor."""
+        decompressor = self._make_configured_decompressor()
+        result = decompressor.GetCurrentCompressionDescriptor()
+        self.assertEqual(bytes(result), bytes(COMPRESSION_DESCRIPTOR_MONO8))
+
+    def test_get_compression_descriptor_roundtrip(self):
+        """A descriptor retrieved via GetCurrentCompressionDescriptor() can be reinstalled and yields the same hash."""
+        original = self._make_configured_decompressor()
+        retrieved = original.GetCurrentCompressionDescriptor()
+
+        reinstalled = pylon.ImageDecompressor()
+        reinstalled.SetCompressionDescriptor(retrieved)
+        self.assertTrue(reinstalled.HasCompressionDescriptor())
+        self.assertEqual(
+            reinstalled.GetCurrentCompressionDescriptorHash(),
+            original.GetCurrentCompressionDescriptorHash(),
+        )
+
+    def test_get_compression_descriptor_raises_after_reset(self):
+        """GetCurrentCompressionDescriptor() raises again after ResetCompressionDescriptor has cleared the descriptor."""
+        decompressor = self._make_configured_decompressor()
+        decompressor.ResetCompressionDescriptor()
+        with self.assertRaises(pylon.RuntimeException):
+            decompressor.GetCurrentCompressionDescriptor()
+
+    def test_get_compression_descriptor_from_nodemap_raises_when_compression_is_disabled(self):
+        """GetCompressionDescriptor(nodeMap) raises RuntimeException when compression is disabled in the camera."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            camera.ImageCompressionMode.TrySetValue("Off")
+            with self.assertRaises(pylon.RuntimeException):
+                pylon.ImageDecompressor.GetCompressionDescriptor(camera.NodeMap)
+
+    def test_get_compression_descriptor_from_nodemap_accepts_instant_camera_nodemap(self):
+        """GetCompressionDescriptor(nodeMap) accepts an InstantCamera.NodeMap."""
+        with pylon.InstantCamera(pylon.FirstFound) as camera:
+            if camera.ImageCompressionMode.IsWritable() and \
+               camera.DeviceInfo.DeviceClass != pylon.BaslerCamEmuDeviceClass:
+                camera.ImageCompressionMode.Value = "BaslerCompressionBeyond"
+                result = pylon.ImageDecompressor.GetCompressionDescriptor(camera.NodeMap)
+                self.assertIsInstance(result, bytearray)
+                self.assertGreater(len(result), 0)
+            else:
+                try:
+                    pylon.ImageDecompressor.GetCompressionDescriptor(camera.NodeMap)
+                    self.fail("Expected RuntimeException was not raised")
+                except pylon.RuntimeException:
+                    pass
+
+    def test_get_compression_descriptor_instance_and_nodemap_agree(self):
+        """GetCurrentCompressionDescriptor() and GetCompressionDescriptor(nodeMap) return identical bytes when both are available."""
+        with pylon.InstantCamera(pylon.FirstFound) as camera:
+            if not (camera.ImageCompressionMode.IsWritable() and
+                    camera.DeviceInfo.DeviceClass != pylon.BaslerCamEmuDeviceClass):
+                self.skipTest("Camera does not support compression; skipping nodemap vs instance comparison")
+            camera.ImageCompressionMode.Value = "BaslerCompressionBeyond"
+            decompressor = pylon.ImageDecompressor(camera.NodeMap)
+            from_instance = decompressor.GetCompressionDescriptor()
+            from_nodemap = pylon.ImageDecompressor.GetCompressionDescriptor(camera.NodeMap)
+            self.assertEqual(bytes(from_instance), bytes(from_nodemap))
+
+    # ------------------------------------------------------------------
     # ImageDecompressor.GetCompressionInfo (introspective, non-validating
     # call that returns a CompressionInfo for any byte-like input)
     # ------------------------------------------------------------------
@@ -467,7 +694,7 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
         decompressor = pylon.ImageDecompressor()
         for bad in ("astring", 123, 3.14, [1, 2, 3], None):
             with self.subTest(arg=repr(bad)):
-                with self.assertRaises(pylon.InvalidArgumentException):
+                with self.assertRaises(TypeError):
                     decompressor.GetCompressionInfo(bad)
 
     def test_get_compression_info_returns_compression_info_for_uncompressed_buffer(self):
@@ -521,6 +748,18 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
             EXPECTED_DECOMPRESSED_WIDTH * EXPECTED_DECOMPRESSED_HEIGHT,
         )
 
+    def test_get_compression_info_from_grab_result(self):
+        """GetCompressionInfo from grab result can be read."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            camera.ImageCompressionMode.Value = "BaslerCompressionBeyond"
+            grab_result = camera.GrabOne(1000)
+            self.assertTrue(grab_result.GrabSucceeded())
+            compression_info_1 = pylon.ImageDecompressor.GetCompressionInfo(grab_result)
+            compression_info_2 = pylon.ImageDecompressor.GetCompressionInfo(grab_result, pylon.Endianness_Auto)
+            self.assertIsInstance(compression_info_1, pylon.CompressionInfo)
+            self.assertIsInstance(compression_info_2, pylon.CompressionInfo)
+            self.assertEqual(compression_info_1.to_dict(), compression_info_2.to_dict())
+
     # ------------------------------------------------------------------
     # ImageDecompressor.GetCompressionDescriptorHash (buffer variant;
     # requires parsable chunk data)
@@ -562,6 +801,16 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
         result = decompressor.GetCompressionDescriptorHash(COMPRESSED_PAYLOAD_MONO8)
         self.assertIsInstance(result, bytearray)
         self._assert_mono8_descriptor_hash(result)
+
+    def test_get_compression_descriptor_hash_from_grab_result_buffer(self):
+        """GetCompressionDescriptorHash called with grab_result.Buffer returns a non-empty bytearray."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            camera.ImageCompressionMode.TrySetValue("BaslerCompressionBeyond")
+            with camera.GrabOne(1000) as grab_result:
+                self.assertTrue(grab_result.GrabSucceeded())
+                result = pylon.ImageDecompressor.GetCompressionDescriptorHash(grab_result.Buffer)
+                self.assertIsInstance(result, bytearray)
+                self.assertGreater(len(result), 0)
 
     # ------------------------------------------------------------------
     # ImageDecompressor.DecompressImage (two %extend overloads:
@@ -715,6 +964,43 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
         decompressor.SetCompressionDescriptor(COMPRESSION_DESCRIPTOR_MONO8)
         self.assertTrue(decompressor.HasCompressionDescriptor())
         self._assert_mono8_descriptor_hash(decompressor.GetCurrentCompressionDescriptorHash())
+
+    # ------------------------------------------------------------------
+    # ImageDecompressor.operator== (CImageDecompressor::operator==)
+    # ------------------------------------------------------------------
+
+    def test_equality_two_default_decompressors_are_equal(self):
+        """Two default-constructed ImageDecompressors (no descriptor) compare equal."""
+        a = pylon.ImageDecompressor()
+        b = pylon.ImageDecompressor()
+        self.assertTrue(a == b)
+        self.assertFalse(a != b)
+
+    def test_equality_decompressor_is_equal_to_itself(self):
+        """An ImageDecompressor compares equal to itself regardless of whether it has a descriptor."""
+        decompressor = self._make_configured_decompressor()
+        self.assertTrue(decompressor == decompressor)
+
+    def test_equality_copy_constructed_decompressor_is_equal_to_original(self):
+        """A copy-constructed ImageDecompressor compares equal to the original."""
+        original = self._make_configured_decompressor()
+        copy = pylon.ImageDecompressor(original)
+        self.assertTrue(original == copy)
+        self.assertFalse(original != copy)
+
+    def test_equality_configured_vs_default_decompressor_are_not_equal(self):
+        """An ImageDecompressor with a descriptor is not equal to one without a descriptor."""
+        configured = self._make_configured_decompressor()
+        default = pylon.ImageDecompressor()
+        self.assertFalse(configured == default)
+        self.assertTrue(configured != default)
+
+    def test_equality_after_reset_matches_default(self):
+        """After ResetCompressionDescriptor, a formerly configured decompressor compares equal to a default one."""
+        configured = self._make_configured_decompressor()
+        default = pylon.ImageDecompressor()
+        configured.ResetCompressionDescriptor()
+        self.assertTrue(configured == default)
 
     # ------------------------------------------------------------------
     # CompressionInfo construction and field surface

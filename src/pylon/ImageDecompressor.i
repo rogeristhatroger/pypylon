@@ -28,6 +28,27 @@
         }
     %}
 
+// GetCompressionInfo: make CompressionInfo_t& an invisible output-only parameter
+// and return it directly as the Python return value (discarding the bool).
+// NOTE: the fully-qualified Pylon::CompressionInfo_t name is required so that
+// SWIG resolves the type correctly and applies numinputs=0 to the generated
+// dispatch / wrapper functions.
+%typemap(in, numinputs=0) Pylon::CompressionInfo_t& compressionInfo
+    (Pylon::CompressionInfo_t temp)
+    %{
+        $1 = &temp;
+    %}
+
+%typemap(argout) Pylon::CompressionInfo_t& compressionInfo
+    %{
+        Py_XDECREF($result);
+        $result = SWIG_NewPointerObj(
+            new Pylon::CompressionInfo_t(*$1),
+            $descriptor(Pylon::CompressionInfo_t*),
+            SWIG_POINTER_OWN
+        );
+    %}
+
 %extend Pylon::CompressionInfo_t {
     %pythoncode %{
         def to_dict(self):
@@ -92,10 +113,11 @@
     // called without the GIL being held. Therefore we have to tell SWIG not
     // to release the GIL when calling them (%nothread).
     %nothread SetCompressionDescriptor;
-    %nothread GetCompressionInfo;
     %nothread ComputeCompressionDescriptorHash;
     %nothread GetCurrentCompressionDescriptorHash;
     %nothread GetCompressionDescriptorHash;
+    %nothread GetCurrentCompressionDescriptor;
+    %nothread GetCompressionDescriptor;
     %nothread DecompressImage;
 
     void SetCompressionDescriptor(PyObject * pCompressionDescriptor)
@@ -106,27 +128,16 @@
         $self->SetCompressionDescriptor((void *) buffer, length);
     }
 
-    CompressionInfo_t * GetCompressionInfo(PyObject * pGrabBuffer, EEndianness endianness = Endianness_Auto)
-    {
-        const char * payloadBuffer = NULL;
-        size_t payloadSize = extractByteLikePyObject(pGrabBuffer, payloadBuffer);
-
-        CompressionInfo_t * compressionInfo = new CompressionInfo_t();
-        $self->GetCompressionInfo(*compressionInfo, (void *) payloadBuffer, payloadSize, endianness);
-
-        return compressionInfo;
-    }
-
-    PyObject * ComputeCompressionDescriptorHash(PyObject * pCompressionDescriptor)
+    static PyObject * ComputeCompressionDescriptorHash(PyObject * pCompressionDescriptor)
     {
         const char * buffer = NULL;
         size_t length = extractByteLikePyObject(pCompressionDescriptor, buffer);
 
         size_t hashSize = 0;
-        $self->ComputeCompressionDescriptorHash(NULL, &hashSize, buffer, length);
+        Pylon::CImageDecompressor::ComputeCompressionDescriptorHash(NULL, &hashSize, buffer, length);
 
         char * hashBuffer = new char[hashSize];
-        $self->ComputeCompressionDescriptorHash(hashBuffer, &hashSize, buffer, length);
+        Pylon::CImageDecompressor::ComputeCompressionDescriptorHash(hashBuffer, &hashSize, buffer, length);
 
         PyObject * result = PyByteArray_FromStringAndSize(hashBuffer, hashSize);
         delete[] hashBuffer; // see note above
@@ -146,16 +157,42 @@
         return result;
     }
 
-    PyObject * GetCompressionDescriptorHash(PyObject * pGrabBuffer, EEndianness endianness = Endianness_Auto)
+    PyObject * GetCurrentCompressionDescriptor()
+    {
+        size_t descriptorSize = 0;
+        $self->GetCompressionDescriptor(NULL, &descriptorSize);
+
+        char * descriptorBuffer = new char[descriptorSize];
+        $self->GetCompressionDescriptor(descriptorBuffer, &descriptorSize);
+
+        PyObject * result = PyByteArray_FromStringAndSize(descriptorBuffer, descriptorSize);
+        delete[] descriptorBuffer; // see note above
+        return result;
+    }
+
+    static PyObject * GetCompressionDescriptor(GenApi::INodeMap& nodeMap)
+    {
+        size_t descriptorSize = 0;
+        Pylon::CImageDecompressor::GetCompressionDescriptor(NULL, &descriptorSize, nodeMap);
+
+        char * descriptorBuffer = new char[descriptorSize];
+        Pylon::CImageDecompressor::GetCompressionDescriptor(descriptorBuffer, &descriptorSize, nodeMap);
+
+        PyObject * result = PyByteArray_FromStringAndSize(descriptorBuffer, descriptorSize);
+        delete[] descriptorBuffer; // see note above
+        return result;
+    }
+
+    static PyObject * GetCompressionDescriptorHash(PyObject * pGrabBuffer, EEndianness endianness = Endianness_Auto)
     {
         const char * payloadBuffer = NULL;
         size_t payloadSize = extractByteLikePyObject(pGrabBuffer, payloadBuffer);
 
         size_t hashSize = 0;
-        $self->GetCompressionDescriptorHash(NULL, &hashSize, payloadBuffer, payloadSize, endianness);
+        Pylon::CImageDecompressor::GetCompressionDescriptorHash(NULL, &hashSize, payloadBuffer, payloadSize, endianness);
 
         char * hashBuffer = new char[hashSize];
-        $self->GetCompressionDescriptorHash(hashBuffer, &hashSize, payloadBuffer, payloadSize, endianness);
+        Pylon::CImageDecompressor::GetCompressionDescriptorHash(hashBuffer, &hashSize, payloadBuffer, payloadSize, endianness);
 
         PyObject * result = PyByteArray_FromStringAndSize(hashBuffer, hashSize);
         delete[] hashBuffer; // see note above
@@ -202,16 +239,13 @@
 
 // Ignore original overloads for functions with void* in their signature.
 %ignore SetCompressionDescriptor( const void* pCompressionDescriptor, size_t sizeCompressionDescriptor );
-%ignore GetCompressionInfo;
+%ignore GetCompressionInfo( CompressionInfo_t&, const Pylon::GrabResult&);
+%ignore GetCompressionInfo( CompressionInfo_t&, const Pylon::GrabResult&, EEndianness );
 %ignore ComputeCompressionDescriptorHash;
 %ignore GetCompressionDescriptorHash;
 %ignore DecompressImage;
-
-// Ignore methods using the node map, these are currently not supported.
-%ignore GetCompressionMode;
-%ignore GetImageSizeForDecompression;
-
-// Ignode other currently unsupported methods.
-%ignore GetCompressionDescriptor;
+// Ignore void* overloads of GetCompressionDescriptor (replaced by %extend versions above).
+%ignore GetCompressionDescriptor( void* pCompressionDescriptor, size_t* pSizeCompressionDescriptor ) const;
+%ignore GetCompressionDescriptor( void* pCompressionDescriptor, size_t* pSizeCompressionDescriptor, GenApi::INodeMap& nodeMap );
 
 %include <pylon/ImageDecompressor.h>;
