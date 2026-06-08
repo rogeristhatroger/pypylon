@@ -11,28 +11,33 @@
     #
 
     import ctypes as _tmp_ctypes
-    __IsWindowVisible = _tmp_ctypes.WinDLL("user32").IsWindowVisible
-    __IsWindowVisible.argtypes = [_tmp_ctypes.c_void_p]
-    __IsWindowVisible.restype = _tmp_ctypes.c_bool
-    del _tmp_ctypes
+    import ctypes.wintypes as _tmp_wintypes
+    __GetWindowLong = _tmp_ctypes.WinDLL("user32").GetWindowLongW
+    __GetWindowLong.argtypes = [_tmp_wintypes.HWND, _tmp_ctypes.c_int]
+    __GetWindowLong.restype = _tmp_ctypes.c_long
+    _WS_VISIBLE = 0x10000000
+    _GWL_STYLE = -16
+    del _tmp_ctypes, _tmp_wintypes
 
     def IsVisible(self):
         """
 
-        Checks if this PylonImageWindow is visible
+        Checks if this PylonImageWindow is visible.
 
         Returns
         -------
-        True if visible.
+        bool
+            True if the window has been shown and is currently visible.
+            False if the window is hidden or has not been created yet.
 
         """
-        return self.__IsWindowVisible(self.GetWindowHandle())
+        if not self.IsValid():
+            return False
+        return bool(self.__GetWindowLong(self.GetWindowHandle(), self._GWL_STYLE) & self._WS_VISIBLE)
     %}
 }
 
-#define IImage CGrabResultPtr
 %include <pylon/PylonGUI.h>;
-#undef IImage
 
 %inline %{
 static void DisplayImageFromPylonImage(size_t winIndex, const Pylon::CPylonImage& image) {
@@ -118,7 +123,9 @@ else:
                 arr = _display_converter.Convert(image).Array
         else:
             arr = image.Array
-        cv2.imshow(f"pylon {winIndex}", arr)
+        window_name = f"pylon {winIndex}"
+        cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+        cv2.imshow(window_name, arr)
         cv2.waitKey(1)  # required for cv2 GUI event processing
 
     def DisplayImage(winIndex, image):
@@ -136,8 +143,8 @@ else:
             # disable cv2.
             try:
                 import cv2
-                cv2.namedWindow("_pylon_probe")
-                cv2.destroyWindow("_pylon_probe")
+                window_name = f"pylon {winIndex}"
+                cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
                 _display_cv2 = cv2
             except Exception:
                 _display_cv2 = False

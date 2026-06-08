@@ -15,8 +15,13 @@ _BARCODE_FIRST_PIXEL = 143
 
 
 def _make_mono8_image(width=64, height=48):
-    """Return a valid Mono8 PylonImage created via PylonImage.Create()."""
-    return pylon.PylonImage.Create(pylon.PixelType_Mono8, width, height)
+    """Return a valid Mono8 PylonImage filled with a saw-tooth byte pattern."""
+    image_mono8 = pylon.PylonImage.Create(pylon.PixelType_Mono8, width, height)
+    with image_mono8.GetArrayZeroCopy() as numpy_array:
+        for y in range(image_mono8.Height):
+            for x in range(image_mono8.Width):
+                numpy_array[y, x] = (x + y) % 256
+    return image_mono8
 
 
 class PylonImageTestSuite(PylonEmuTestCase):
