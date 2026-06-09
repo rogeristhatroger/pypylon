@@ -68,8 +68,6 @@
     PROP_GET(Representation)
     PROP_GET(Unit)
     PROP_GET(FloatAlias)
-    PROP_GET(Address)
-    PROP_GET(Length)
 
 } // extend
 %include <GenApi/IInteger.h>;

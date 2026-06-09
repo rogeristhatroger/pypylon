@@ -91,20 +91,20 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         self.assertIsInstance(node, pylon.ArrayParameter)
         camera.Close()
 
-    def test_getnode_category_falls_back_to_genicam_icategory(self):
-        """intfICategory has no Pylon *Parameter equivalent -> genicam.ICategory"""
+    def test_getnode_category_returns_category_parameter(self):
+        """intfICategory  ->  pylon.CategoryParameter"""
         camera = self.create_first()
         camera.Open()
         node = camera.GetNodeMap().GetNode("Root")
-        self.assertIsInstance(node, genicam.ICategory)
+        self.assertIsInstance(node, pylon.CategoryParameter)
         camera.Close()
 
-    def test_getnode_enumentry_falls_back_to_genicam_ienumentry(self):
-        """intfIEnumEntry has no Pylon *Parameter equivalent -> genicam.IEnumEntry"""
+    def test_getnode_enumentry_returns_enum_entry_parameter(self):
+        """intfIEnumEntry  ->  pylon.EnumEntryParameter"""
         camera = self.create_first()
         camera.Open()
         node = camera.GetNodeMap().GetNode("EnumEntry_GainAuto_Off")
-        self.assertIsInstance(node, genicam.IEnumEntry)
+        self.assertIsInstance(node, pylon.EnumEntryParameter)
         camera.Close()
 
     def test_camera_attribute_access_maps_to_parameter_types(self):
@@ -139,8 +139,8 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
     def test_getnodes_returns_pylon_parameter_types(self):
         """GetNodes() via INodeMapWrapper returns Pylon *Parameter types for
         the mapped interface types (Integer, Boolean, Command, Float, String,
-        Enumeration, Register) and genicam fallback types for the rest
-        (ICategory, IEnumEntry, IPort)."""
+        Enumeration, Register, EnumEntry, Category, Port) and genicam fallback
+        types only for remaining unrecognised interface types."""
         camera = self.create_first()
         camera.Open()
         nodes = camera.GetNodeMap().GetNodes()
@@ -157,9 +157,14 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         self.assertIsInstance(by_name["GainAuto"], pylon.EnumParameter)
         self.assertIsInstance(by_name["BslImageCompressionBCBDescriptor"], pylon.ArrayParameter)
 
-        # Fallback types -> genicam interface types
-        self.assertIsInstance(by_name["Root"], genicam.ICategory)
-        self.assertIsInstance(by_name["EnumEntry_GainAuto_Off"], genicam.IEnumEntry)
+        # Fallback types -> genicam interface types (IPort etc.)
+        # Category -> pylon.CategoryParameter (no longer a fallback)
+        self.assertIsInstance(by_name["Root"], pylon.CategoryParameter)
+        # EnumEntry -> pylon.EnumEntryParameter (no longer a fallback)
+        self.assertIsInstance(by_name["EnumEntry_GainAuto_Off"], pylon.EnumEntryParameter)
+
+        # EnumEntry -> pylon.EnumEntryParameter (note: try to avoid using the enum entry directly)
+        self.assertIsInstance(by_name["EnumEntry_GainAuto_Off"], pylon.EnumEntryParameter)
 
         camera.Close()
 
@@ -473,201 +478,138 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         camera.Close()
 
     # ------------------------------------------------------------------
-    # Tests for GetNode(name, throwIfNotFound=True/False)
+    # PlaceholderParameter returned for non-existent nodes
     # ------------------------------------------------------------------
 
-    def test_getnode_with_throw_true_raises_on_unknown_node(self):
-        """GetNode(name, True) raises LogicalErrorException for an unknown node name"""
+    def test_getnode_nonexistent_returns_placeholder(self):
+        """GetNode for an absent node returns a PlaceholderParameter."""
         camera = self.create_first()
         camera.Open()
-        nm = camera.GetNodeMap()
-        with self.assertRaises(genicam.LogicalErrorException):
-            nm.GetNode("ThisNodeDoesNotExist_XYZ", True)
-        camera.Close()
-
-    def test_getnode_with_throw_false_returns_invalid_on_unknown_node(self):
-        """GetNode(name, False) returns an unattached (invalid) parameter instead of raising"""
-        camera = self.create_first()
-        camera.Open()
-        nm = camera.GetNodeMap()
-        node = nm.GetNode("ThisNodeDoesNotExist_XYZ", False)
-        self.assertIsNotNone(node)
+        node = camera.GetNodeMap().GetNode("ThisNodeDoesNotExist_XYZ")
+        self.assertIsInstance(node, pylon.PlaceholderParameter)
         self.assertFalse(node.IsValid())
-        self.assertIsInstance(node, pylon.Parameter)  # Should still be a Parameter object, just unattached/invalid
         camera.Close()
 
-    def test_getnode_default_throws_on_unknown_node(self):
-        """GetNode(name) (default throwIfNotFound=True) raises for an unknown node"""
+    def test_getnode_nonexistent_path_format(self):
+        """PlaceholderParameter path is '<NodeMapTypeString>/<NodeName>'."""
         camera = self.create_first()
         camera.Open()
-        nm = camera.GetNodeMap()
-        with self.assertRaises(genicam.LogicalErrorException):
-            nm.GetNode("ThisNodeDoesNotExist_XYZ")
+        absent = "ThisNodeDoesNotExist_XYZ"
+        node = camera.GetNodeMap().GetNode(absent)
+        path = node.GetPath()
+        self.assertIn(absent, path)
+        self.assertIn("/", path)
+        nodemap_type, node_name = path.split("/", 1)
+        self.assertEqual("Camera", nodemap_type)
+        self.assertEqual(absent, node_name)
         camera.Close()
 
-    def test_getnode_with_throw_true_returns_valid_node(self):
-        """GetNode(name, True) returns a valid node for a known name"""
+    def test_getnode_nonexistent_path_reflects_nodemap_type_camera(self):
+        """Placeholder path prefix equals 'Camera' for the camera nodemap."""
         camera = self.create_first()
         camera.Open()
-        node = camera.GetNodeMap().GetNode("GainRaw", True)
-        self.assertIsInstance(node, pylon.IntegerParameter)
+        node = camera.GetNodeMap().GetNode("NoSuchNode")
+        self.assertTrue(node.GetPath().startswith("Camera/"))
+        camera.Close()
+
+    def test_getnode_nonexistent_path_reflects_nodemap_type_stream_grabber(self):
+        """Placeholder path prefix equals 'StreamGrabber' for the stream-grabber nodemap."""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.GetStreamGrabberNodeMap().GetNode("NoSuchNode")
+        self.assertTrue(node.GetPath().startswith("StreamGrabber/"))
+        camera.Close()
+
+    def test_getnode_nonexistent_path_reflects_nodemap_type_transport_layer(self):
+        """Placeholder path prefix equals 'DeviceTransportLayer' for the TL nodemap."""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.GetTLNodeMap().GetNode("NoSuchNode")
+        self.assertTrue(node.GetPath().startswith("DeviceTransportLayer/"))
+        camera.Close()
+
+    def test_getnode_nonexistent_path_property(self):
+        """The Path property on a nodemap-sourced PlaceholderParameter equals GetPath()."""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.GetNodeMap().GetNode("NoSuchNode")
+        self.assertEqual(node.GetPath(), node.Path)
+        camera.Close()
+
+    def test_getnode_nonexistent_placeholder_is_invalid(self):
+        """A nodemap-sourced PlaceholderParameter is never valid."""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.GetNodeMap().GetNode("NoSuchNode")
+        self.assertFalse(node.IsValid())
+        self.assertFalse(node.IsReadable())
+        self.assertFalse(node.IsWritable())
+        self.assertEqual(genicam.NI, node.GetAccessMode())
+        camera.Close()
+
+    def test_getnode_nonexistent_set_value_raises_with_path(self):
+        """SetValue on a nodemap-sourced PlaceholderParameter raises with the path in the message."""
+        camera = self.create_first()
+        camera.Open()
+        absent = "NoSuchNode"
+        node = camera.GetNodeMap().GetNode(absent)
+        with self.assertRaises(pylon.LogicalErrorException) as ctx:
+            node.SetValue(42)
+        self.assertIn(absent, str(ctx.exception))
+        camera.Close()
+
+    def test_getnode_nonexistent_try_set_value_returns_false(self):
+        """TrySetValue on a nodemap-sourced PlaceholderParameter returns False without raising."""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.GetNodeMap().GetNode("NoSuchNode")
+        self.assertFalse(node.TrySetValue(42))
+        self.assertFalse(node.TrySetValue("Off"))
+        self.assertFalse(node.TrySetValue(True))
+        camera.Close()
+
+    def test_getnode_nonexistent_try_execute_returns_false(self):
+        """TryExecute on a nodemap-sourced PlaceholderParameter returns False without raising."""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.GetNodeMap().GetNode("NoSuchNode")
+        self.assertFalse(node.TryExecute())
+        camera.Close()
+
+    def test_getnode_nonexistent_try_set_to_maximum_returns_false(self):
+        """TrySetToMaximum and TrySetToMinimum on a PlaceholderParameter return False."""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.GetNodeMap().GetNode("NoSuchNode")
+        self.assertFalse(node.TrySetToMaximum())
+        self.assertFalse(node.TrySetToMinimum())
+        camera.Close()
+
+    def test_getnode_nonexistent_get_value_or_default(self):
+        """GetValueOrDefault on a nodemap-sourced PlaceholderParameter returns the default."""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.GetNodeMap().GetNode("NoSuchNode")
+        self.assertEqual(99,      node.GetValueOrDefault(99))
+        self.assertEqual("Off",   node.GetValueOrDefault("Off"))
+        self.assertAlmostEqual(1.5, node.GetValueOrDefault(1.5))
+        camera.Close()
+
+    def test_getnode_nonexistent_to_string_or_default(self):
+        """ToStringOrDefault on a nodemap-sourced PlaceholderParameter returns the default."""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.NoSuchNode
+        self.assertEqual("default", node.ToStringOrDefault("default"))
+        camera.Close()
+
+    def test_getnode_existing_node_not_a_placeholder(self):
+        """GetNode for an existing node never returns a PlaceholderParameter."""
+        camera = self.create_first()
+        camera.Open()
+        node = camera.GetNodeMap().GetNode("GainRaw")
+        self.assertNotIsInstance(node, pylon.PlaceholderParameter)
         self.assertTrue(node.IsValid())
-        camera.Close()
-
-    def test_getnode_with_throw_false_returns_valid_node(self):
-        """GetNode(name, False) returns a valid node for a known name"""
-        camera = self.create_first()
-        camera.Open()
-        node = camera.GetNodeMap().GetNode("GainRaw", False)
-        self.assertIsInstance(node, pylon.IntegerParameter)
-        self.assertTrue(node.IsValid())
-        camera.Close()
-
-    def test_getnode_error_message_contains_nodemap_type(self):
-        """LogicalErrorException message from GetNode includes the nodemap type string"""
-        camera = self.create_first()
-        camera.Open()
-        nm = camera.GetNodeMap()
-        try:
-            nm.GetNode("NoSuchNode_ABC", True)
-            self.fail("Expected LogicalErrorException was not raised")
-        except genicam.LogicalErrorException as e:
-            self.assertIn("Camera", str(e))
-        camera.Close()
-
-    # ------------------------------------------------------------------
-    # Tests for _LookupParameter fallback into the known-parameter lists
-    # ------------------------------------------------------------------
-
-    def test_lookup_unknown_parameter_raises_logical_error(self):
-        """Accessing a completely unknown attribute raises LogicalErrorException"""
-        camera = self.create_first()
-        camera.Open()
-        nm = camera.GetNodeMap()
-        with self.assertRaises(genicam.LogicalErrorException):
-            _ = nm.CompletelyUnknownParameter_XYZ
-        camera.Close()
-
-    @staticmethod
-    def _node_exists_in_raw_nodemap(raw_nm, name):
-        """Return True if the raw genicam INodeMap contains a node with the given name."""
-        try:
-            raw_nm.GetNode(name)
-            return True
-        except genicam.LogicalErrorException:
-            return False
-
-    def _find_absent_parameter(self, raw_nm, param_dict, intf_type):
-        """Return the first name in param_dict with the given intf_type that is absent
-        from raw_nm, or None if every listed name is present."""
-        return next(
-            (n for n, t in param_dict.items()
-             if t == intf_type and not self._node_exists_in_raw_nodemap(raw_nm, n)),
-            None,
-        )
-
-    def test_lookup_known_camera_integer_returns_empty_integer_parameter(self):
-        """A known camera Integer parameter that is absent from the live nodemap returns
-        an empty (unattached) IntegerParameter from the static lookup table."""
-        camera = self.create_first()
-        camera.Open()
-        nm = camera.GetNodeMap()
-        absent_name = self._find_absent_parameter(nm._Get(), pylon._CAMERA_PARAMETERS, genicam.intfIInteger)
-        if absent_name is None:
-            self.skipTest("No absent Integer camera parameter found in emulator")
-        param = getattr(nm, absent_name)
-        self.assertIsInstance(param, pylon.IntegerParameter)
-        self.assertFalse(param.IsValid())
-        camera.Close()
-
-    def test_lookup_known_camera_boolean_returns_empty_boolean_parameter(self):
-        """Absent but listed Boolean camera parameter -> BooleanParameter (unattached)"""
-        camera = self.create_first()
-        camera.Open()
-        nm = camera.GetNodeMap()
-        absent_name = self._find_absent_parameter(nm._Get(), pylon._CAMERA_PARAMETERS, genicam.intfIBoolean)
-        if absent_name is None:
-            self.skipTest("No absent Boolean camera parameter found in emulator")
-        param = getattr(nm, absent_name)
-        self.assertIsInstance(param, pylon.BooleanParameter)
-        self.assertFalse(param.IsValid())
-        camera.Close()
-
-    def test_lookup_known_camera_float_returns_empty_float_parameter(self):
-        """Absent but listed Float camera parameter -> FloatParameter (unattached)"""
-        camera = self.create_first()
-        camera.Open()
-        nm = camera.GetNodeMap()
-        absent_name = self._find_absent_parameter(nm._Get(), pylon._CAMERA_PARAMETERS, genicam.intfIFloat)
-        if absent_name is None:
-            self.skipTest("No absent Float camera parameter found in emulator")
-        param = getattr(nm, absent_name)
-        self.assertIsInstance(param, pylon.FloatParameter)
-        self.assertFalse(param.IsValid())
-        camera.Close()
-
-    def test_lookup_known_camera_enum_returns_empty_enum_parameter(self):
-        """Absent but listed Enumeration camera parameter -> EnumParameter (unattached)"""
-        camera = self.create_first()
-        camera.Open()
-        nm = camera.GetNodeMap()
-        absent_name = self._find_absent_parameter(nm._Get(), pylon._CAMERA_PARAMETERS, genicam.intfIEnumeration)
-        if absent_name is None:
-            self.skipTest("No absent Enumeration camera parameter found in emulator")
-        param = getattr(nm, absent_name)
-        self.assertIsInstance(param, pylon.EnumParameter)
-        self.assertFalse(param.IsValid())
-        camera.Close()
-
-    def test_lookup_known_stream_integer_returns_empty_integer_parameter(self):
-        """Absent but listed Integer stream parameter -> IntegerParameter (unattached)"""
-        camera = self.create_first()
-        camera.Open()
-        nm = camera.GetStreamGrabberNodeMap()
-        absent_name = self._find_absent_parameter(nm._Get(), pylon._STREAM_PARAMETERS, genicam.intfIInteger)
-        if absent_name is None:
-            self.skipTest("No absent Integer stream parameter found in emulator")
-        param = getattr(nm, absent_name)
-        self.assertIsInstance(param, pylon.IntegerParameter)
-        self.assertFalse(param.IsValid())
-        camera.Close()
-
-    def test_lookup_known_tl_integer_returns_empty_integer_parameter(self):
-        """Absent but listed Integer TL parameter -> IntegerParameter (unattached)"""
-        camera = self.create_first()
-        camera.Open()
-        nm = camera.GetTLNodeMap()
-        absent_name = self._find_absent_parameter(nm._Get(), pylon._TRANSPORT_LAYER_PARAMETERS, genicam.intfIInteger)
-        if absent_name is None:
-            self.skipTest("No absent Integer TL parameter found in emulator")
-        param = getattr(nm, absent_name)
-        self.assertIsInstance(param, pylon.IntegerParameter)
-        self.assertFalse(param.IsValid())
-        camera.Close()
-
-    def test_lookup_known_event_grabber_integer_returns_empty_integer_parameter(self):
-        """Absent but listed Integer event-grabber parameter -> IntegerParameter (unattached)"""
-        camera = self.create_first()
-        camera.Open()
-        nm = camera.GetEventGrabberNodeMap()
-        absent_name = self._find_absent_parameter(nm._Get(), pylon._EVENT_GRABBER_PARAMETERS, genicam.intfIInteger)
-        if absent_name is None:
-            self.skipTest("No absent Integer event-grabber parameter found in emulator")
-        param = getattr(nm, absent_name)
-        self.assertIsInstance(param, pylon.IntegerParameter)
-        self.assertFalse(param.IsValid())
-        camera.Close()
-
-    def test_lookup_error_message_includes_nodemap_type_string(self):
-        """LogicalErrorException from _LookupParameter contains the nodemap type string"""
-        camera = self.create_first()
-        camera.Open()
-        nm = camera.GetNodeMap()
-        try:
-            _ = nm.CompletelyUnknownAttribute_ZZZZ
-            self.fail("Expected LogicalErrorException was not raised")
-        except genicam.LogicalErrorException as e:
-            self.assertIn("Camera", str(e))
         camera.Close()
 
     # ------------------------------------------------------------------
@@ -689,36 +631,39 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         camera.Close()
 
     def test_to_parameter(self):
-        """Test ToParameter() on a raw genicam INodeMap (not wrapped by INodeMapWrapper) does NOT"""
+        """ToParameter wraps raw genicam nodes into the matching Pylon *Parameter type."""
         camera = self.create_first()
         camera.Open()
-
-        # camera.GetNodeMap() returns an INodeMapWrapper; call _Get() to obtain
-        # the underlying raw INodeMap pointer and cast it back via SWIG so that
-        # the genicam typemaps are in effect.
         raw_nm = camera.GetNodeMap()._Get()
 
-        # Raw INodeMap.GetNode returns genicam interface types
+        # Standard value-bearing types
         self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("GainRaw").GetNode()), pylon.IntegerParameter)
-        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("GainRaw")), pylon.IntegerParameter)
-        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("ReverseX")), pylon.BooleanParameter)
-        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("AcquisitionStart")), pylon.CommandParameter)
-        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("Gain")), pylon.FloatParameter)
-        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("DeviceVendorName")), pylon.StringParameter)
-        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("GainAuto")), pylon.EnumParameter)
+        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("GainRaw")),           pylon.IntegerParameter)
+        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("ReverseX")),          pylon.BooleanParameter)
+        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("AcquisitionStart")),  pylon.CommandParameter)
+        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("Gain")),              pylon.FloatParameter)
+        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("DeviceVendorName")),  pylon.StringParameter)
+        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("GainAuto")),          pylon.EnumParameter)
+
+        # Special-purpose structural types
+        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("Root")),                   pylon.CategoryParameter)
+        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("EnumEntry_GainAuto_Off")), pylon.EnumEntryParameter)
+        self.assertIsInstance(pylon.ToParameter(raw_nm.GetNode("Device")),                 pylon.PortParameter)
 
         camera.Close()
 
-    def test_to_parameter_none_returns_parameter(self):
-        """ToParameter(None) returns a base Parameter instance, not None."""
+    def test_to_parameter_none_returns_placeholder_parameter(self):
+        """ToParameter(None) returns a PlaceholderParameter (permanently-invalid sentinel)."""
         result = pylon.ToParameter(None)
         self.assertIsNotNone(result)
-        self.assertIsInstance(result, pylon.Parameter)
+        self.assertIsInstance(result, pylon.PlaceholderParameter)
+        self.assertFalse(result.IsValid())
 
-    def test_to_parameter_unknown_type_returns_parameter(self):
-        """ToParameter() with an unrecognised type returns a base Parameter instance."""
+    def test_to_parameter_unknown_type_returns_placeholder_parameter(self):
+        """ToParameter() with an unrecognised type returns a PlaceholderParameter."""
         result = pylon.ToParameter(42)
-        self.assertIsInstance(result, pylon.Parameter)
+        self.assertIsInstance(result, pylon.PlaceholderParameter)
+        self.assertFalse(result.IsValid())
 
     def test_to_parameter_base_parameter_is_specialised(self):
         """ToParameter() specialises a base Parameter into the correct subtype."""
@@ -726,7 +671,6 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         camera.Open()
         nm = camera.GetNodeMap()
 
-        # Obtain a base Parameter by constructing one directly from the node
         base_param = pylon.Parameter(nm.GetNode("GainRaw").GetNode())
         result = pylon.ToParameter(base_param)
         self.assertIsInstance(result, pylon.IntegerParameter)
@@ -752,16 +696,63 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         self.assertIsInstance(result, pylon.Parameter)
         self.assertIs(result, base_param)
 
+    def test_to_parameter_placeholder_parameter_returned_as_is(self):
+        """ToParameter() returns a PlaceholderParameter unchanged."""
+        placeholder = pylon.PlaceholderParameter("Camera/NoSuchNode")
+        result = pylon.ToParameter(placeholder)
+        self.assertIs(result, placeholder)
 
-        """ToParameter() never returns the raw input – always a Parameter subtype."""
+    def test_to_parameter_category_node(self):
+        """ToParameter() wraps a category INode into a CategoryParameter."""
         camera = self.create_first()
         camera.Open()
         raw_nm = camera.GetNodeMap()._Get()
+        result = pylon.ToParameter(raw_nm.GetNode("Root"))
+        self.assertIsInstance(result, pylon.CategoryParameter)
+        camera.Close()
 
-        # Category node has no specific Pylon *Parameter type – must still be a Parameter
-        root_cat = raw_nm.GetNode("Root")
-        result = pylon.ToParameter(root_cat)
-        self.assertIsInstance(result, pylon.Parameter)
+    def test_to_parameter_enum_entry_node(self):
+        """ToParameter() wraps an enum-entry INode into an EnumEntryParameter."""
+        camera = self.create_first()
+        camera.Open()
+        raw_nm = camera.GetNodeMap()._Get()
+        result = pylon.ToParameter(raw_nm.GetNode("EnumEntry_GainAuto_Off"))
+        self.assertIsInstance(result, pylon.EnumEntryParameter)
+        camera.Close()
+
+    def test_to_parameter_port_node(self):
+        """ToParameter() wraps a port INode into a PortParameter."""
+        camera = self.create_first()
+        camera.Open()
+        raw_nm = camera.GetNodeMap()._Get()
+        result = pylon.ToParameter(raw_nm.GetNode("Device"))
+        self.assertIsInstance(result, pylon.PortParameter)
+        camera.Close()
+
+    def test_to_parameter_matches_nodemap_wrapper_dispatch(self):
+        """ToParameter and INodeMapWrapper.GetNode agree on the returned type for all key nodes."""
+        camera = self.create_first()
+        camera.Open()
+        nm      = camera.GetNodeMap()
+        raw_nm  = nm._Get()
+
+        pairs = [
+            ("GainRaw",                         pylon.IntegerParameter),
+            ("ReverseX",                        pylon.BooleanParameter),
+            ("AcquisitionStart",                pylon.CommandParameter),
+            ("Gain",                            pylon.FloatParameter),
+            ("DeviceVendorName",                pylon.StringParameter),
+            ("GainAuto",                        pylon.EnumParameter),
+            ("Root",                            pylon.CategoryParameter),
+            ("EnumEntry_GainAuto_Off",          pylon.EnumEntryParameter),
+            ("Device",                          pylon.PortParameter),
+        ]
+        for name, expected_type in pairs:
+            with self.subTest(node=name):
+                via_wrapper    = nm.GetNode(name)
+                via_to_param   = pylon.ToParameter(raw_nm.GetNode(name))
+                self.assertIsInstance(via_wrapper,  expected_type, f"wrapper mismatch for {name}")
+                self.assertIsInstance(via_to_param, expected_type, f"ToParameter mismatch for {name}")
 
         camera.Close()
 

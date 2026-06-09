@@ -678,6 +678,18 @@ class IntegerParameterTestSuite(PylonParameterTestCase):
         self.assertEqual(str(p_ro), "1500")
 
     # ------------------------------------------------------------------
+    # FloatAlias property
+    # ------------------------------------------------------------------
+
+    def test_integer_parameter_float_alias_getter_present(self):
+        """FloatAlias getter and property present."""
+        p = pylon.IntegerParameter(self.nodemap, "TestInt2")
+        with self.assertRaises(pylon.LogicalErrorException):
+            alias = p.FloatAlias
+        with self.assertRaises(pylon.LogicalErrorException):
+            alias = p.GetFloatAlias()
+
+    # ------------------------------------------------------------------
     # Compatibility with genicam
     # ------------------------------------------------------------------
 

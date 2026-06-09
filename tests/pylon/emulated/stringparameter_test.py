@@ -416,6 +416,15 @@ class StringParameterTestSuite(PylonParameterTestCase):
         self.assertEqual(max_len, p.MaxLength)
         self.assertEqual(p.GetMaxLength(), p.GetMaxLength(False))
 
+    def test_string_parameter_length_present(self):
+        """Length property and method are present."""
+        p = pylon.StringParameter(self.nodemap, "TestStringRW")
+        #Pure string has no Length
+        with self.assertRaises(pylon.LogicalErrorException):
+            value = p.GetLength()
+        with self.assertRaises(pylon.LogicalErrorException):
+            value = p.Length
+
     def test_string_parameter_get_max_length_unattached_raises(self):
         """GetMaxLength on unattached parameter raises."""
         p = pylon.StringParameter()

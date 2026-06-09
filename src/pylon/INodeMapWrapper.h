@@ -42,7 +42,6 @@ namespace Pylon
             }
         }
 
-        // this method will be ignored by SWIG.
         GENAPI_NAMESPACE::INode* GetNode( const GENICAM_NAMESPACE::gcstring& Name ) const override
         {
             if ( m_pNodeMap != nullptr )
@@ -53,23 +52,6 @@ namespace Pylon
             {
                 return nullptr;
             }
-        }
-
-        GENAPI_NAMESPACE::INode* GetNode2( const GENICAM_NAMESPACE::gcstring& Name, bool throwIfNotFound) const
-        {
-            GENAPI_NAMESPACE::INode* pNode = nullptr;
-            if ( m_pNodeMap != nullptr )
-            {
-                pNode = m_pNodeMap->GetNode( Name );  // result was previously discarded
-            }
-            if (throwIfNotFound && pNode == nullptr)
-            {
-                // throwing an exception is the behavior of genicam.INodeMap.GetNode.
-                // this is not always desirable, so we provide the option to return None instead.
-                GENICAM_NAMESPACE::gcstring errorMsg = "Node '" + Name + "' not found in nodemap of type " + GetNodeMapTypeString();
-                throw GENICAM_NAMESPACE::LogicalErrorException(errorMsg.c_str(), __FILE__, __LINE__);
-            }
-            return pNode;
         }
 
         bool Contains( const GENICAM_NAMESPACE::gcstring& Name ) const

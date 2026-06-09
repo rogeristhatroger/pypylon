@@ -53,3 +53,4 @@ conan_package/
 /.pytest_cache/
 /NodeMap.pfs
 /uv.lock
+/include

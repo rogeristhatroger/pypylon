@@ -15,7 +15,10 @@
 %ignore Pylon::CIntegerParameter::operator()();
 %ignore Pylon::CIntegerParameter::operator*();
 %ignore Pylon::CIntegerParameter::operator=( int64_t value );
-%include <pylon/IntegerParameter.h>;
+%include "pylon_kwarg_normalize.i"
+PYLON_KWARG_NORMALIZE_BEGIN
+%include <pylon/IntegerParameter.h>
+PYLON_KWARG_NORMALIZE_END
 
 ADD_PROP_GETSET(IntegerParameter, Value)
 ADD_PROP_GET(IntegerParameter, Min)
@@ -25,4 +28,5 @@ ADD_PROP_GET(IntegerParameter, Inc)
 ADD_PROP_GET(IntegerParameter, ListOfValidValues)
 ADD_PROP_GET(IntegerParameter, Representation)
 ADD_PROP_GET(IntegerParameter, Unit)
+ADD_PROP_GET(IntegerParameter, FloatAlias)
 ADD_PROP_GETSET(IntegerParameter, ValuePercentOfRange)
