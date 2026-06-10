@@ -3,7 +3,10 @@
 %rename(_IValueEx) Pylon::IValueEx;
 %ignore Pylon::CParameter::CParameter(GENAPI_NAMESPACE::INodeMap &,char const *);
 %ignore Pylon::CParameter::Attach(GENAPI_NAMESPACE::INodeMap &,char const *);
-%include <pylon/Parameter.h>;
+%include "pylon_kwarg_normalize.i"
+PYLON_KWARG_NORMALIZE_BEGIN
+%include <pylon/Parameter.h>
+PYLON_KWARG_NORMALIZE_END
 
 ADD_PROP_GET(Parameter, AccessMode)
 ADD_PROP_GET(Parameter, Node)

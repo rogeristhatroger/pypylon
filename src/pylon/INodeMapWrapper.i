@@ -20,9 +20,6 @@ namespace GENAPI_NAMESPACE {
     PROP_GET(NodeMapType)
     PROP_GET(NodeMapTypeString)
 %pythoncode %{
-    def GetNode(self, name, throwIfNotFound=True):
-        return self._GetNode(name, throwIfNotFound)
-
     def __getattr__(self, attribute):
         if attribute in self.__dict__ or attribute in ( "thisown","this") or attribute.startswith("__"):
             return object.__getattr__(self, attribute)

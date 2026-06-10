@@ -120,6 +120,10 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "genicam/PyPortImpl.h"
 #include <GenApi/IDeviceInfo.h>
 #include "pylon/INodeMapWrapper.h"
+#include "pylon/EnumEntryParameter.h"
+#include "pylon/CategoryParameter.h"
+#include "pylon/PortParameter.h"
+#include "pylon/PlaceholderParameter.h"
 
 #ifdef _MSC_VER  // MSVC
 #  pragma warning(pop)
@@ -258,132 +262,20 @@ def needs_numpy(func):
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Override the genicam INode* factory typemap so that GetNode() (and the other
-// nodemap lookup methods) return Pylon::C*Parameter objects instead of raw
-// genicam interface types when called from the pylon module.
-//
-// Covered node interface types and their Pylon wrappers:
-//   intfIInteger     -> Pylon::CIntegerParameter
-//   intfIBoolean     -> Pylon::CBooleanParameter
-//   intfICommand     -> Pylon::CCommandParameter
-//   intfIFloat       -> Pylon::CFloatParameter
-//   intfIString      -> Pylon::CStringParameter
-//   intfIRegister    -> Pylon::CArrayParameter
-//   intfIEnumeration -> Pylon::CEnumParameter
-//
-// Nodes with no Pylon *Parameter equivalent (intfIValue, intfICategory,
-// intfIPort, intfIBase, intfIEnumEntry) fall back to the genicam types.
-//
-%typemap(out) GENAPI_NAMESPACE::INode* Pylon::INodeMapWrapper::GetNode2,
-              GENAPI_NAMESPACE::INode* Pylon::INodeMapWrapper::GetNode
-%{
-    {
-        if (0 == $1)
-        {
-            Pylon::CParameter *p = new Pylon::CParameter($1);
-            $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CParameter*), SWIG_POINTER_OWN);
-        }
-        else
-        {
-            switch ($1->GetPrincipalInterfaceType())
-            {
-                case GENAPI_NAMESPACE::intfIInteger:
-                {
-                    Pylon::CIntegerParameter *p = new Pylon::CIntegerParameter($1);
-                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CIntegerParameter*), SWIG_POINTER_OWN);
-                    break;
-                }
-                case GENAPI_NAMESPACE::intfIBoolean:
-                {
-                    Pylon::CBooleanParameter *p = new Pylon::CBooleanParameter($1);
-                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CBooleanParameter*), SWIG_POINTER_OWN);
-                    break;
-                }
-                case GENAPI_NAMESPACE::intfICommand:
-                {
-                    Pylon::CCommandParameter *p = new Pylon::CCommandParameter($1);
-                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CCommandParameter*), SWIG_POINTER_OWN);
-                    break;
-                }
-                case GENAPI_NAMESPACE::intfIFloat:
-                {
-                    Pylon::CFloatParameter *p = new Pylon::CFloatParameter($1);
-                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CFloatParameter*), SWIG_POINTER_OWN);
-                    break;
-                }
-                case GENAPI_NAMESPACE::intfIString:
-                {
-                    Pylon::CStringParameter *p = new Pylon::CStringParameter($1);
-                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CStringParameter*), SWIG_POINTER_OWN);
-                    break;
-                }
-                case GENAPI_NAMESPACE::intfIRegister:
-                {
-                    Pylon::CArrayParameter *p = new Pylon::CArrayParameter($1);
-                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CArrayParameter*), SWIG_POINTER_OWN);
-                    break;
-                }
-                case GENAPI_NAMESPACE::intfIEnumeration:
-                {
-                    Pylon::CEnumParameter *p = new Pylon::CEnumParameter($1);
-                    $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CEnumParameter*), SWIG_POINTER_OWN);
-                    break;
-                }
-                default:
-                {
-                    // intfIValue, intfICategory, intfIPort, intfIBase,
-                    // intfIEnumEntry: fall back to genicam interface types.
-                    swig_type_info *fallback_type = 0;
-                    void *fallback_ptr = 0;
-                    switch ($1->GetPrincipalInterfaceType())
-                    {
-                        case GENAPI_NAMESPACE::intfIValue:
-                            fallback_type = $descriptor(GENAPI_NAMESPACE::IValue*);
-                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IValue*>($1);
-                            break;
-                        case GENAPI_NAMESPACE::intfICategory:
-                            fallback_type = $descriptor(GENAPI_NAMESPACE::ICategory*);
-                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::ICategory*>($1);
-                            break;
-                        case GENAPI_NAMESPACE::intfIEnumEntry:
-                            fallback_type = $descriptor(GENAPI_NAMESPACE::IEnumEntry*);
-                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IEnumEntry*>($1);
-                            break;
-                        case GENAPI_NAMESPACE::intfIPort:
-                            fallback_type = $descriptor(GENAPI_NAMESPACE::IPort*);
-                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IPort*>($1);
-                            break;
-                        case GENAPI_NAMESPACE::intfIBase:
-                            fallback_type = $descriptor(GENAPI_NAMESPACE::IBase*);
-                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IBase*>($1);
-                            break;
-                        default:
-                            fallback_type = $descriptor(GENAPI_NAMESPACE::IValue*);
-                            fallback_ptr  = dynamic_cast<GENAPI_NAMESPACE::IValue*>($1);
-                            break;
-                    }
-                    $result = SWIG_NewPointerObj(fallback_ptr, fallback_type, $owner);
-                    break;
-                }
-            }
-        }
-    }
-%}
-
-
-////////////////////////////////////////////////////////////////////////////////
-//
-// Helper macro: dispatch one INode* to the matching Pylon::C*Parameter type,
-// or fall back to the genicam interface type for nodes without a Parameter
-// equivalent.  Used by the NodeList_t and FeatureList_t argout overrides below.
+// Helper macro: dispatch one INode* to the matching Pylon::C*Parameter type.
+// Used by the INodeMapWrapper::GetNode typemap above and by the NodeList_t /
+// FeatureList_t argout overrides below.
 //
 // Arguments:
-//   node_ptr  - a local INode* variable
+//   node_ptr  - a local INode* variable (must not be null)
 //   out_item  - the PyObject* that receives the new reference
 //
 %define PYLON_NODE_TO_PARAMETER(node_ptr, out_item)
     switch ((node_ptr)->GetPrincipalInterfaceType())
     {
+        // ------------------------------------------------------------------
+        // Standard value-bearing node types
+        // ------------------------------------------------------------------
         case GENAPI_NAMESPACE::intfIInteger:
         {
             Pylon::CIntegerParameter *p = new Pylon::CIntegerParameter(node_ptr);
@@ -426,50 +318,91 @@ def needs_numpy(func):
             out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CEnumParameter*), SWIG_POINTER_OWN);
             break;
         }
-        case GENAPI_NAMESPACE::intfIValue:
+        // ------------------------------------------------------------------
+        // Special-purpose node types (structural / non-value nodes)
+        // ------------------------------------------------------------------
+        case GENAPI_NAMESPACE::intfIEnumEntry:
         {
-            out_item = SWIG_NewPointerObj(
-                dynamic_cast<GENAPI_NAMESPACE::IValue*>(node_ptr),
-                $descriptor(GENAPI_NAMESPACE::IValue*), 0);
+            Pylon::CEnumEntryParameter *p = new Pylon::CEnumEntryParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CEnumEntryParameter*), SWIG_POINTER_OWN);
             break;
         }
         case GENAPI_NAMESPACE::intfICategory:
         {
-            out_item = SWIG_NewPointerObj(
-                dynamic_cast<GENAPI_NAMESPACE::ICategory*>(node_ptr),
-                $descriptor(GENAPI_NAMESPACE::ICategory*), 0);
-            break;
-        }
-        case GENAPI_NAMESPACE::intfIEnumEntry:
-        {
-            out_item = SWIG_NewPointerObj(
-                dynamic_cast<GENAPI_NAMESPACE::IEnumEntry*>(node_ptr),
-                $descriptor(GENAPI_NAMESPACE::IEnumEntry*), 0);
+            Pylon::CCategoryParameter *p = new Pylon::CCategoryParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CCategoryParameter*), SWIG_POINTER_OWN);
             break;
         }
         case GENAPI_NAMESPACE::intfIPort:
         {
-            out_item = SWIG_NewPointerObj(
-                dynamic_cast<GENAPI_NAMESPACE::IPort*>(node_ptr),
-                $descriptor(GENAPI_NAMESPACE::IPort*), 0);
+            Pylon::CPortParameter *p = new Pylon::CPortParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CPortParameter*), SWIG_POINTER_OWN);
             break;
         }
-        case GENAPI_NAMESPACE::intfIBase:
+        // ------------------------------------------------------------------
+        // intfIValue: should have been caught by a specific case above;
+        // wrap as a base CParameter as a last resort.
+        // ------------------------------------------------------------------
+        case GENAPI_NAMESPACE::intfIValue:
         {
-            out_item = SWIG_NewPointerObj(
-                dynamic_cast<GENAPI_NAMESPACE::IBase*>(node_ptr),
-                $descriptor(GENAPI_NAMESPACE::IBase*), 0);
+            Pylon::CParameter *p = new Pylon::CParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CParameter*), SWIG_POINTER_OWN);
             break;
         }
         default:
         {
-            out_item = SWIG_NewPointerObj(
-                dynamic_cast<GENAPI_NAMESPACE::IValue*>(node_ptr),
-                $descriptor(GENAPI_NAMESPACE::IValue*), 0);
-            break;
+            // Could be intfIBase or a newly added GenApi interface type.
+            // There is no node with principal interface intfIBase only.
+            // It is not expected to enter this branch in normal operation.
+            throw DYNAMICCAST_EXCEPTION(
+                "Unknown node type with principal interface %d",
+                (node_ptr)->GetPrincipalInterfaceType());
         }
     }
 %enddef
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Override the genicam INode* factory typemap so that GetNode() (and the other
+// nodemap lookup methods) return Pylon::C*Parameter objects instead of raw
+// genicam interface types when called from the pylon module.
+//
+// Standard node interface types and their Pylon wrappers:
+//   intfIInteger     -> Pylon::CIntegerParameter
+//   intfIBoolean     -> Pylon::CBooleanParameter
+//   intfICommand     -> Pylon::CCommandParameter
+//   intfIFloat       -> Pylon::CFloatParameter
+//   intfIString      -> Pylon::CStringParameter
+//   intfIRegister    -> Pylon::CArrayParameter
+//   intfIEnumeration -> Pylon::CEnumParameter
+//
+// Special-purpose node interface types:
+//   intfIEnumEntry   -> Pylon::CEnumEntryParameter (should not be needed, use EnumParameter instead)
+//   intfICategory    -> Pylon::CCategoryParameter (needed only for displaying parameter trees)
+//   intfIPort        -> Pylon::CPortParameter (non-value)
+//
+%typemap(out) GENAPI_NAMESPACE::INode* Pylon::INodeMapWrapper::GetNode2,
+              GENAPI_NAMESPACE::INode* Pylon::INodeMapWrapper::GetNode
+{
+    {
+        if (0 == $1)
+        {
+            // Node not found: create a PlaceholderParameter whose path is
+            // "NodeMapTypeString/requestedNodeName" for diagnostic purposes.
+            // arg1 is the first declared parameter of GetNode / GetNode2 (const char* pName).
+            GENICAM_NAMESPACE::gcstring path =
+                (arg1 ? arg1->GetNodeMapTypeString() : GENICAM_NAMESPACE::gcstring()) +
+                GENICAM_NAMESPACE::gcstring("/") +
+                (arg2 ? *arg2 : GENICAM_NAMESPACE::gcstring());
+            Pylon::CPlaceholderParameter *p = new Pylon::CPlaceholderParameter(path);
+            $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CPlaceholderParameter*), SWIG_POINTER_OWN);
+        }
+        else
+        {
+            PYLON_NODE_TO_PARAMETER($1, $result)
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -547,7 +480,7 @@ def ToParameter(val):
     The conversion rules are applied in the following order:
 
     1. None / null
-           -> Parameter()  (empty, unattached base parameter)
+           -> PlaceholderParameter()  (permanently-invalid sentinel, empty path)
 
     2. Already a Pylon Parameter instance
            If the parameter wraps a node whose interface type can be mapped to a
@@ -555,8 +488,8 @@ def ToParameter(val):
            already the most specific type, or no more specific type exists, the
            input object is returned unchanged.
 
-    3. genicam.IValue (IInteger, IBoolean, ICommand, IFloat, IString,
-                       IRegister, IEnumeration, …)
+    3. genicam.IBase (IPort, …) or genicam.IValue (IInteger, IBoolean, ICommand,
+                       IFloat, IString, IRegister, IEnumeration, IEnumEntry, …)
            The underlying INode is retrieved and dispatch continues as below.
 
     4. genicam.INode
@@ -568,10 +501,13 @@ def ToParameter(val):
                intfIString      -> StringParameter
                intfIRegister    -> ArrayParameter
                intfIEnumeration -> EnumParameter
+               intfIEnumEntry   -> EnumEntryParameter
+               intfICategory    -> CategoryParameter
+               intfIPort        -> PortParameter
                any other type   -> Parameter  (base, wraps the node)
 
     5. Any other value
-           -> Parameter()  (empty base parameter)
+           -> PlaceholderParameter()  (permanently-invalid sentinel, empty path)
     """
     from pypylon import genicam as _genicam
 
@@ -595,11 +531,17 @@ def ToParameter(val):
             return ArrayParameter(node)
         elif t == _genicam.intfIEnumeration:
             return EnumParameter(node)
+        elif t == _genicam.intfIEnumEntry:
+            return EnumEntryParameter(node)
+        elif t == _genicam.intfICategory:
+            return CategoryParameter(node)
+        elif t == _genicam.intfIPort:
+            return PortParameter(node)
         return None  # no more-specific type available
 
-    # 1. None
+    # 1. None -> permanently-invalid placeholder
     if val is None:
-        return Parameter()
+        return PlaceholderParameter()
 
     # 2. Already a Pylon Parameter – try to specialise, keep if already specific
     if isinstance(val, Parameter):
@@ -621,9 +563,11 @@ def ToParameter(val):
     if isinstance(val, _genicam.INode):
         specific = _node_to_specific(val)
         return specific if specific is not None else Parameter(val)
+    if isinstance(val, _genicam.IPort):
+        return PortParameter(val)
 
-    # 5. Unrecognised type
-    return Parameter()
+    # 5. Unrecognised type -> permanently-invalid placeholder
+    return PlaceholderParameter()
 %}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -915,12 +859,6 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 // sources. The following macro ensures that SWIG again uses 'GENAPI_NAMESPACE'
 // in all the places where pylon uses 'GenApi'.
 #define GenApi GENAPI_NAMESPACE
-%include "parameters_camera.i"
-%include "parameters_chunk_data.i"
-%include "parameters_event_grabber.i"
-%include "parameters_interface.i"
-%include "parameters_stream.i"
-%include "parameters_transport_layer.i"
 %include "parameter_lookup.i"
 %include "Device.i"
 %include "PylonVersionInfo.i"
@@ -964,6 +902,10 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "FloatParameter.i"
 %include "BooleanParameter.i"
 %include "EnumParameter.i"
+%include "EnumEntryParameter.i"
+%include "CategoryParameter.i"
+%include "PortParameter.i"
+%include "PlaceholderParameter.i"
 %include "ArrayParameter.i"
 %include "PylonGUI.i"
 %include "FeaturePersistence.i"

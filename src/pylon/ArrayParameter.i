@@ -1,4 +1,4 @@
-%typemap(in) (const uint8_t* pBuffer, int64_t length)
+%typemap(in) (const uint8_t* pBuffer, int64_t Length)
 {
     Py_ssize_t len;
     char *buf;
@@ -10,16 +10,16 @@
     $1 = reinterpret_cast<uint8_t*>(buf);
     $2 = static_cast<int64_t>(len);
 }
-%typemap(typecheck, precedence=SWIG_TYPECHECK_CHAR) (const uint8_t* pBuffer, int64_t length)
+%typemap(typecheck, precedence=SWIG_TYPECHECK_CHAR) (const uint8_t* pBuffer, int64_t Length)
 {
     $1 = PyBytes_Check($input) ? 1 : 0;
 }
 
-// Get( uint8_t* pBuffer, int64_t length, bool verify = false, bool ignoreCache = false )
+// Get( uint8_t* pBuffer, int64_t Length, bool Verify = false, bool IgnoreCache = false )
 //
 // Matches IRegister behaviour: caller passes length integer; returns bytes.
 //
-%typemap(in) (uint8_t* pBuffer, int64_t length)
+%typemap(in) (uint8_t* pBuffer, int64_t Length)
 {
     $2 = PyLong_AsLongLong($input);
     if (PyErr_Occurred()) SWIG_fail;
@@ -29,16 +29,16 @@
     }
     $1 = reinterpret_cast<uint8_t*>(new char[(int)$2 + 1]);
 }
-%typemap(argout) (uint8_t* pBuffer, int64_t length)
+%typemap(argout) (uint8_t* pBuffer, int64_t Length)
 {
     PyObject* o = PyBytes_FromStringAndSize(reinterpret_cast<const char*>($1), (int)$2);
     $result = SWIG_AppendOutput($result, o);
 }
-%typemap(freearg) (uint8_t* pBuffer, int64_t length)
+%typemap(freearg) (uint8_t* pBuffer, int64_t Length)
 {
     delete[] (char*)$1;
 }
-%typemap(typecheck, precedence=SWIG_TYPECHECK_CHAR) (uint8_t* pBuffer, int64_t length)
+%typemap(typecheck, precedence=SWIG_TYPECHECK_CHAR) (uint8_t* pBuffer, int64_t Length)
 {
     $1 = (PyLong_Check($input) || PyInt_Check($input)) ? 1 : 0;
 }
@@ -47,7 +47,10 @@
 #define GenICam GENICAM_NAMESPACE
 %rename(_IRegisterEx) Pylon::IRegisterEx;
 %ignore Pylon::CArrayParameter::CArrayParameter(GENAPI_NAMESPACE::INodeMap &,char const *);
-%include <pylon/ArrayParameter.h>;
+%include "pylon_kwarg_normalize.i"
+PYLON_KWARG_NORMALIZE_BEGIN
+%include <pylon/ArrayParameter.h>
+PYLON_KWARG_NORMALIZE_END
 
 ADD_PROP_GET(ArrayParameter, Length)
 ADD_PROP_GET(ArrayParameter, Address)

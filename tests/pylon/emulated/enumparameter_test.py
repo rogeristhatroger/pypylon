@@ -292,6 +292,13 @@ class EnumParameterTestSuite(PylonParameterTestCase):
         self.assertIsInstance(syms, tuple)
         self.assertEqual(set(syms), set(ENUM_VALUES))
 
+    def test_enum_parameter_symbolics_property(self):
+        """Symbolics property equals GetSymbolics()."""
+        p = pylon.EnumParameter(self.nodemap, "TestEnumerationRW")
+        self.assertEqual(p.GetSymbolics(), p.Symbolics)
+        self.assertIsInstance(p.Symbolics, tuple)
+        self.assertEqual(set(p.Symbolics), set(ENUM_VALUES))
+
     def test_enum_parameter_get_entries(self):
         """GetEntries returns a tuple of IEnumEntry objects."""
         p = pylon.EnumParameter(self.nodemap, "TestEnumerationRW")
@@ -299,7 +306,15 @@ class EnumParameterTestSuite(PylonParameterTestCase):
         self.assertIsInstance(entries, tuple)
         self.assertEqual(len(entries), len(ENUM_VALUES))
         for e in entries:
-            self.assertIsInstance(e, genicam.IEnumEntry)
+            self.assertIsInstance(e, pylon.EnumEntryParameter)
+
+    def test_enum_parameter_entries_property(self):
+        """Entries property equals GetEntries()."""
+        p = pylon.EnumParameter(self.nodemap, "TestEnumerationRW")
+        self.assertEqual(len(p.GetEntries()), len(p.Entries))
+        self.assertIsInstance(p.Entries, tuple)
+        for e in p.Entries:
+            self.assertIsInstance(e, pylon.EnumEntryParameter)
 
     # ------------------------------------------------------------------
     # CanSetValue
@@ -472,6 +487,31 @@ class EnumParameterTestSuite(PylonParameterTestCase):
         self.assertEqual(1, p.GetIntValue())
 
         p.SetIntValue(2)
+        self.assertEqual("toe", p.GetValue())
+
+    def test_enum_parameter_int_value_property_get(self):
+        """IntValue property returns the same value as GetIntValue()."""
+        p = pylon.EnumParameter(self.nodemap, "TestEnumerationRW")
+        p.SetValue("tic")
+        self.assertEqual(0, p.IntValue)
+        self.assertEqual(p.GetIntValue(), p.IntValue)
+
+        p.SetValue("tac")
+        self.assertEqual(1, p.IntValue)
+
+        p.SetValue("toe")
+        self.assertEqual(2, p.IntValue)
+
+    def test_enum_parameter_int_value_property_set(self):
+        """Assigning IntValue property sets the enum value by integer."""
+        p = pylon.EnumParameter(self.nodemap, "TestEnumerationRW")
+        p.IntValue = 0
+        self.assertEqual("tic", p.GetValue())
+
+        p.IntValue = 1
+        self.assertEqual("tac", p.GetValue())
+
+        p.IntValue = 2
         self.assertEqual("toe", p.GetValue())
 
     # ------------------------------------------------------------------

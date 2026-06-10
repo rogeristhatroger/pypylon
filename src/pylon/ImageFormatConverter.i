@@ -149,7 +149,7 @@ namespace Pylon
         if attribute in self.__dict__ or attribute in ( "thisown","this") or attribute.startswith("__"):
             return object.__getattr__(self, attribute)
         else:
-            return _LookupParameter(self.GetNodeMap(), None, attribute)
+            return _LookupInFixedParameterSet(self.GetNodeMap(), attribute)
 
     def __setattr__(self, attribute, val):
         if attribute == "OutputPixelFormat":

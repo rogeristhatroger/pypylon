@@ -88,10 +88,15 @@
 %ignore Pylon::CEnumParameter::operator*();
 %ignore Pylon::CEnumParameter::operator=( const GenICam::gcstring& valueStr );
 
-%include <pylon/EnumParameter.h>;
+%include "pylon_kwarg_normalize.i"
+PYLON_KWARG_NORMALIZE_BEGIN
+%include <pylon/EnumParameter.h>
+PYLON_KWARG_NORMALIZE_END
 
 ADD_PROP_GETSET(EnumParameter, Value)
-//ADD_PROP_GETSET(EnumParameter, IntValue) Hint: avoid to use IntValue, any IntValue is device specific -> not mapped
+ADD_PROP_GETSET(EnumParameter, IntValue) //Hint: avoid to use IntValue, any IntValue is device specific
+ADD_PROP_GET(EnumParameter, Symbolics)
+ADD_PROP_GET(EnumParameter, Entries)
 
 %extend Pylon::CEnumParameter {
     %nothread GetSettableValues;
