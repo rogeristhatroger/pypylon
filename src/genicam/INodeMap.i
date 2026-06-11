@@ -13,7 +13,12 @@ namespace GENAPI_NAMESPACE {
         if (NULL == p_di)
             throw LOGICAL_ERROR_EXCEPTION( "Nodemap has no deviceinfo" );
         return p_di;
-    };
+    }
+
+    bool Contains( const GENICAM_NAMESPACE::gcstring& Name ) const
+    {
+        return $self->GetNode( Name ) != nullptr;
+    }
 
     PROP_GET(DeviceInfo)
 %pythoncode %{

@@ -71,9 +71,17 @@ namespace GENAPI_NAMESPACE
         virtual INode* _GetNode( const GENICAM_NAMESPACE::gcstring& key) const;
 
         %extend {
-        virtual INode* GetNode( const GENICAM_NAMESPACE::gcstring& key) const{
-            return $self->_GetNode(key);
+            virtual INode* GetNode( const GENICAM_NAMESPACE::gcstring& key) const
+            {
+                return $self->_GetNode(key);
+            }
         };
+
+        %extend {
+            bool Contains( const GENICAM_NAMESPACE::gcstring& Name ) const
+            {
+                return $self->_GetNode( Name ) != nullptr;
+            }
         };
 
         //! Invalidates all nodes

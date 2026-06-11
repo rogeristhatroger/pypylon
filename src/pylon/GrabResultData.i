@@ -8,13 +8,13 @@
 
 %include <pylon/PylonVersionNumber.h>;
 
-// Method-qualified typemap: wrap the returned INodeMap& in an INodeMapWrapper
+// Method-qualified typemap: wrap the returned INodeMap& in an NodeMapWrapper
 // carrying NodeMapType_ChunkData.
 %typemap(out) GENAPI_NAMESPACE::INodeMap& Pylon::CGrabResultData::GetChunkDataNodeMap
 %{
     $result = SWIG_NewPointerObj(
-        new Pylon::INodeMapWrapper($1, Pylon::NodeMapType_ChunkData),
-        $descriptor(Pylon::INodeMapWrapper*),
+        new Pylon::NodeMapWrapper($1, Pylon::NodeMapType_ChunkData),
+        $descriptor(Pylon::NodeMapWrapper*),
         SWIG_POINTER_OWN
     );
 %}

@@ -5,32 +5,32 @@ import unittest
 
 class NodeMapWrapperTestSuite(PylonEmuTestCase):
     def test_instantcamera_wrappers_present(self):
-        """InstantCamera uses INodeMapWrapper for its parameters"""
+        """InstantCamera uses NodeMapWrapper for its parameters"""
         camera = self.create_first()
         camera.Open()
 
-        self.assertIsInstance(camera.GetNodeMap(), pylon.INodeMapWrapper)
-        self.assertIsInstance(camera.GetTLNodeMap(), pylon.INodeMapWrapper)
-        self.assertIsInstance(camera.GetStreamGrabberNodeMap(), pylon.INodeMapWrapper)
-        self.assertIsInstance(camera.GetEventGrabberNodeMap(), pylon.INodeMapWrapper)
-        self.assertIsInstance(camera.GetInstantCameraNodeMap(), pylon.INodeMapWrapper)
-        self.assertIsInstance(camera.NodeMap, pylon.INodeMapWrapper)
-        self.assertIsInstance(camera.TLNodeMap, pylon.INodeMapWrapper)
-        self.assertIsInstance(camera.StreamGrabberNodeMap, pylon.INodeMapWrapper)
-        self.assertIsInstance(camera.EventGrabberNodeMap, pylon.INodeMapWrapper)
-        self.assertIsInstance(camera.InstantCameraNodeMap, pylon.INodeMapWrapper)
+        self.assertIsInstance(camera.GetNodeMap(), pylon.NodeMapWrapper)
+        self.assertIsInstance(camera.GetTLNodeMap(), pylon.NodeMapWrapper)
+        self.assertIsInstance(camera.GetStreamGrabberNodeMap(), pylon.NodeMapWrapper)
+        self.assertIsInstance(camera.GetEventGrabberNodeMap(), pylon.NodeMapWrapper)
+        self.assertIsInstance(camera.GetInstantCameraNodeMap(), pylon.NodeMapWrapper)
+        self.assertIsInstance(camera.NodeMap, pylon.NodeMapWrapper)
+        self.assertIsInstance(camera.TLNodeMap, pylon.NodeMapWrapper)
+        self.assertIsInstance(camera.StreamGrabberNodeMap, pylon.NodeMapWrapper)
+        self.assertIsInstance(camera.EventGrabberNodeMap, pylon.NodeMapWrapper)
+        self.assertIsInstance(camera.InstantCameraNodeMap, pylon.NodeMapWrapper)
         result = camera.GrabOne(1000)
-        self.assertIsInstance(result.GetChunkDataNodeMap(), pylon.INodeMapWrapper)
-        self.assertIsInstance(result.ChunkDataNodeMap, pylon.INodeMapWrapper)
+        self.assertIsInstance(result.GetChunkDataNodeMap(), pylon.NodeMapWrapper)
+        self.assertIsInstance(result.ChunkDataNodeMap, pylon.NodeMapWrapper)
         camera.Close()
 
     def test_format_converter_wrappers_present(self):
-        """ImageFormatConverter uses INodeMapWrapper for its parameters"""
+        """ImageFormatConverter uses NodeMapWrapper for its parameters"""
         converter = pylon.ImageFormatConverter()
-        self.assertIsInstance(converter.GetNodeMap(), pylon.INodeMapWrapper)
+        self.assertIsInstance(converter.GetNodeMap(), pylon.NodeMapWrapper)
 
     # ------------------------------------------------------------------
-    # Tests that INodeMapWrapper.GetNode() maps INode* to Pylon C*Parameter
+    # Tests that NodeMapWrapper.GetNode() maps INode* to Pylon C*Parameter
     # types instead of the raw genicam interface types returned by a plain
     # INodeMap.
     # ------------------------------------------------------------------
@@ -137,7 +137,7 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         camera.Close()
 
     def test_getnodes_returns_pylon_parameter_types(self):
-        """GetNodes() via INodeMapWrapper returns Pylon *Parameter types for
+        """GetNodes() via NodeMapWrapper returns Pylon *Parameter types for
         the mapped interface types (Integer, Boolean, Command, Float, String,
         Enumeration, Register, EnumEntry, Category, Port) and genicam fallback
         types only for remaining unrecognised interface types."""
@@ -169,14 +169,14 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         camera.Close()
 
     def test_parameter_types_not_returned_by_raw_genicam_nodemap(self):
-        """Contrast test: a raw genicam INodeMap (not wrapped by INodeMapWrapper)
+        """Contrast test: a raw genicam INodeMap (not wrapped by NodeMapWrapper)
         returns plain genicam interface types for GetNode(), NOT Pylon *Parameter
-        objects.  This confirms that INodeMapWrapper is responsible for the
+        objects.  This confirms that NodeMapWrapper is responsible for the
         type upgrade."""
         camera = self.create_first()
         camera.Open()
 
-        # camera.GetNodeMap() returns an INodeMapWrapper; call _Get() to obtain
+        # camera.GetNodeMap() returns an NodeMapWrapper; call _Get() to obtain
         # the underlying raw INodeMap pointer and cast it back via SWIG so that
         # the genicam typemaps are in effect.
         raw_nm = camera.GetNodeMap()._Get()
@@ -197,12 +197,12 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         camera.Close()
 
     # ------------------------------------------------------------------
-    # Tests that INodeMapWrapper correctly exposes IDeviceInfo methods,
+    # Tests that NodeMapWrapper correctly exposes IDeviceInfo methods,
     # delegating to the underlying INodeMap which also implements IDeviceInfo.
     # ------------------------------------------------------------------
 
     def test_ideviceinfo_get_device_info_returns_ideviceinfo(self):
-        """GetDeviceInfo() on INodeMapWrapper returns a genicam.IDeviceInfo instance"""
+        """GetDeviceInfo() on NodeMapWrapper returns a genicam.IDeviceInfo instance"""
         camera = self.create_first()
         camera.Open()
         nm = camera.GetNodeMap()
@@ -211,7 +211,7 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         camera.Close()
 
     def test_ideviceinfo_string_properties(self):
-        """IDeviceInfo string properties are correctly delegated through INodeMapWrapper"""
+        """IDeviceInfo string properties are correctly delegated through NodeMapWrapper"""
         camera = self.create_first()
         camera.Open()
         nm = camera.GetNodeMap()
@@ -235,7 +235,7 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         camera.Close()
 
     def test_ideviceinfo_version_properties(self):
-        """IDeviceInfo version structs are correctly delegated through INodeMapWrapper"""
+        """IDeviceInfo version structs are correctly delegated through NodeMapWrapper"""
         camera = self.create_first()
         camera.Open()
         nm = camera.GetNodeMap()
@@ -730,7 +730,7 @@ class NodeMapWrapperTestSuite(PylonEmuTestCase):
         camera.Close()
 
     def test_to_parameter_matches_nodemap_wrapper_dispatch(self):
-        """ToParameter and INodeMapWrapper.GetNode agree on the returned type for all key nodes."""
+        """ToParameter and NodeMapWrapper.GetNode agree on the returned type for all key nodes."""
         camera = self.create_first()
         camera.Open()
         nm      = camera.GetNodeMap()

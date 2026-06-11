@@ -188,6 +188,7 @@ class ParameterTestSuite(PylonParameterTestCase):
         p = pylon.Parameter(node_a)
         self.assertEqual(p.GetNode().GetName(), node_a.GetName())
         self.assertEqual(p.Node.GetName(), node_a.GetName())
+        self.assertIsInstance(p.GetNode(), genicam.INode)
 
         p.Release()
         with self.assertRaises(Exception):

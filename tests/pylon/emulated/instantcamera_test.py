@@ -437,41 +437,41 @@ class InstantCameraTestSuite(PylonEmuTestCase):
         with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
             # Camera node map
             node_map = camera.NodeMap
-            self.assertIsInstance(node_map, pylon.INodeMapWrapper)
+            self.assertIsInstance(node_map, pylon.NodeMapWrapper)
 
             # Transport layer node map
             device_transport_layer_node_map = camera.TLNodeMap
-            self.assertIsInstance(device_transport_layer_node_map, pylon.INodeMapWrapper)
+            self.assertIsInstance(device_transport_layer_node_map, pylon.NodeMapWrapper)
 
             # Stream grabber node map (available when open)
             stream_grabber_node_map = camera.StreamGrabberNodeMap
-            self.assertIsInstance(stream_grabber_node_map, pylon.INodeMapWrapper)
+            self.assertIsInstance(stream_grabber_node_map, pylon.NodeMapWrapper)
 
             # Event grabber node map
             event_grabber_node_map = camera.EventGrabberNodeMap
-            self.assertIsInstance(event_grabber_node_map, pylon.INodeMapWrapper)
+            self.assertIsInstance(event_grabber_node_map, pylon.NodeMapWrapper)
 
             # InstantCamera node map (always available)
             instant_camera_node_map = camera.InstantCameraNodeMap
-            self.assertIsInstance(instant_camera_node_map, pylon.INodeMapWrapper)
+            self.assertIsInstance(instant_camera_node_map, pylon.NodeMapWrapper)
 
             # Get the node maps using the getter methods
             node_map = camera.GetNodeMap()
             device_transport_layer_node_map = camera.GetTLNodeMap()
-            self.assertIsInstance(device_transport_layer_node_map, pylon.INodeMapWrapper)
+            self.assertIsInstance(device_transport_layer_node_map, pylon.NodeMapWrapper)
             stream_grabber_node_map = camera.GetStreamGrabberNodeMap()
-            self.assertIsInstance(stream_grabber_node_map, pylon.INodeMapWrapper)
+            self.assertIsInstance(stream_grabber_node_map, pylon.NodeMapWrapper)
             event_grabber_node_map = camera.GetEventGrabberNodeMap()
-            self.assertIsInstance(event_grabber_node_map, pylon.INodeMapWrapper)
+            self.assertIsInstance(event_grabber_node_map, pylon.NodeMapWrapper)
             instant_camera_node_map = camera.GetInstantCameraNodeMap()
-            self.assertIsInstance(instant_camera_node_map, pylon.INodeMapWrapper)
+            self.assertIsInstance(instant_camera_node_map, pylon.NodeMapWrapper)
 
     def test_node_map_shortcut_properties(self):
         """StreamGrabber, EventGrabber, and TransportLayer shortcut properties work."""
         with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
-            self.assertIsInstance(camera.StreamGrabber, pylon.INodeMapWrapper)
-            self.assertIsInstance(camera.EventGrabber, pylon.INodeMapWrapper)
-            self.assertIsInstance(camera.TransportLayer, pylon.INodeMapWrapper)
+            self.assertIsInstance(camera.StreamGrabber, pylon.NodeMapWrapper)
+            self.assertIsInstance(camera.EventGrabber, pylon.NodeMapWrapper)
+            self.assertIsInstance(camera.TransportLayer, pylon.NodeMapWrapper)
 
         # When not open, StreamGrabber and EventGrabber return None
         camera2 = pylon.InstantCamera()

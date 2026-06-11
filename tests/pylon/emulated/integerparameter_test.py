@@ -663,6 +663,7 @@ class IntegerParameterTestSuite(PylonParameterTestCase):
         node = self.getINode("TestInt")
         p = pylon.IntegerParameter(node)
         self.assertEqual("TestInt", p.GetNode().GetName())
+        self.assertIsInstance(p.GetNode(), genicam.INode)
 
         p.Release()
         with self.assertRaises(Exception):

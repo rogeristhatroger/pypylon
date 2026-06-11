@@ -397,6 +397,7 @@ class BooleanParameterTestSuite(PylonParameterTestCase):
         p = pylon.BooleanParameter(node)
         self.assertEqual(node.GetName(), p.GetNode().GetName())
         self.assertEqual(node.GetName(), p.Node.GetName())
+        self.assertIsInstance(p.GetNode(), genicam.INode)
 
         p.Release()
         with self.assertRaises(Exception):

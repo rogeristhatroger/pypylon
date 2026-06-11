@@ -675,8 +675,8 @@ class GrabResultTestSuite(PylonEmuTestCase):
             camera.Height.Value = 48
             camera.PixelFormat.Value = "Mono8"
             grab_result = camera.GrabOne(1000)
-        self.assertIsInstance(grab_result.GetChunkDataNodeMap(), pylon.INodeMapWrapper)
-        self.assertIsInstance(grab_result.ChunkDataNodeMap, pylon.INodeMapWrapper)
+        self.assertIsInstance(grab_result.GetChunkDataNodeMap(), pylon.NodeMapWrapper)
+        self.assertIsInstance(grab_result.ChunkDataNodeMap, pylon.NodeMapWrapper)
         grab_result.Release()
 
     def test_has_crc_is_false_without_crc_chunk(self):

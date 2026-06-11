@@ -277,14 +277,14 @@ class ImageFormatConverterTestSuite(PylonEmuTestCase):
         )
 
     # ------------------------------------------------------------------
-    # GetNodeMap typemap: returns INodeMapWrapper with
+    # GetNodeMap typemap: returns NodeMapWrapper with
     # NodeMapType_ImageFormatConverter ("ImageFormatConverter").
     # ------------------------------------------------------------------
 
     def test_get_node_map_returns_inodemapwrapper(self):
-        """GetNodeMap() returns a pylon.INodeMapWrapper instance."""
+        """GetNodeMap() returns a pylon.NodeMapWrapper instance."""
         converter = pylon.ImageFormatConverter()
-        self.assertIsInstance(converter.GetNodeMap(), pylon.INodeMapWrapper)
+        self.assertIsInstance(converter.GetNodeMap(), pylon.NodeMapWrapper)
 
     def test_get_node_map_wrapper_reports_image_format_converter_type(self):
         """GetNodeMap() wrapper reports NodeMapType_ImageFormatConverter as its type."""

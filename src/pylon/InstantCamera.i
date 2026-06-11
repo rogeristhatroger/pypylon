@@ -187,15 +187,15 @@ namespace Pylon {
 %include <pylon/ETimeoutHandling.h>;
 
 // Per-method typemaps for nodemap getters – each wraps the returned
-// GenApi::INodeMap& in an INodeMapWrapper carrying the correct ENodeMapType.
+// GenApi::INodeMap& in an NodeMapWrapper carrying the correct ENodeMapType.
 // These must appear before %include <pylon/InstantCamera.h> so SWIG uses them
 // instead of the generic INodeMap& typemap defined in pylon.i.
 
 %typemap(out) GENAPI_NAMESPACE::INodeMap& Pylon::CInstantCamera::GetNodeMap
 %{
     $result = SWIG_NewPointerObj(
-        new Pylon::INodeMapWrapper($1, Pylon::NodeMapType_Camera),
-        $descriptor(Pylon::INodeMapWrapper*),
+        new Pylon::NodeMapWrapper($1, Pylon::NodeMapType_Camera),
+        $descriptor(Pylon::NodeMapWrapper*),
         SWIG_POINTER_OWN
     );
 %}
@@ -203,8 +203,8 @@ namespace Pylon {
 %typemap(out) GENAPI_NAMESPACE::INodeMap& Pylon::CInstantCamera::GetTLNodeMap
 %{
     $result = SWIG_NewPointerObj(
-        new Pylon::INodeMapWrapper($1, Pylon::NodeMapType_DeviceTransportLayer),
-        $descriptor(Pylon::INodeMapWrapper*),
+        new Pylon::NodeMapWrapper($1, Pylon::NodeMapType_DeviceTransportLayer),
+        $descriptor(Pylon::NodeMapWrapper*),
         SWIG_POINTER_OWN
     );
 %}
@@ -212,8 +212,8 @@ namespace Pylon {
 %typemap(out) GENAPI_NAMESPACE::INodeMap& Pylon::CInstantCamera::GetStreamGrabberNodeMap
 %{
     $result = SWIG_NewPointerObj(
-        new Pylon::INodeMapWrapper($1, Pylon::NodeMapType_StreamGrabber),
-        $descriptor(Pylon::INodeMapWrapper*),
+        new Pylon::NodeMapWrapper($1, Pylon::NodeMapType_StreamGrabber),
+        $descriptor(Pylon::NodeMapWrapper*),
         SWIG_POINTER_OWN
     );
 %}
@@ -221,8 +221,8 @@ namespace Pylon {
 %typemap(out) GENAPI_NAMESPACE::INodeMap& Pylon::CInstantCamera::GetEventGrabberNodeMap
 %{
     $result = SWIG_NewPointerObj(
-        new Pylon::INodeMapWrapper($1, Pylon::NodeMapType_EventGrabber),
-        $descriptor(Pylon::INodeMapWrapper*),
+        new Pylon::NodeMapWrapper($1, Pylon::NodeMapType_EventGrabber),
+        $descriptor(Pylon::NodeMapWrapper*),
         SWIG_POINTER_OWN
     );
 %}
@@ -230,8 +230,8 @@ namespace Pylon {
 %typemap(out) GENAPI_NAMESPACE::INodeMap& Pylon::CInstantCamera::GetInstantCameraNodeMap
 %{
     $result = SWIG_NewPointerObj(
-        new Pylon::INodeMapWrapper($1, Pylon::NodeMapType_InstantCamera),
-        $descriptor(Pylon::INodeMapWrapper*),
+        new Pylon::NodeMapWrapper($1, Pylon::NodeMapType_InstantCamera),
+        $descriptor(Pylon::NodeMapWrapper*),
         SWIG_POINTER_OWN
     );
 %}

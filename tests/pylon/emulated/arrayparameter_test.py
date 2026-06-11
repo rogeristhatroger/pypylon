@@ -383,6 +383,7 @@ class ArrayParameterTestSuite(PylonParameterTestCase):
         """GetNode returns the attached node; raises when unattached."""
         p = pylon.ArrayParameter(self.nodemap, "RegisterA")
         self.assertEqual("RegisterA", p.GetNode().GetName())
+        self.assertIsInstance(p.GetNode(), genicam.INode)
 
         p.Release()
         with self.assertRaises(Exception):
