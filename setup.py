@@ -26,6 +26,23 @@ ReferencePylonVersion = {
 }
 
 ################################################################################
+def copy_package_assets():
+    src_dir = os.path.join(".", "docs", "images")
+    dst_dir = os.path.join(".", "pypylon", "docs", "images")
+
+    if not os.path.isdir(src_dir):
+        return
+
+    os.makedirs(dst_dir, exist_ok=True)
+
+    for path in glob.glob(os.path.join(src_dir, "*.svg")):
+        print(f"Copy asset {path} => {dst_dir}")
+        shutil.copy(path, dst_dir)
+
+    src_file = os.path.join(".", "README.md")
+    dst_file = os.path.join(".", "pypylon", "README.md")
+    shutil.copy(src_file, dst_file)
+################################################################################
 
 def prepare_for_limited_api(min_ver_str):
     min_maj, min_min = map(int, min_ver_str.split("."))
@@ -376,7 +393,7 @@ class BuildSupport(object):
 
     def get_package_data_files(self):
         # patterns for files in self.PackageDir
-        data_files = ["*.dll", "*.zip", "*.so", "*.so.*", "*.sig"]
+        data_files = ["*.dll", "*.zip", "*.so", "*.so.*", "*.sig", "*.md"]
 
         # also add all files of any sub-directories recursively
         pdir = self.PackageDir
@@ -1022,7 +1039,7 @@ class BuildSupportMacOS(BuildSupport):
         except FileNotFoundError:
             msg = (
                 "Couldn't find pylon. Please install pylon in %s or tell us " +
-                "the framwork search path of the pylon.framework using the PYLON_FRAMEWORK_LOCATION environment " +
+                "the framework search path of the pylon.framework using the PYLON_FRAMEWORK_LOCATION environment " +
                 "variable"
                 )
             error(msg, self.FrameworkPath)
@@ -1226,6 +1243,7 @@ if __name__ == "__main__":
         # into the package directory, that need to be distributed and were not
         # placed there by 'call_swig'.
         bs.copy_runtime()
+        copy_package_assets()
         print('\n')
 
     else:

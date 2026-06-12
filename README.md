@@ -1,5 +1,10 @@
-![pypylon](https://raw.githubusercontent.com/basler/pypylon/9303da0cadc10e56d6f6de01b422976c9638c7c5/docs/images/Pypylon_grey_RZ_400px.png "pypylon")
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/pylon_basler_banner_dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/pylon_basler_banner.svg">
+  <img alt="Basler pypylon banner" src="https://raw.githubusercontent.com/basler/pypylon/master/docs/images/pylon_basler_banner.svg">
+</picture>
 
+<br>
 The official python wrapper for the Basler pylon Camera Software Suite.
 
 Background information about usage of pypylon, programming samples and jupyter notebooks can also be found at [pypylon-samples](https://github.com/basler/pypylon-samples).
