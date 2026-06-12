@@ -169,6 +169,13 @@ class NodeTestSuite(GenicamTestCase):
         # NodeList_t mParents
         # NodeImplWO.GetParents(mParents)
 
+        # test genicam.INodeMap
+        self.assertTrue(Camera._Ptr.Contains("Node0"))
+        self.assertFalse(Camera._Ptr.Contains("NodeThatDoesNotExist"))
+        # genicam.CNodeMapRef
+        self.assertTrue(Camera.Contains("Node0"))
+        self.assertFalse(Camera.Contains("NodeThatDoesNotExist"))
+
         self.assertEqual(genicam.intfIValue, CatNode.Node.GetPrincipalInterfaceType())
         self.assertEqual(genicam.intfIValue, Node00.Node.GetPrincipalInterfaceType())
         self.assertEqual(genicam.intfICategory, Node0.Node.GetPrincipalInterfaceType())

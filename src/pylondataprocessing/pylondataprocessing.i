@@ -116,7 +116,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GenApi/EventAdapterGeneric.h>
 #include <GenApi/EventAdapterGEV.h>
 #include "genicam/PyPortImpl.h"
-#include "pylon/INodeMapWrapper.h"
+#include "pylon/NodeMapWrapper.h"
 #include "pylon/EnumEntryParameter.h"
 #include "pylon/CategoryParameter.h"
 #include "pylon/PortParameter.h"
@@ -514,7 +514,7 @@ Pylon::DataProcessing::CVariantContainer value
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// GetParameter return typemap: same dispatch as INodeMapWrapper::GetNode.
+// GetParameter return typemap: same dispatch as NodeMapWrapper::GetNode.
 //
 // When the parameter does not exist (null INode*), a CPlaceholderParameter
 // is returned whose path is set to the requested fullname (arg1).
@@ -522,7 +522,7 @@ Pylon::DataProcessing::CVariantContainer value
 // $descriptor() — valid here because this is a %typemap body.
 //
 %typemap(out) GENAPI_NAMESPACE::INode* Pylon::DataProcessing::CRecipe::GetParameter,
-			  GENAPI_NAMESPACE::INode* Pylon::DataProcessing::CSmartInstantCameraT< Pylon::CInstantCamera, Pylon::DataProcessing::SSmartInstantCameraResultT<Pylon::CGrabResultPtr> >::GetParameter
+              GENAPI_NAMESPACE::INode* Pylon::DataProcessing::CSmartInstantCameraT< Pylon::CInstantCamera, Pylon::DataProcessing::SSmartInstantCameraResultT<Pylon::CGrabResultPtr> >::GetParameter
 {
     if (0 == $1)
     {

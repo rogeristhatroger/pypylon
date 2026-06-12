@@ -19,16 +19,16 @@ namespace Pylon
     // This class is a simple wrapper around an INodeMap pointer. It is used to
     // change the SWIG mapping of GenICam types in the module pypylon.pylon
     // and pypylon.dataprocessing using SWIG typemap instructions.
-    class INodeMapWrapper : public GENAPI_NAMESPACE::INodeMap, public GENAPI_NAMESPACE::IDeviceInfo //needed for saving pfs files
+    class NodeMapWrapper : public GENAPI_NAMESPACE::INodeMap, public GENAPI_NAMESPACE::IDeviceInfo //needed for saving pfs files
     {
     public:
-        INodeMapWrapper( GENAPI_NAMESPACE::INodeMap* pNodeMap, ENodeMapType nodeMapType)
+        NodeMapWrapper( GENAPI_NAMESPACE::INodeMap* pNodeMap, ENodeMapType nodeMapType)
             : m_pNodeMap( pNodeMap )
             , m_nodeMapType(nodeMapType)
         {
         }
 
-        virtual ~INodeMapWrapper() = default;
+        virtual ~NodeMapWrapper() = default;
 
         void GetNodes( GENAPI_NAMESPACE::NodeList_t& Nodes ) const override
         {

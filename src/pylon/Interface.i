@@ -25,8 +25,8 @@
 %typemap(out) GENAPI_NAMESPACE::INodeMap* Pylon::IInterface::GetNodeMap
 %{
     $result = SWIG_NewPointerObj(
-        new Pylon::INodeMapWrapper($1, Pylon::NodeMapType_Interface),
-        $descriptor(Pylon::INodeMapWrapper*),
+        new Pylon::NodeMapWrapper($1, Pylon::NodeMapType_Interface),
+        $descriptor(Pylon::NodeMapWrapper*),
         SWIG_POINTER_OWN
     );
 %}

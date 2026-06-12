@@ -25,6 +25,10 @@ class PlaceholderParameterTestSuite(PylonParameterTestCase):
         p = pylon.PlaceholderParameter()
         self.assertFalse(p.IsValid())
         self.assertEqual("", p.GetPath())
+        self.assertFalse(genicam.IsAvailable(p))
+        self.assertFalse(genicam.IsImplemented(p))
+        self.assertFalse(genicam.IsReadable(p))
+        self.assertFalse(genicam.IsWritable(p))
 
     def test_placeholder_construction_from_string(self):
         """Construction with a path string stores the path and stays invalid."""

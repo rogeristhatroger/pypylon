@@ -294,6 +294,7 @@ class CommandParameterTestSuite(PylonParameterTestCase):
         node = self.getINode("TestCommand")
         p = pylon.CommandParameter(node)
         self.assertEqual("TestCommand", p.GetNode().GetName())
+        self.assertIsInstance(p.GetNode(), genicam.INode)
 
         p.Release()
         with self.assertRaises(Exception):

@@ -450,6 +450,7 @@ class StringParameterTestSuite(PylonParameterTestCase):
         p = pylon.StringParameter(node)
         self.assertEqual(p.GetNode().GetName(), node.GetName())
         self.assertEqual(p.Node.GetName(), node.GetName())
+        self.assertIsInstance(p.GetNode(), genicam.INode)
 
         p.Release()
         with self.assertRaises(Exception):

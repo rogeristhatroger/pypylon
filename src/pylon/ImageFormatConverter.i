@@ -178,13 +178,13 @@ namespace Pylon
 %ignore Pylon::CImageFormatConverter::ImageHasDestinationFormat;
 %ignore Pylon::CImageFormatConverter::OutputPixelFormat;
 
-// Method-qualified typemap: wrap the returned INodeMap& in an INodeMapWrapper
+// Method-qualified typemap: wrap the returned INodeMap& in an NodeMapWrapper
 // carrying NodeMapType_ImageFormatConverter.
 %typemap(out) GENAPI_NAMESPACE::INodeMap& Pylon::CImageFormatConverter::GetNodeMap
 %{
     $result = SWIG_NewPointerObj(
-        new Pylon::INodeMapWrapper($1, Pylon::NodeMapType_ImageFormatConverter),
-        $descriptor(Pylon::INodeMapWrapper*),
+        new Pylon::NodeMapWrapper($1, Pylon::NodeMapType_ImageFormatConverter),
+        $descriptor(Pylon::NodeMapWrapper*),
         SWIG_POINTER_OWN
     );
 %}

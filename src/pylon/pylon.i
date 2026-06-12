@@ -119,7 +119,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GenApi/EventAdapterGEV.h>
 #include "genicam/PyPortImpl.h"
 #include <GenApi/IDeviceInfo.h>
-#include "pylon/INodeMapWrapper.h"
+#include "pylon/NodeMapWrapper.h"
 #include "pylon/EnumEntryParameter.h"
 #include "pylon/CategoryParameter.h"
 #include "pylon/PortParameter.h"
@@ -263,7 +263,7 @@ def needs_numpy(func):
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Helper macro: dispatch one INode* to the matching Pylon::C*Parameter type.
-// Used by the INodeMapWrapper::GetNode typemap above and by the NodeList_t /
+// Used by the NodeMapWrapper::GetNode typemap above and by the NodeList_t /
 // FeatureList_t argout overrides below.
 //
 // Arguments:
@@ -381,8 +381,8 @@ def needs_numpy(func):
 //   intfICategory    -> Pylon::CCategoryParameter (needed only for displaying parameter trees)
 //   intfIPort        -> Pylon::CPortParameter (non-value)
 //
-%typemap(out) GENAPI_NAMESPACE::INode* Pylon::INodeMapWrapper::GetNode2,
-              GENAPI_NAMESPACE::INode* Pylon::INodeMapWrapper::GetNode
+%typemap(out) GENAPI_NAMESPACE::INode* Pylon::NodeMapWrapper::GetNode2,
+              GENAPI_NAMESPACE::INode* Pylon::NodeMapWrapper::GetNode
 {
     {
         if (0 == $1)
@@ -443,13 +443,13 @@ def needs_numpy(func):
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Expose INodeMapWrapper to SWIG so that $descriptor(Pylon::INodeMapWrapper*)
+// Expose NodeMapWrapper to SWIG so that $descriptor(Pylon::NodeMapWrapper*)
 // resolves correctly and the method-qualified typemap for GetNode fires.
-%include "INodeMapWrapper.i"
+%include "NodeMapWrapper.i"
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Wrap every returned INodeMap* in an INodeMapWrapper so that subsequent
+// Wrap every returned INodeMap* in an NodeMapWrapper so that subsequent
 // typemaps (GetNode, GetNodes, GetFeatures) map INode* to Pylon::C*Parameter.
 //
 // The wrapper is heap-allocated and owned by Python (SWIG_POINTER_OWN).
@@ -458,8 +458,8 @@ def needs_numpy(func):
               GENAPI_NAMESPACE::INodeMap&
 %{
     $result = SWIG_NewPointerObj(
-        new Pylon::INodeMapWrapper($1, NodeMapType_Unknown),
-        $descriptor(Pylon::INodeMapWrapper*),
+        new Pylon::NodeMapWrapper($1, NodeMapType_Unknown),
+        $descriptor(Pylon::NodeMapWrapper*),
         SWIG_POINTER_OWN
     );
 %}
@@ -645,26 +645,26 @@ def ToParameter(val):
 
     // Case 1: already an IImage*
     if (SWIG_IsOK(SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_Pylon__IImage, 0)) && $1) {
-	$1 = (IImage*)$1;
+    $1 = (IImage*)$1;
     }
 
     // Case 2: CGrabResultPtr -> extract IImage
     else if (SWIG_IsOK(SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_Pylon__CGrabResultPtr, 0)) && $1) {
-	Pylon::CGrabResultPtr* grabPtr = (Pylon::CGrabResultPtr*)$1;
-	if (!(*grabPtr)) {
-	    SWIG_exception_fail(SWIG_ValueError, "Invalid CGrabResultPtr");
-	}
-	$1 = &(grabPtr->operator Pylon::IImage&());
+    Pylon::CGrabResultPtr* grabPtr = (Pylon::CGrabResultPtr*)$1;
+    if (!(*grabPtr)) {
+        SWIG_exception_fail(SWIG_ValueError, "Invalid CGrabResultPtr");
+    }
+    $1 = &(grabPtr->operator Pylon::IImage&());
     }
 
     // Case 3: Pylon::CPylonDataComponent -> extract IImage
     else if (SWIG_IsOK(SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_Pylon__CPylonDataComponent, 0)) && $1) {
-	$1 = const_cast<Pylon::IImage*>(&(((Pylon::CPylonDataComponent*)$1)->operator const Pylon::IImage&()));
+    $1 = const_cast<Pylon::IImage*>(&(((Pylon::CPylonDataComponent*)$1)->operator const Pylon::IImage&()));
     }
 
     else {
-	SWIG_exception_fail(SWIG_TypeError,
-			    "Expected IImage, CGrabResultPtr or CPylonDataComponent");
+    SWIG_exception_fail(SWIG_TypeError,
+                "Expected IImage, CGrabResultPtr or CPylonDataComponent");
     }
 }
 

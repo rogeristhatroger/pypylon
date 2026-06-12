@@ -1,10 +1,10 @@
 %ignore GetNode( const GENICAM_NAMESPACE::gcstring& Name );
-%rename(_GetNode) Pylon::INodeMapWrapper::GetNode2;
+%rename(_GetNode) Pylon::NodeMapWrapper::GetNode2;
 
 namespace GENAPI_NAMESPACE {
     class IDeviceInfo;
 }
-%extend Pylon::INodeMapWrapper {
+%extend Pylon::NodeMapWrapper {
     PROP_GET(DeviceName)
     //! gets the interface of the DeviceInfo
     GENAPI_NAMESPACE::IDeviceInfo *GetDeviceInfo()
@@ -51,4 +51,4 @@ namespace GENAPI_NAMESPACE {
         return sorted(set(l))
 %}
 }
-%include "INodeMapWrapper.h"
+%include "NodeMapWrapper.h"
