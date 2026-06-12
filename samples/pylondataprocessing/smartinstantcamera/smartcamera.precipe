@@ -57,28 +57,6 @@
           ]
         },
         {
-          "id": "ImageLoading",
-          "x": -55.0,
-          "y": 400.0,
-          "WatchNodePins": [
-            {
-              "nodeName": "ImageLoading",
-              "pinName": "Image",
-              "pinDirection": "Output"
-            },
-            {
-              "nodeName": "ImageLoading",
-              "pinName": "ImagePath",
-              "pinDirection": "Output"
-            },
-            {
-              "nodeName": "ImageLoading",
-              "pinName": "RunCount",
-              "pinDirection": "Output"
-            }
-          ]
-        },
-        {
           "id": "BarcodeReader",
           "x": 513.0,
           "y": 65.5,
@@ -162,24 +140,6 @@
             "OutputBitAlignment": "LsbAligned",
             "OutputPaddingX": 0,
             "MaxNumThreads": 4
-          }
-        },
-        {
-          "Name": "ImageLoading",
-          "Enabled": false,
-          "NodeTypeID": "4F2B72DC-294B-4503-885A-6B73D26EB6D7",
-          "Type": "Plugin::PylonVToolPackageBase::ImageLoading",
-          "NodeData": {
-            "PylonMetaData": {
-              "ObjectVersion": "4.0.0",
-              "MinRequiredSoftwareVersion": "1.0.0"
-            },
-            "sourcePath": "../images/barcode",
-            "sortBy": 0,
-            "numberOfImages": 3,
-            "framesPerSecond": 1,
-            "numberOfRuns": 1,
-            "runContinuously": true
           }
         }
       ],

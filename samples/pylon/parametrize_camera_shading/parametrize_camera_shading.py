@@ -101,12 +101,9 @@ def calculate_coefficients(width, num_coeffs, intensities):
 
 def supports_rgb(camera):
     """Check whether the camera supports any RGB pixel format."""
-    try:
-        for symbolic in camera.PixelFormat.GetSettableValues():
-            if "RGB" in symbolic:
-                return True
-    except Exception:
-        pass
+    for symbolic in camera.PixelFormat.GetSettableValues():
+        if "RGB" in symbolic:
+            return True
     return False
 
 
@@ -169,7 +166,7 @@ def create_shading_data(camera, local_filename):
             SHADING_SENSOR_LINE,
             line_type,
             width,
-            0,
+            0
         )
         f.write(header)
         f.write(fixed_point.tobytes())
@@ -195,6 +192,7 @@ def upload_file(camera, camera_filename, local_filename):
     file_selector.Value = camera_filename
 
     file_operation_selector = pylon.EnumParameter(nodemap, "FileOperationSelector")
+    file_operation_open_mode = pylon.EnumParameter(nodemap, "FileOpenMode")
     file_access_buffer = pylon.RegisterParameter(nodemap, "FileAccessBuffer")
     file_access_offset = pylon.IntegerParameter(nodemap, "FileAccessOffset")
     file_access_length = pylon.IntegerParameter(nodemap, "FileAccessLength")
@@ -203,7 +201,7 @@ def upload_file(camera, camera_filename, local_filename):
 
     # Open file for writing.
     file_operation_selector.Value = "Open"
-    pylon.EnumParameter(nodemap, "FileOpenMode").Value = "Write"
+    file_operation_open_mode.Value = "Write"
     file_operation_execute.Execute()
     if file_operation_status.Value != "Success":
         raise pylon.RuntimeException("Failed to open camera file for writing.")
@@ -273,13 +271,7 @@ try:
         print()
 
         # Use single-frame configuration for shading calibration.
-        camera.RegisterConfiguration(
-            pylon.AcquireSingleFrameConfiguration(),
-            pylon.RegistrationMode_ReplaceAll,
-            pylon.Cleanup_Delete,
-        )
-
-        camera.Open()
+        pylon.AcquireSingleFrameConfiguration.ApplyConfiguration(camera.NodeMap)
 
         # Only line scan cameras support gain shading.
         if not (

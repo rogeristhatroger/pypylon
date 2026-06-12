@@ -62,7 +62,7 @@ try:
         camera.RegisterConfiguration(
             pylon.SoftwareTriggerConfiguration(),
             pylon.RegistrationMode_ReplaceAll,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
 
         # For demonstration purposes only, registers an event handler configuration to
@@ -72,7 +72,7 @@ try:
         camera.RegisterConfiguration(
             ConfigurationEventPrinter(),
             pylon.RegistrationMode_Append,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
 
         # The image event printer serves as sample image processing.
@@ -81,14 +81,14 @@ try:
         camera.RegisterImageEventHandler(
             ImageEventPrinter(),
             pylon.RegistrationMode_Append,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
 
         # For demonstration purposes only, register another image event handler.
         camera.RegisterImageEventHandler(
             SampleImageEventHandler(),
             pylon.RegistrationMode_Append,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
 
         # Attach the camera device found first.

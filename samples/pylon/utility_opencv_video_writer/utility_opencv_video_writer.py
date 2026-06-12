@@ -7,7 +7,7 @@ Camera sensors deliver images in a wide range of pixel formats — Bayer
 patterns (BayerBG8, BayerRG12, …), packed mono (Mono10p, Mono12packed),
 YUV, or plain Mono8. OpenCV expects BGR8 for color video, so a raw camera
 buffer cannot be passed to cv2.VideoWriter or cv2.imshow directly.
-pylon.ImageFormatConverter handles the conversion: it debayers, unpacks,
+pylon.ImageFormatConverter handles the conversion: It debayers, unpacks,
 and reorders channels in a single call, producing BGR8 frames that OpenCV
 can consume immediately.
 
@@ -89,7 +89,7 @@ try:
                     print(
                         "Error:",
                         f"{grab_result.ErrorCode:#x}",
-                        grab_result.ErrorDescription,
+                        grab_result.ErrorDescription
                     )
 
         camera.StopGrabbing()

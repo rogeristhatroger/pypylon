@@ -6,7 +6,7 @@ This sample shows how to enable and configure the camera's luminance lookup
 table (LUT). The LUT maps input pixel values to output pixel values and can
 be used for operations like contrast enhancement or value inversion.
 
-In this example an inversion LUT is written: the brightest input value is
+In this example an inversion LUT is written: The brightest input value is
 mapped to 0 and the darkest to the maximum, effectively creating a negative
 of the captured image. The LUT is enabled, a few frames are grabbed to show
 the effect, and then the LUT is disabled again.

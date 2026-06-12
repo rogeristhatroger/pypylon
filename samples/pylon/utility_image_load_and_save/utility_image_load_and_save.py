@@ -45,7 +45,6 @@ try:
             # If more control over the conversion is required then the ImageFormatConverter class
             # can be used to convert the input image before saving it (not shown).
             pylon.ImagePersistence.Save( pylon.ImageFileFormat_Tiff, f"{OUTPUT_STEM}.tiff", image_rgb16_packed )
-
             print("The image",
                   "can" if pylon.ImagePersistence.CanSaveWithoutConversion( pylon.ImageFileFormat_Tiff, image_rgb16_packed ) else "can not",
                   "be saved without conversion as tiff.")

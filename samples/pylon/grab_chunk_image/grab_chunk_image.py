@@ -30,7 +30,7 @@ class SampleImageEventHandler(pylon.ImageEventHandler):
             if chunk_timestamp.IsReadable():
                 print(
                     "OnImageGrabbed: TimeStamp (Result) accessed via node map:",
-                    chunk_timestamp.Value,
+                    chunk_timestamp.Value
                 )
 
             # Native parameter access:
@@ -39,7 +39,7 @@ class SampleImageEventHandler(pylon.ImageEventHandler):
             if grab_result.ChunkTimestamp.IsReadable():
                 print(
                     "OnImageGrabbed: TimeStamp (Result) accessed via result member:",
-                    grab_result.ChunkTimestamp.Value,
+                    grab_result.ChunkTimestamp.Value
                 )
 
 
@@ -54,7 +54,7 @@ try:
         camera.RegisterImageEventHandler(
             SampleImageEventHandler(),
             pylon.RegistrationMode_Append,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
 
         # A GenICam node map is required for accessing chunk data, so a small
@@ -63,16 +63,16 @@ try:
         # description file. Node maps are normally created dynamically in
         # StartGrabbing(); to avoid that delay, a static pool of node maps
         # can be created once up front.
-        camera.StaticChunkNodeMapPoolSize.TrySetValue(camera.MaxNumBuffer.Value)
+        # camera.StaticChunkNodeMapPoolSize.TrySetValue(camera.MaxNumBuffer.Value)
 
-        if not camera.ChunkModeActive.TrySetValue(True):
+        if not camera.ChunkSelector.IsReadable():
             raise pylon.RuntimeException(
                 "The camera doesn't support chunk features."
             )
 
-        available_chunks = []
-        if camera.ChunkSelector.IsReadable():
-            available_chunks = camera.ChunkSelector.GetSettableValues()
+        camera.ChunkModeActive.Value = True
+
+        available_chunks = camera.ChunkSelector.GetSettableValues()
 
         # Enable timestamp chunks.
         if "Timestamp" in available_chunks:
@@ -90,76 +90,69 @@ try:
             if camera.ChunkSelector.TrySetValue("PayloadCRC16"):
                 camera.ChunkEnable.TrySetValue(True)
 
-        try:
-            # Start the grabbing of COUNT_OF_IMAGES_TO_GRAB images.
-            # The camera device is parameterized with a default configuration
-            # that sets up free-running continuous acquisition.
-            camera.StartGrabbingMax(COUNT_OF_IMAGES_TO_GRAB)
+        # Start the grabbing of COUNT_OF_IMAGES_TO_GRAB images.
+        # The camera device is parameterized with a default configuration
+        # that sets up free-running continuous acquisition.
+        camera.StartGrabbingMax(COUNT_OF_IMAGES_TO_GRAB)
 
-            # StopGrabbing() is called automatically by RetrieveResult() when
-            # COUNT_OF_IMAGES_TO_GRAB images have been retrieved.
-            while camera.IsGrabbing():
-                # RetrieveResult calls the image event handler's
-                # OnImageGrabbed method.
-                with camera.RetrieveResult(
-                    RETRIEVE_TIMEOUT_MS, pylon.TimeoutHandling_ThrowException
-                ) as grab_result:
-                    if grab_result.GrabSucceeded():
-                        # Some camera models use a GenICam Generic Data Container (GenDC) format.
-                        # For single grabbed images, a data component is emulated automatically.
-                        # pylon provides a data component wrapper to handle both cases uniformly.
-                        with grab_result.GetFirstImageDataComponent() as image_data_component:
-                            print("SizeX:", image_data_component.Width)
-                            print("SizeY:", image_data_component.Height)
-                            image = image_data_component.Array
-                            print("Gray value of first pixel:", image[0, 0])
+        # StopGrabbing() is called automatically by RetrieveResult() when
+        # COUNT_OF_IMAGES_TO_GRAB images have been retrieved.
+        while camera.IsGrabbing():
+            # RetrieveResult calls the image event handler's
+            # OnImageGrabbed method.
+            with camera.RetrieveResult(
+                RETRIEVE_TIMEOUT_MS, pylon.TimeoutHandling_ThrowException
+            ) as grab_result:
+                if grab_result.GrabSucceeded():
+                    # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                    # For single grabbed images, a data component is emulated automatically.
+                    # pylon provides a data component wrapper to handle both cases uniformly.
+                    with grab_result.GetFirstImageDataComponent() as image_data_component:
+                        print("SizeX:", image_data_component.Width)
+                        print("SizeY:", image_data_component.Height)
+                        image = image_data_component.Array
+                        print("Gray value of first pixel:", image[0, 0])
 
-                        # Check that a buffer containing chunk data has been
-                        # received.
-                        if grab_result.PayloadType != pylon.PayloadType_ChunkData:
-                            raise pylon.RuntimeException(
-                                "Unexpected payload type received."
-                            )
-
-                        # Since the CRC Checksum feature was activated, the
-                        # integrity of the buffer can be checked. Enabling
-                        # CRC is not a prerequisite for using chunks.
-                        if grab_result.HasCRC() and not grab_result.CheckCRC():
-                            raise pylon.RuntimeException("Image was damaged!")
-
-                        # Access the chunk data attached to the result.
-                        # Check that the chunk is readable; when it is, the
-                        # buffer contains the requested chunk data.
-                        if grab_result.ChunkTimestamp.IsReadable():
-                            print(
-                                "Timestamp (Result):",
-                                grab_result.ChunkTimestamp.Value,
-                            )
-
-                        if (
-                            not camera.IsUsb()
-                            and grab_result.ChunkFramecounter.IsReadable()
-                        ):
-                            print(
-                                "FrameCounter (Result):",
-                                grab_result.ChunkFramecounter.Value,
-                            )
-                    else:
-                        print(
-                            "Error:",
-                            f"{grab_result.ErrorCode:#x}",
-                            grab_result.ErrorDescription,
+                    # Check that a buffer containing chunk data has been
+                    # received.
+                    if grab_result.PayloadType != pylon.PayloadType_ChunkData:
+                        raise pylon.RuntimeException(
+                            "Unexpected payload type received."
                         )
-                print()
-        except pylon.LogicalErrorException:
-            # Expected when the camera has limited chunk-mode capabilities.
-            print(
-                "Logical error: grabbing with chunks is not supported by "
-                "this device."
-            )
-        finally:
-            # Disable chunk mode so the camera returns to its default state.
-            camera.ChunkModeActive.TrySetValue(False)
+
+                    # Since the CRC Checksum feature was activated, the
+                    # integrity of the buffer can be checked. Enabling
+                    # CRC is not a prerequisite for using chunks.
+                    if grab_result.HasCRC() and not grab_result.CheckCRC():
+                        raise pylon.RuntimeException("Image was damaged!")
+
+                    # Access the chunk data attached to the result.
+                    # Check that the chunk is readable; when it is, the
+                    # buffer contains the requested chunk data.
+                    if grab_result.ChunkTimestamp.IsReadable():
+                        print(
+                            "Timestamp (Result):",
+                            grab_result.ChunkTimestamp.Value
+                        )
+
+                    if (
+                        not camera.IsUsb()
+                        and grab_result.ChunkFramecounter.IsReadable()
+                    ):
+                        print(
+                            "FrameCounter (Result):",
+                            grab_result.ChunkFramecounter.Value
+                        )
+                else:
+                    print(
+                        "Error:",
+                        f"{grab_result.ErrorCode:#x}",
+                        grab_result.ErrorDescription
+                    )
+            print()
+
+        # Disable chunk mode so the camera returns to its default state.
+        camera.ChunkModeActive.TrySetValue(False)
 
 except Exception as e:
     print("An exception occurred:", e)

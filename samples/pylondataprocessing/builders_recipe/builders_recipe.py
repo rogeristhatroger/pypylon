@@ -3,7 +3,7 @@
 Demonstrate programmatically creating a data processing recipe with BuildersRecipe.
 
 Instead of loading a pre-built recipe file, a BuildersRecipe is assembled in
-code: a Camera vTool and a Format Converter vTool are added, then wired
+code: A Camera vTool and a Format Converter vTool are added, then wired
 together. The sample lists available vTool types, creates outputs for both
 the original and converted images, and grabs a configurable number of frames.
 """

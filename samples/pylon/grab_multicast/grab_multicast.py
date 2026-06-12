@@ -44,7 +44,7 @@ parser.add_argument(
     "--mode",
     choices=("control", "monitor"),
     default=None,
-    help="Open the camera in control or monitor mode (default: control).",
+    help="Open the camera in control or monitor mode (default: control)."
 )
 args = parser.parse_args()
 if args.mode is None:
@@ -74,7 +74,7 @@ try:
         camera.RegisterImageEventHandler(
             SampleImageEventHandler(),
             pylon.RegistrationMode_Append,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
 
         # Attach the first found GigE Vision camera.

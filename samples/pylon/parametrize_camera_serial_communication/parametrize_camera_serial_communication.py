@@ -27,7 +27,7 @@ exit_code = 0
 def serial_transmit(camera, data):
     """Transmit a bytes-like object over the camera's UART.
 
-    Protocol:
+    Workflow:
       1. Write the data to BslSerialTransferBuffer (for GigE, write multiples of 4 bytes).
       2. Write the real (not the padded) length in bytes to BslSerialTransferLength.
       3. Execute BslSerialTransmit.
@@ -65,7 +65,7 @@ def serial_transmit(camera, data):
 def serial_receive(camera):
     """Receive all pending data from the camera's UART and return as bytes.
 
-    Protocol:
+    Workflow:
       1. Execute BslSerialReceive.
       2. Check flags: BslSerialRxFifoOverflow, BslSerialRxParityError, BslSerialRxStopBitError.
       3. Read BslSerialTransferLength to obtain the length of received data.

@@ -11,6 +11,14 @@ the corresponding EventOverflowFrameId / EventOverflowIsEndOfSequence
 tag so the application knows precisely when a gated multiframe sequence
 has finished.
 
+The Overflow event is used here as a metadata and synchronization mechanism.
+It provides the frame ID and indicates whether a frame marks the end of a
+sequence. This is essential in multiframe acquisitions where one logical
+sequence can span multiple image buffers or frames may be lost due to
+throughput limitations. By evaluating these events, the application can
+reliably associate buffers with their correct sequence and detect sequence
+boundaries even in the presence of dropped frames.
+
 A ConfigurationEventHandler is used to set up camera and frame grabber
 parameters when the camera is opened.
 
@@ -40,6 +48,8 @@ class ImageTag:
 tag_list = []
 tag_list_lock = threading.Lock()
 is_terminated = False
+event_overflow_frame_id = None
+event_overflow_is_end_of_sequence = None
 
 
 def on_overflow_event(node_value):
@@ -54,11 +64,8 @@ def on_overflow_event(node_value):
     print("Event handler active")
 
     tag = ImageTag()
-    try:
-        tag.frame_id = node_value.Node.NodeMap.EventOverflowFrameId.Value
-    except genicam.GenericException as e:
-        print(f"[EventOverflowFrameId Error]: {e}")
-    tag.is_sequence_end = node_value.Node.NodeMap.EventOverflowIsEndOfSequence.Value
+    tag.frame_id = event_overflow_frame_id.Value
+    tag.is_sequence_end = event_overflow_is_end_of_sequence.Value
 
     print(f"FRAME ID (Overflow Event): {tag.frame_id}")
 
@@ -160,7 +167,7 @@ def grab_images(camera):
                 print(
                     "Grab Error:",
                     f"{grab_result.ErrorCode:#x}",
-                    grab_result.ErrorDescription,
+                    grab_result.ErrorDescription
                 )
 
 
@@ -182,7 +189,7 @@ try:
         camera.RegisterConfiguration(
             CameraSetupConfiguration(),
             pylon.RegistrationMode_Append,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
         camera.Attach(cxp_device_info, pylon.Unambiguous)
         camera.Open()
@@ -194,7 +201,9 @@ try:
 
         configure_overflow_event(transport_layer_nodemap)
 
-        event_overflow_node = transport_layer_nodemap.GetNode("EventOverflowData")
+        event_overflow_node = transport_layer_nodemap.EventOverflowData.Node
+        event_overflow_frame_id = transport_layer_nodemap.EventOverflowFrameId
+        event_overflow_is_end_of_sequence = transport_layer_nodemap.EventOverflowIsEndOfSequence
         event_callback_handle = genicam.Register(
             event_overflow_node, on_overflow_event, genicam.cbPostOutsideLock
         )

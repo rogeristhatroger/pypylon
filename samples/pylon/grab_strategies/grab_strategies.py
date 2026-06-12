@@ -53,7 +53,7 @@ try:
         camera.RegisterConfiguration(
             pylon.SoftwareTriggerConfiguration(),
             pylon.RegistrationMode_ReplaceAll,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
         # For demonstration purposes only, registers an event handler configuration to
         # print out information about camera use. The event handler configuration is
@@ -62,12 +62,12 @@ try:
         camera.RegisterConfiguration(
             ConfigurationEventPrinter(),
             pylon.RegistrationMode_Append,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
         camera.RegisterImageEventHandler(
             ImageEventPrinter(),
             pylon.RegistrationMode_Append,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
 
         # Attach the camera device found first.
@@ -103,7 +103,7 @@ try:
         for i in range(3):
             if camera.WaitForFrameTriggerReady(
                 FRAME_TRIGGER_READY_TIMEOUT_MS,
-                pylon.TimeoutHandling_ThrowException,
+                pylon.TimeoutHandling_ThrowException
             ):
                 camera.ExecuteSoftwareTrigger()
 
@@ -147,7 +147,7 @@ try:
         for i in range(3):
             if camera.WaitForFrameTriggerReady(
                 FRAME_TRIGGER_READY_TIMEOUT_MS,
-                pylon.TimeoutHandling_ThrowException,
+                pylon.TimeoutHandling_ThrowException
             ):
                 camera.ExecuteSoftwareTrigger()
 
@@ -193,7 +193,7 @@ try:
         for i in range(3):
             if camera.WaitForFrameTriggerReady(
                 FRAME_TRIGGER_READY_TIMEOUT_MS,
-                pylon.TimeoutHandling_ThrowException,
+                pylon.TimeoutHandling_ThrowException
             ):
                 camera.ExecuteSoftwareTrigger()
 

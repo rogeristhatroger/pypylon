@@ -92,7 +92,7 @@ try:
                 print(
                     "Error:",
                     f"{result.GrabResult.ErrorCode:#x}",
-                    result.GrabResult.ErrorDescription,
+                    result.GrabResult.ErrorDescription
                 )
 
             result.Release()

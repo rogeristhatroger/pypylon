@@ -103,7 +103,7 @@ try:
                 print(
                     "Gain (50%)       :",
                     gain.Value,
-                    f"(Min: {gain.Min}; Max: {gain.Max})",
+                    f"(Min: {gain.Min}; Max: {gain.Max})"
                 )
         else:
             # Access the GainRaw integer type node. This node is available for GigE
@@ -113,7 +113,7 @@ try:
                 print(
                     "Gain (50%)       :",
                     gain_raw.Value,
-                    f"(Min: {gain_raw.Min}; Max: {gain_raw.Max}; Inc: {gain_raw.Inc})",
+                    f"(Min: {gain_raw.Min}; Max: {gain_raw.Max}; Inc: {gain_raw.Inc})"
                 )
 
         # Restore the old pixel format.

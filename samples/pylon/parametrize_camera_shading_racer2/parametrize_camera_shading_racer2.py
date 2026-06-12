@@ -29,10 +29,8 @@ try:
         camera.RegisterConfiguration(
             pylon.AcquireContinuousConfiguration(),
             pylon.RegistrationMode_ReplaceAll,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
-
-        camera.Open()
 
         # Only line scan cameras with BslShadingCorrectionSelector support
         # this workflow.
@@ -47,7 +45,8 @@ try:
             sys.exit(0)
 
         # Disable Reverse X and set ROI to maximum width.
-        camera.Width.SetToMaximum()
+        camera.OffsetX.TrySetToMinimum()
+        camera.Width.TrySetToMaximum()
         camera.ReverseX.Value = False
 
         # Select DSNU shading correction in User mode, set index 1.
@@ -96,7 +95,7 @@ try:
                         print(
                             "Error:",
                             f"{grab_result.ErrorCode:#x}",
-                            grab_result.ErrorDescription,
+                            grab_result.ErrorDescription
                         )
         else:
             print("Shading Correction could not be loaded.")

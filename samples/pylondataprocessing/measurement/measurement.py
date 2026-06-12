@@ -38,7 +38,7 @@ try:
             recipe.TriggerUpdate(
                 {"Image": image_variant},
                 5000,
-                pylon.TimeoutHandling_ThrowException,
+                pylon.TimeoutHandling_ThrowException
             )
 
         # Stop the processing.

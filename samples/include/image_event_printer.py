@@ -24,5 +24,5 @@ class ImageEventPrinter(pylon.ImageEventHandler):
             print(
                 "Error:",
                 f"{grab_result.ErrorCode:#x}",
-                grab_result.ErrorDescription,
+                grab_result.ErrorDescription
             )

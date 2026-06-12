@@ -10,6 +10,14 @@ acquired lines into buffers of a fixed ROI height. When the gate goes
 low, the remaining lines form a shorter final buffer. The Overflow
 event's isEndOfSequence flag indicates the last buffer in each sequence.
 
+The CXP-12 frame grabber fires an Overflow event for each completed
+output buffer. In AsyncGatedTriggerMultiframe mode it is the only way
+to detect the end of a gate sequence: EventOverflowIsEndOfSequence is
+set on the last (potentially shorter) buffer after the gate goes low,
+and EventOverflowFrameId links the event to the corresponding grab
+result. OverflowEventSelect = "All" enables events for all buffer
+states (OK, incomplete, lost).
+
 Because no external trigger hardware is needed here, the gate is
 simulated via the frame grabber's SoftwareTrigger node. For the
 hardware-triggered variant see grab_using_async_gated_trigger_multiframe_hardware.
@@ -65,6 +73,8 @@ class ImageTags:
 
 image_tags = ImageTags()
 is_terminated = False
+event_overflow_frame_id = None
+event_overflow_is_end_of_sequence = None
 
 
 def on_overflow_event(node_value):
@@ -78,11 +88,9 @@ def on_overflow_event(node_value):
         return
 
     print("Event handler active")
-    frame_id = 0
-    is_sequence_end = False
 
-    frame_id = node_value.Node.NodeMap.EventOverflowFrameId.Value
-    is_sequence_end = node_value.Node.NodeMap.EventOverflowIsEndOfSequence.Value
+    frame_id = event_overflow_frame_id.Value
+    is_sequence_end = event_overflow_is_end_of_sequence.Value
 
     print(f"Frame ID: {frame_id}")
     image_tags.insert(frame_id, is_sequence_end)
@@ -122,7 +130,7 @@ def grab_thread(camera):
                 print(
                     "Error:",
                     f"{grab_result.ErrorCode:#x}",
-                    grab_result.ErrorDescription,
+                    grab_result.ErrorDescription
                 )
 
 
@@ -179,6 +187,8 @@ try:
 
         # Register a GenICam callback on the EventOverflowData node.
         event_overflow_node = transport_layer_nodemap.EventOverflowData
+        event_overflow_frame_id = transport_layer_nodemap.EventOverflowFrameId
+        event_overflow_is_end_of_sequence = transport_layer_nodemap.EventOverflowIsEndOfSequence
         event_callback_handle = genicam.Register(
             event_overflow_node, on_overflow_event, genicam.cbPostOutsideLock
         )

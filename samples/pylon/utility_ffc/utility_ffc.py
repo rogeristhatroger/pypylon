@@ -77,7 +77,7 @@ def process_images(camera, width, height):
                 print(
                     "Error:",
                     f"{grab_result.ErrorCode:#x}",
-                    grab_result.ErrorDescription,
+                    grab_result.ErrorDescription
                 )
 
     if succeeded_grabs == 0:
@@ -118,8 +118,10 @@ try:
 
         # FFC works only with Mono8 images.
         camera.PixelFormat.TrySetValue("Mono8")
-        camera.Width.SetToMaximum()
-        camera.Height.SetToMaximum()
+        camera.OffsetX.TrySetToMinimum()
+        camera.Width.TrySetToMaximum()
+        camera.OffsetY.TrySetToMinimum()
+        camera.Height.TrySetToMaximum()
 
         width = camera.Width.Value
         height = camera.Height.Value
