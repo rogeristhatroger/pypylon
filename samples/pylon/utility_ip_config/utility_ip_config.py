@@ -91,14 +91,12 @@ def find_device_by_mac(device_infos, mac_address: str):
 
 
 def main() -> int:
-    tl_factory = pylon.TlFactory.GetInstance()
-    gige_tl = tl_factory.CreateTl(pylon.BaslerGigEDeviceClass)
-    if gige_tl is None:
-        print("GigE transport layer not found. Please make sure the pylon GigE transport layer is installed.")
-        input("Press enter to exit.")
-        return 1
+    with pylon.TlFactory.GetInstance().TransportLayer(pylon.BaslerGigEDeviceClass) as gige_tl:
+        if gige_tl is None:
+            print("GigE transport layer not found. Please make sure the pylon GigE transport layer is installed.")
+            input("Press enter to exit.")
+            return 1
 
-    try:
         device_infos = [info for info in gige_tl.EnumerateAllDevices() if info.DeviceClass == "BaslerGigE"]
 
         print_usage()
@@ -150,8 +148,6 @@ def main() -> int:
             print("This is not an error. The device may not support broadcast IP configuration.")
 
         print()
-    finally:
-        tl_factory.ReleaseTl(gige_tl)
 
     input("Press enter to exit.")
     return 0

@@ -32,9 +32,11 @@ def announce_renounce(gige_transport_layer, address):
 
 exit_code = 0
 try:
-    tl_factory = pylon.TlFactory.GetInstance()
-    gige_transport_layer = tl_factory.CreateTl(pylon.BaslerGigEDeviceClass)
-    try:
+    with pylon.TlFactory.GetInstance().TransportLayer(pylon.BaslerGigEDeviceClass) as gige_transport_layer:
+        if gige_transport_layer is None:
+            print("GigE transport layer not found. Please make sure the pylon GigE transport layer is installed.")
+            sys.exit(1)
+
         # Find the first GigE device.
         camera_info = None
         device_list = gige_transport_layer.EnumerateDevices()
@@ -52,8 +54,6 @@ try:
 
         print(f"\nAnnounce/renounce non-existent device at {NONEXISTENT_ADDRESS}:")
         announce_renounce(gige_transport_layer, NONEXISTENT_ADDRESS)
-    finally:
-        tl_factory.ReleaseTl(gige_transport_layer)
 
 except Exception as e:
     print("An exception occurred:", e)

@@ -30,8 +30,11 @@ try:
 
     # Get the GigE transport layer.
     # We'll need it later to issue the action commands.
-    gige_tl = tl_factory.CreateTl("BaslerGigE")
-    try:
+    with tl_factory.TransportLayer("BaslerGigE") as gige_tl:
+        if gige_tl is None:
+            print("GigE transport layer not found. Please make sure the pylon GigE transport layer is installed.")
+            sys.exit(1)
+
         # Enumerate only GigE cameras.
         all_device_infos = gige_tl.EnumerateDevices()
         if not all_device_infos:
@@ -150,8 +153,6 @@ try:
             # (see grab_using_grab_loop_thread sample for details).
 
             cameras.StopGrabbing()
-    finally:
-        tl_factory.ReleaseTl(gige_tl)
 
 except Exception as e:
     print("An exception occurred:", e)
