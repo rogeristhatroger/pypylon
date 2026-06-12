@@ -6,16 +6,17 @@ InstantCameraArray holds several InstantCamera instances and exposes a single
 RetrieveResult for all of them in one thread. Each grab result carries a camera
 context (index in the array) so you know which device produced the image.
 
-Without hardware, configure Basler Camera Emulation. To use two virtual devices
-with the default MAX_CAMERAS_TO_USE, set environment variable PYLON_CAMEMU to at
-least 2 before starting Python (the transport layer reads it at init):
+Without hardware, configure Basler Camera Emulation. To do this, set the environment
+variable PYLON_CAMEMU to at least 2 before starting Python (the transport layer reads
+it at initialization):
 https://docs.baslerweb.com/camera-emulation
+
 """
 import sys
 from pypylon import pylon
 
 # Number of images to be grabbed.
-COUNT_OF_IMAGES_TO_GRAB = 100
+COUNT_OF_IMAGES_TO_GRAB = 10
 
 # Limits the amount of cameras used for grabbing.
 # It is important to manage the available bandwidth when grabbing with multiple cameras.
@@ -36,15 +37,15 @@ try:
     tl_factory = pylon.TlFactory.GetInstance()
 
     devices = tl_factory.EnumerateDevices()
-    if len(devices) < MAX_CAMERAS_TO_USE:
+    if len(devices) < 2:
         raise pylon.RuntimeException(
-            f"This sample needs at least {MAX_CAMERAS_TO_USE} camera(s); "
+            f"This sample needs at least 2 camera(s); "
             f"enumerated {len(devices)}. Add devices or configure Basler Camera "
             "Emulation (virtual devices) - e.g. set PYLON_CAMEMU before starting Python; see "
             "https://docs.baslerweb.com/camera-emulation"
         )
 
-    with pylon.InstantCameraArray(MAX_CAMERAS_TO_USE) as cameras:
+    with pylon.InstantCameraArray(min(len(devices), MAX_CAMERAS_TO_USE)) as cameras:
         for i, cam in enumerate(cameras):
             cam.Attach(tl_factory.CreateDevice(devices[i]))
             print("Using device:", cam.DeviceInfo.ModelName)

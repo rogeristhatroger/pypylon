@@ -24,11 +24,11 @@ WAIT_TIMEOUT_S = 60
 # Interval in seconds between polling iterations.
 POLL_INTERVAL_S = 0.25
 
-# Heartbeat timeout in milliseconds (short value so GigE removal is detected quickly).
+# Heartbeat timeout in milliseconds (short value, so GigE removal is detected quickly).
 HEARTBEAT_TIMEOUT_MS = 1000
 
 
-# When using device-specific instant camera classes there are specific
+# When using device-specific instant camera classes, there are specific
 # configuration event handler classes available.
 class SampleConfigurationEventHandler(pylon.ConfigurationEventHandler):
     """Configuration event handler that reports camera device removal."""
@@ -56,17 +56,13 @@ try:
         print()
 
         # For demonstration purposes only, register a configuration event
-        # handler that handles device removal.
+        # handler that handles device removal. This is the cleanest way
+        # of detecting a device removal.
         camera.RegisterConfiguration(
             SampleConfigurationEventHandler(),
             pylon.RegistrationMode_Append,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
-
-        # DIVERGENCE: CConfigurationEventPrinter omitted for a self-contained script.
-
-        # Camera device removal is only detected while the camera is open.
-        camera.Open()
 
         # Now, try to detect that the camera has been removed:
 
@@ -84,7 +80,8 @@ try:
         )
 
         try:
-            # The following loop accesses the camera. It could also be a loop
+            # The following loop shows another way of how to detect a device
+            # removal by accessing the camera. It could also be a loop
             # that is grabbing images. The device removal is handled in the
             # exception handler.
             for i in range(total_polls, 0, -1):
@@ -158,7 +155,7 @@ try:
                 print()
 
                 # The camera has been found. Create and attach it to the
-                # Instant Camera object.T
+                # Instant Camera object.
                 camera.Attach(devices[0], pylon.FirstFound)
                 
                 break

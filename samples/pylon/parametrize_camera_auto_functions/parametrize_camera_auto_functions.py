@@ -63,14 +63,13 @@ def configure_auto_function_brightness_roi(camera):
     if camera.AutoFunctionROISelector.IsWritable():
         camera.AutoFunctionROISelector.Value = "ROI1"
         camera.AutoFunctionROIUseBrightness.TrySetValue(True)
-        camera.AutoFunctionROISelector.Value = "ROI2"
-        camera.AutoFunctionROIUseBrightness.TrySetValue(False)
-
-        camera.AutoFunctionROISelector.Value = "ROI1"
         camera.AutoFunctionROIOffsetX.TrySetToMinimum()
         camera.AutoFunctionROIOffsetY.TrySetToMinimum()
         camera.AutoFunctionROIWidth.TrySetToMaximum()
         camera.AutoFunctionROIHeight.TrySetToMaximum()
+
+        camera.AutoFunctionROISelector.Value = "ROI2"
+        camera.AutoFunctionROIUseBrightness.TrySetValue(False)
     elif camera.AutoFunctionAOISelector.IsWritable():
         camera.AutoFunctionAOISelector.Value = "AOI1"
         camera.AutoFunctionAOIOffsetX.TrySetToMinimum()
@@ -86,8 +85,6 @@ def configure_auto_function_white_balance_roi(camera):
         camera.AutoFunctionROIUseWhiteBalance.TrySetValue(False)
         camera.AutoFunctionROISelector.Value = "ROI2"
         camera.AutoFunctionROIUseWhiteBalance.TrySetValue(True)
-
-        camera.AutoFunctionROISelector.Value = "ROI2"
         camera.AutoFunctionROIOffsetX.TrySetToMinimum()
         camera.AutoFunctionROIOffsetY.TrySetToMinimum()
         camera.AutoFunctionROIWidth.TrySetToMaximum()
@@ -108,29 +105,6 @@ def configure_target_brightness(camera):
         camera.AutoTargetValue.TrySetValue(TARGET_BRIGHTNESS_SFNC1)
 
 
-def get_parameter_unit(parameter, default_unit=""):
-    """Return the engineering unit of a GenICam parameter when available."""
-    try:
-        unit = parameter.GetUnit()
-    except:
-        try:
-            unit = parameter.Unit
-        except:
-            unit = ""
-
-    if unit:
-        return unit
-    return default_unit
-
-
-def is_color_camera(camera):
-    """Return True when at least one Bayer pixel format is settable."""
-    for pixel_format in camera.PixelFormat.GetSettableValues():
-        if "Bayer" in pixel_format:
-            return True
-    return False
-
-
 def retrieve_one_result(camera):
     """Retrieve one image to drive the auto-function state machine."""
     with camera.RetrieveResult(
@@ -145,7 +119,7 @@ def retrieve_one_result(camera):
             print(
                 "Grab failed:",
                 f"{grab_result.ErrorCode:#x}",
-                grab_result.ErrorDescription,
+                grab_result.ErrorDescription
             )
 
 
@@ -228,24 +202,25 @@ def auto_exposure_once(camera):
 
     print("Trying 'ExposureAuto = Once'.")
     if camera.GetSfncVersion() >= pylon.Sfnc_2_0_0: # Cameras based on SFNC 2.0 or later, e.g., USB cameras
-        unit = get_parameter_unit(camera.ExposureTime, "us")
-        print("Initial exposure time =", camera.ExposureTime.GetValueOrDefault(0), unit)
+        print(
+            "Initial exposure time =",
+            camera.ExposureTime.GetValueOrDefault(0),
+            camera.ExposureTime.Unit)
         camera.AutoExposureTimeLowerLimit.TrySetToMinimum()
         camera.AutoExposureTimeUpperLimit.SetValue(
             MAX_AUTO_EXPOSURE_TIME_US,
-            pylon.FloatValueCorrection_ClipToRange,
+            pylon.FloatValueCorrection_ClipToRange
         )
     else:
-        unit = get_parameter_unit(camera.ExposureTimeAbs, "us")
         print(
             "Initial exposure time =",
             camera.ExposureTimeAbs.GetValueOrDefault(0),
-            unit,
+            camera.ExposureTimeAbs.Unit
         )
         camera.AutoExposureTimeAbsLowerLimit.TrySetToMinimum()
         camera.AutoExposureTimeAbsUpperLimit.SetValue(
             MAX_AUTO_EXPOSURE_TIME_US,
-            pylon.FloatValueCorrection_ClipToRange,
+            pylon.FloatValueCorrection_ClipToRange
         )
 
     camera.ExposureAuto.Value = "Once"
@@ -260,12 +235,16 @@ def auto_exposure_once(camera):
 
     print("ExposureAuto went back to 'Off' after", frame_count, "frames.")
     if camera.ExposureTime.IsReadable():
-        print("Final exposure time =", camera.ExposureTime.GetValueOrDefault(0), unit)
+        print(
+            "Final exposure time =",
+            camera.ExposureTime.GetValueOrDefault(0),
+            camera.ExposureTime.Unit
+        )
     else:
         print(
             "Final exposure time =",
             camera.ExposureTimeAbs.GetValueOrDefault(0),
-            unit,
+            camera.ExposureTimeAbs.Unit
         )
     print()
 
@@ -282,14 +261,16 @@ def auto_exposure_continuous(camera):
 
     print("Trying 'ExposureAuto = Continuous'.")
     if camera.GetSfncVersion() >= pylon.Sfnc_2_0_0: # Cameras based on SFNC 2.0 or later, e.g., USB cameras
-        unit = get_parameter_unit(camera.ExposureTime, "us")
-        print("Initial exposure time =", camera.ExposureTime.GetValueOrDefault(0), unit)
+        print(
+            "Initial exposure time =",
+            camera.ExposureTime.GetValueOrDefault(0),
+            camera.ExposureTime.Unit
+        )
     else:
-        unit = get_parameter_unit(camera.ExposureTimeAbs, "us")
         print(
             "Initial exposure time =",
             camera.ExposureTimeAbs.GetValueOrDefault(0),
-            unit,
+            camera.ExposureTimeAbs.Unit
         )
 
     camera.ExposureAuto.Value = "Continuous"
@@ -300,12 +281,15 @@ def auto_exposure_continuous(camera):
     camera.ExposureAuto.Value = "Off"
 
     if camera.ExposureTime.IsReadable():
-        print("Final exposure time =", camera.ExposureTime.GetValueOrDefault(0), unit)
+        print(
+            "Final exposure time =",
+            camera.ExposureTime.GetValueOrDefault(0),
+            camera.ExposureTime.Unit)
     else:
         print(
             "Final exposure time =",
             camera.ExposureTimeAbs.GetValueOrDefault(0),
-            unit,
+            camera.ExposureTime.Unit
         )
     print()
 
@@ -329,10 +313,6 @@ def auto_white_balance(camera):
     """Carry out white balance using BalanceWhiteAuto = Once."""
     if not camera.BalanceWhiteAuto.IsWritable():
         print("The camera does not support Balance White Auto.")
-        return
-
-    if not is_color_camera(camera):
-        print("White balance auto is only available for color cameras.")
         return
 
     maximize_image_aoi(camera)
@@ -368,15 +348,12 @@ try:
             print("Only area scan cameras support auto functions.")
         else:
             camera.StartGrabbing(pylon.GrabStrategy_OneByOne)
-            try:
-                auto_gain_once(camera)
-                auto_gain_continuous(camera)
-                auto_exposure_once(camera)
-                auto_exposure_continuous(camera)
-                auto_white_balance(camera)
-                print("Auto functions demonstration complete.")
-            finally:
-                camera.StopGrabbing()
+            auto_gain_once(camera)
+            auto_gain_continuous(camera)
+            auto_exposure_once(camera)
+            auto_exposure_continuous(camera)
+            auto_white_balance(camera)
+            print("Auto functions demonstration complete.")
 
 except Exception as e:
     print("An exception occurred:", e)

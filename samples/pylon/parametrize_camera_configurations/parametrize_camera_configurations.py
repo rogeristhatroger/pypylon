@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """\
-Demonstrate standard and custom configuration event handlers for an InstantCamera.
+Demonstrate standard and custom configuration event handlers for InstantCamera.
 
-The instant camera allows to install event handlers for configuration purposes
+The InstantCamera allows to install event handlers for configuration purposes
 and for handling the grab results. This is very useful for handling standard
 camera setups and image processing tasks.
 
@@ -11,7 +11,7 @@ configurations and registering sample configuration event handlers.
 
 Configuration event handlers are derived from ConfigurationEventHandler.
 If the configuration event handler is registered, its methods are called when the
-state of the instant camera object changes, e.g. when the camera is opened or closed.
+state of the InstantCamera object changes, e.g. when the camera is opened or closed.
 
 The standard configuration event handlers override the OnOpened method. The overridden
 method parametrizes the camera.
@@ -86,149 +86,163 @@ def _grab_one_via_start(camera):
 
 
 try:
-    # Create an instant camera object with the first camera device found.
-    camera = pylon.InstantCamera(pylon.FirstFound)
+    # Create an instant camera object. The device is attached later so that
+    # configuration handlers can be registered before the camera is opened.
+    with pylon.InstantCamera() as camera:
 
-    print("Using device:", camera.DeviceInfo.ModelName)
-    print()
+        # Attach the camera device found first.
+        camera.Attach(pylon.FirstFound)
 
-    # For demonstration purposes only, register an image event handler
-    # printing out information about the grabbed images.
-    camera.RegisterImageEventHandler(
-        SampleImageEventHandler(),
-        pylon.RegistrationMode_Append,
-        pylon.Cleanup_Delete,
-    )
+        print("Using device:", camera.DeviceInfo.ModelName)
+        print()
 
-    print("Grab using continuous acquisition:")
-    print()
-
-    # Register the standard configuration event handler for setting up the camera
-    # for continuous acquisition.
-    # By setting the registration mode to RegistrationMode_ReplaceAll, the new
-    # configuration handler replaces the default configuration handler that has been
-    # automatically registered when creating the instant camera object.
-    camera.RegisterConfiguration(
-        pylon.AcquireContinuousConfiguration(),
-        pylon.RegistrationMode_ReplaceAll,
-        pylon.Cleanup_Delete,
-    )
-
-    # The camera's Open() method calls the configuration handler's OnOpened() method
-    # that applies the required parameter modifications.
-    camera.Open()
-
-    # The registered configuration event handler has done its parametrization now.
-    # Additional parameters could be set here.
-
-    # Grab some images for demonstration.
-    camera.StartGrabbingMax(COUNT_OF_IMAGES_TO_GRAB)
-    while camera.IsGrabbing():
-        _retrieve_one(camera)
-
-    camera.Close()
-
-    print("Grab using software trigger mode:")
-    print()
-
-    # Register the standard configuration event handler for setting up the camera
-    # for software triggering.
-    # The current configuration is replaced by the software trigger configuration
-    # by setting the registration mode to RegistrationMode_ReplaceAll.
-    camera.RegisterConfiguration(
-        pylon.SoftwareTriggerConfiguration(),
-        pylon.RegistrationMode_ReplaceAll,
-        pylon.Cleanup_Delete,
-    )
-
-    # StartGrabbing() calls the camera's Open() automatically if the camera is
-    # not open yet. The Open method calls the configuration handler's OnOpened()
-    # method that sets the required parameters for enabling software triggering.
-    camera.StartGrabbingMax(COUNT_OF_IMAGES_TO_GRAB)
-    while camera.IsGrabbing():
-        # Execute the software trigger. The call waits up to 1000 ms for the
-        # camera to be ready to be triggered.
-        camera.WaitForFrameTriggerReady(
-            TRIGGER_READY_TIMEOUT_MS, pylon.TimeoutHandling_ThrowException
+        # For demonstration purposes only, register an image event handler
+        # printing out information about the grabbed images.
+        camera.RegisterImageEventHandler(
+            SampleImageEventHandler(),
+            pylon.RegistrationMode_Append,
+            pylon.Cleanup_Delete
         )
-        camera.ExecuteSoftwareTrigger()
-        _retrieve_one(camera)
 
-    print("Grab using single frame acquisition:")
-    print()
+        print("Grab using continuous acquisition:")
+        print()
 
-    # Register the standard configuration event handler for configuring single
-    # frame acquisition. The previous configuration is removed by setting the
-    # registration mode to RegistrationMode_ReplaceAll.
-    camera.RegisterConfiguration(
-        pylon.AcquireSingleFrameConfiguration(),
-        pylon.RegistrationMode_ReplaceAll,
-        pylon.Cleanup_Delete,
-    )
+        # Register the standard configuration event handler for setting up the camera
+        # for continuous acquisition.
+        # By setting the registration mode to RegistrationMode_ReplaceAll, the new
+        # configuration handler replaces the default configuration handler that has been
+        # automatically registered when creating the instant camera object.
+        camera.RegisterConfiguration(
+            pylon.AcquireContinuousConfiguration(),
+            pylon.RegistrationMode_ReplaceAll,
+            pylon.Cleanup_Delete
+        )
 
-    # GrabOne calls StartGrabbing and StopGrabbing internally.
-    # As seen above, Open() is called by StartGrabbing and the OnOpened() method
-    # of the AcquireSingleFrameConfiguration handler is called.
-    with camera.GrabOne(TIMEOUT_MS) as grab_result:
-        pass
+        # The camera's Open() method calls the configuration handler's OnOpened() method
+        # that applies the required parameter modifications.
+        camera.Open()
 
-    # To continuously grab single images it is much more efficient to open the
-    # camera before grabbing.
-    # Note: The software trigger mode (see above) should be used for grabbing
-    # single images if you want to maximize frame rate.
-    camera.Open()
+        # The registered configuration event handler has done its parametrization now.
+        # Additional parameters could be set here.
 
-    # Now, the camera parameters are applied in the OnOpened method of the
-    # configuration object. Additional parameters could be set here.
+        # Grab some images for demonstration.
+        camera.StartGrabbingMax(COUNT_OF_IMAGES_TO_GRAB)
+        while camera.IsGrabbing():
+            _retrieve_one(camera)
 
-    # Grab some images for demonstration.
-    for _ in range(COUNT_OF_IMAGES_TO_GRAB):
+        camera.Close()
+
+        print("Grab using software trigger mode:")
+        print()
+
+        # Register the standard configuration event handler for setting up the camera
+        # for software triggering.
+        # The current configuration is replaced by the software trigger configuration
+        # by setting the registration mode to RegistrationMode_ReplaceAll.
+        camera.RegisterConfiguration(
+            pylon.SoftwareTriggerConfiguration(),
+            pylon.RegistrationMode_ReplaceAll,
+            pylon.Cleanup_Delete
+        )
+
+        # StartGrabbing() calls the camera's Open() automatically if the camera is
+        # not open yet. The Open method calls the configuration handler's OnOpened()
+        # method that sets the required parameters for enabling software triggering.
+        camera.StartGrabbingMax(COUNT_OF_IMAGES_TO_GRAB)
+        while camera.IsGrabbing():
+            # Execute the software trigger. The call waits up to 1000 ms for the
+            # camera to be ready to be triggered.
+            camera.WaitForFrameTriggerReady(
+                TRIGGER_READY_TIMEOUT_MS, pylon.TimeoutHandling_ThrowException
+            )
+            camera.ExecuteSoftwareTrigger()
+            _retrieve_one(camera)
+
+        # Grabbing in the camera is now stopped again. The camera was opened
+        # automatically when StartGrabbing() was called. Therefore, it will also be
+        # closed again automatically when grabbing is stopped. The configuration
+        # handler's OnClosed() method is called when the camera is closed.
+
+        print("Grab using single frame acquisition:")
+        print()
+
+        # Register the standard configuration event handler for configuring single
+        # frame acquisition. The previous configuration is removed by setting the
+        # registration mode to RegistrationMode_ReplaceAll.
+        camera.RegisterConfiguration(
+            pylon.AcquireSingleFrameConfiguration(),
+            pylon.RegistrationMode_ReplaceAll,
+            pylon.Cleanup_Delete
+        )
+
+        # GrabOne calls StartGrabbing and StopGrabbing internally.
+        # As seen above, Open() is called by StartGrabbing and the OnOpened() method
+        # of the AcquireSingleFrameConfiguration handler is called.
         with camera.GrabOne(TIMEOUT_MS) as grab_result:
             pass
 
-    camera.Close()
+        # Grabbing in the camera is now stopped again. The camera was opened
+        # automatically when GrabOne() was called. Therefore, it will also be
+        # closed again automatically when grabbing is stopped. The configuration
+        # handler's OnClosed() method is called when the camera is closed.
 
-    print("Grab using multiple configuration objects:")
-    print()
+        # To continuously grab single images it is much more efficient to open the
+        # camera before grabbing.
+        # Note: The software trigger mode (see above) should be used for grabbing
+        # single images if you want to maximize frame rate.
+        camera.Open()
 
-    # Register the standard event handler for configuring single frame acquisition.
-    camera.RegisterConfiguration(
-        pylon.AcquireSingleFrameConfiguration(),
-        pylon.RegistrationMode_ReplaceAll,
-        pylon.Cleanup_Delete,
-    )
+        # Now, the camera parameters are applied in the OnOpened method of the
+        # configuration object. Additional parameters could be set here.
 
-    # Register an additional configuration handler to set the image format and
-    # adjust the AOI. By setting the registration mode to RegistrationMode_Append,
-    # the configuration handler is added instead of replacing the already
-    # registered configuration handler.
-    camera.RegisterConfiguration(
-        PixelFormatAndAoiConfiguration(),
-        pylon.RegistrationMode_Append,
-        pylon.Cleanup_Delete,
-    )
+        # Grab some images for demonstration.
+        for _ in range(COUNT_OF_IMAGES_TO_GRAB):
+            with camera.GrabOne(TIMEOUT_MS) as grab_result:
+                pass
 
-    # Register the handler object and define Cleanup_None so that it is not
-    # deleted by the camera object. It must be ensured that the configuration
-    # handler lives at least until the handler is deregistered.
-    temp_handler = VerboseConfigurationEventHandler()
-    camera.RegisterConfiguration(
-        temp_handler, pylon.RegistrationMode_Append, pylon.Cleanup_None
-    )
+        camera.Close()
 
-    # Grab an image for demonstration. Configuration events are printed.
-    print("Grab, configuration events are printed:")
-    print()
-    _grab_one_via_start(camera)
+        print("Grab using multiple configuration objects:")
+        print()
 
-    # Deregister the event handler.
-    camera.DeregisterConfiguration(temp_handler)
+        # Register the standard event handler for configuring single frame acquisition.
+        camera.RegisterConfiguration(
+            pylon.AcquireSingleFrameConfiguration(),
+            pylon.RegistrationMode_ReplaceAll,
+            pylon.Cleanup_Delete
+        )
 
-    # Grab an image for demonstration. Configuration events are not printed.
-    print()
-    print("Grab, configuration events are not printed:")
-    print()
-    _grab_one_via_start(camera)
+        # Register an additional configuration handler to set the image format and
+        # adjust the AOI. By setting the registration mode to RegistrationMode_Append,
+        # the configuration handler is added instead of replacing the already
+        # registered configuration handler.
+        camera.RegisterConfiguration(
+            PixelFormatAndAoiConfiguration(),
+            pylon.RegistrationMode_Append,
+            pylon.Cleanup_Delete
+        )
+
+        # Register the handler object and define Cleanup_None so that it is not
+        # deleted by the camera object. It must be ensured that the configuration
+        # handler lives at least until the handler is deregistered.
+        temp_handler = VerboseConfigurationEventHandler()
+        camera.RegisterConfiguration(
+            temp_handler, pylon.RegistrationMode_Append, pylon.Cleanup_None
+        )
+
+        # Grab an image for demonstration. Configuration events are printed.
+        print("Grab, configuration events are printed:")
+        print()
+        _grab_one_via_start(camera)
+
+        # Deregister the event handler.
+        camera.DeregisterConfiguration(temp_handler)
+
+        # Grab an image for demonstration. Configuration events are not printed.
+        print()
+        print("Grab, configuration events are not printed:")
+        print()
+        _grab_one_via_start(camera)
 
 except Exception as e:
     print("An exception occurred:", e)

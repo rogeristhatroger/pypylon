@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """\
-Configure the IP settings of a Basler GigE camera.
+Configure the IP settings of a Basler GigE Vision camera.
 
 Usage:
     utility_ip_config.py <MAC> <IP> [MASK] [GATEWAY]
@@ -13,10 +13,11 @@ Usage:
     [MASK] is optional and defaults to 255.255.255.0
     [GATEWAY] is optional and defaults to 0.0.0.0
 
-This sample prints available GigE devices and then optionally applies a new
+This sample prints available GigE Vision devices and then optionally applies a new
 startup IP configuration to the selected device.
 
-
+Note: This sample doesn't support the Basler Stereo Mini cameras because they use
+a different network protocol and IP configuration mechanism.
 """
 
 import ipaddress

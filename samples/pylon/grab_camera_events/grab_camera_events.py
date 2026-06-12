@@ -59,14 +59,14 @@ class SampleCameraEventHandler(pylon.CameraEventHandler):
                     "Exposure End event. FrameID:",
                     camera.EventExposureEndFrameID.Value,
                     "Timestamp:",
-                    camera.EventExposureEndTimestamp.Value,
+                    camera.EventExposureEndTimestamp.Value
                 )
             else:
                 print(
                     "Exposure End event. FrameID:",
                     camera.ExposureEndEventFrameID.Value,
                     "Timestamp:",
-                    camera.ExposureEndEventTimestamp.Value,
+                    camera.ExposureEndEventTimestamp.Value
                 )
         elif user_provided_id == EVENT_OVERRUN_EVENT_ID:
             if camera.EventOverrunEventFrameID.IsReadable():
@@ -74,7 +74,7 @@ class SampleCameraEventHandler(pylon.CameraEventHandler):
                     "Event Overrun event. FrameID:",
                     camera.EventOverrunEventFrameID.Value,
                     "Timestamp:",
-                    camera.EventOverrunEventTimestamp.Value,
+                    camera.EventOverrunEventTimestamp.Value
                 )
             else:
                 print("Event Overrun event received.")
@@ -84,10 +84,7 @@ class GenericNodePrinter(pylon.CameraEventHandler):
     """Print the name of the node for which the camera event callback fired."""
 
     def OnCameraEvent(self, camera, user_provided_id, parameter):
-        try:
-            print("Camera event callback for node:", parameter.GetInfoOrDefault(pylon.ParameterInfo_Name, "<unknown>"))
-        except Exception:
-            print("Camera event callback fired.")
+        print("Camera event callback for node:", parameter.GetInfoOrDefault(pylon.ParameterInfo_Name, "<unknown>"))
 
 
 class SampleImageEventHandler(pylon.ImageEventHandler):
@@ -114,13 +111,13 @@ try:
         camera.RegisterConfiguration(
             pylon.SoftwareTriggerConfiguration(),
             pylon.RegistrationMode_ReplaceAll,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
 
         camera.RegisterImageEventHandler(
             SampleImageEventHandler(),
             pylon.RegistrationMode_Append,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
 
         # Camera event processing must be activated first, the default is off.
@@ -152,7 +149,7 @@ try:
                 "EventExposureEndData",
                 EXPOSURE_END_EVENT_ID,
                 pylon.RegistrationMode_ReplaceAll,
-                pylon.Cleanup_None,
+                pylon.Cleanup_None
             )
             # The handler is registered for both the EventExposureEndFrameID and the
             # EventExposureEndTimestamp node. These nodes represent the data carried
@@ -164,14 +161,14 @@ try:
                 "EventExposureEndFrameID",
                 EXPOSURE_END_EVENT_ID,
                 pylon.RegistrationMode_Append,
-                pylon.Cleanup_None,
+                pylon.Cleanup_None
             )
             camera.RegisterCameraEventHandler(
                 handler2,
                 "EventExposureEndTimestamp",
                 EXPOSURE_END_EVENT_ID,
                 pylon.RegistrationMode_Append,
-                pylon.Cleanup_None,
+                pylon.Cleanup_None
             )
         else:
             camera.RegisterCameraEventHandler(
@@ -179,7 +176,7 @@ try:
                 "ExposureEndEventData",
                 EXPOSURE_END_EVENT_ID,
                 pylon.RegistrationMode_ReplaceAll,
-                pylon.Cleanup_None,
+                pylon.Cleanup_None
             )
 
             # Register the same handler for a second event. The user-provided ID
@@ -189,7 +186,7 @@ try:
                 "EventOverrunEventData",
                 EVENT_OVERRUN_EVENT_ID,
                 pylon.RegistrationMode_Append,
-                pylon.Cleanup_None,
+                pylon.Cleanup_None
             )
 
             camera.RegisterCameraEventHandler(
@@ -197,14 +194,14 @@ try:
                 "ExposureEndEventFrameID",
                 EXPOSURE_END_EVENT_ID,
                 pylon.RegistrationMode_Append,
-                pylon.Cleanup_None,
+                pylon.Cleanup_None
             )
             camera.RegisterCameraEventHandler(
                 handler2,
                 "ExposureEndEventTimestamp",
                 EXPOSURE_END_EVENT_ID,
                 pylon.RegistrationMode_Append,
-                pylon.Cleanup_None,
+                pylon.Cleanup_None
             )
 
         # Enable sending of Exposure End events.

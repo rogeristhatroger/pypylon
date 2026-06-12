@@ -37,6 +37,10 @@ try:
         recipe.Load(recipe_file)
 
         # Add event output pins for end of exposure events.
+        # The syntax for an event configuration entry is as follows:
+        # <MyPinName>.Type=<MyPinType>.EventName=<CameraEvent>.ValueName=<CameraEventValue>
+        # More detailed information about the event configuration can be found here:
+        # https://docs.baslerweb.com/camera-vtool#accessing-camera-events
         event_configurations = [
             "EoxTimestamp.Type=Integer.EventName=ExposureEnd.ValueName=EventExposureEndTimestamp",
             "FrameID.Type=Integer.EventName=ExposureEnd.ValueName=EventExposureEndFrameID",
@@ -52,6 +56,10 @@ try:
             print(f"Configured event output '{config}'")
 
         # Enable output of Timestamp, Exposure Time, and Line Status All chunks.
+        # The syntax for a chunk configuration entry is as follows:
+        # <MyPinName>.Type=<MyPinType>.ValueName=<ChunkName>
+        # More detailed information about the chunk configuration can be found here:
+        # https://docs.baslerweb.com/camera-vtool#accessing-chunk-data
         chunk_configurations = [
             "ExposureTime.Type=Float.ValueName=ChunkExposureTime",
             "Timestamp.Type=Integer.ValueName=ChunkTimestamp",
@@ -114,7 +122,6 @@ try:
 
 
         # Add outputs and connections for chunk and event data.
-        # These may fail if the camera doesn't expose the corresponding pins.
         output_connections = [
             ("EoxTimestamp", pylondataprocessing.VariantDataType_Int64,
              "camera_to_eoxtimestamp", "MyCamera.EoxTimestamp"),

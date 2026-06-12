@@ -42,7 +42,7 @@ try:
         # Compute region size.
         data_size = pylondataprocessing.ComputeRegionSize(
             pylondataprocessing.RegionType_RLE32,
-            COUNT_OF_INPUT_REGION_ENTRIES,
+            COUNT_OF_INPUT_REGION_ENTRIES
         )
 
         # Create region.
@@ -52,7 +52,7 @@ try:
             640, 480,
             REGION_ENTRY_START_X, REGION_ENTRY_START_Y,
             REGION_ENTRY_END_X - REGION_ENTRY_START_X + 1,
-            COUNT_OF_INPUT_REGION_ENTRIES,
+            COUNT_OF_INPUT_REGION_ENTRIES
         )
 
         # Create region data representing a 10x10 matrix.
@@ -63,7 +63,7 @@ try:
                 "iii", mem, i * RLE32_ENTRY_SIZE,
                 REGION_ENTRY_START_X,
                 REGION_ENTRY_END_X,
-                i + REGION_ENTRY_START_Y,
+                i + REGION_ENTRY_START_Y
             )
 
         print("Input Region:\n")

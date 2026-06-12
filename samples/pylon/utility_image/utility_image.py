@@ -37,7 +37,7 @@ def print_image_info(label, image):
     """Print a summary of PylonImage properties."""
     pixel_type = image.GetPixelType()
     try:
-        # Use GetMemoryView() to obtain the real internal C++ buffer pointer.
+        # Use GetMemoryView() to obtain the real internal buffer data.
         mv = image.GetMemoryView()
         buf_ptr = hex(ctypes.addressof(ctypes.c_char.from_buffer(mv)))
     except Exception:
@@ -107,7 +107,7 @@ try:
     reused_image.Reset(pylon.PixelType_Mono8, WIDTH, HEIGHT)
     print_image_info(
         "After resetting the image properties. A new buffer is allocated.",
-        reused_image,
+        reused_image
     )
 
     # Reset() never decreases the allocated buffer size if the
@@ -115,7 +115,7 @@ try:
     reused_image.Reset(pylon.PixelType_Mono8, WIDTH // 2, HEIGHT)
     print_image_info(
         "After resetting to a smaller image. The buffer is reused.",
-        reused_image,
+        reused_image
     )
 
     # A new buffer is allocated because the old buffer is
@@ -123,7 +123,7 @@ try:
     reused_image.Reset(pylon.PixelType_Mono8, WIDTH * 2, HEIGHT)
     print_image_info(
         "After resetting to a larger image. A new buffer is allocated.",
-        reused_image,
+        reused_image
     )
 
     # ----------------------------------------------------------------
@@ -147,7 +147,7 @@ try:
                 print()
                 print_image_info(
                     "The properties of an image with an attached grab result.",
-                    image,
+                    image
                 )
 
                 # Some camera models use a GenICam Generic Data Container (GenDC) format.
@@ -162,8 +162,8 @@ try:
         # buffer is now only held by the pylon image.
         print_image_info("After the grab result has been released.", image)
 
-        image.Save(pylon.ImageFileFormat_Png, "_grab_result_image.png")
-        print("Saved grab result image to _grab_result_image.png")
+        image.Save(pylon.ImageFileFormat_Png, "grab_result_image.png")
+        print("Saved grab result image to grab_result_image.png")
 
         # If a grab result is referenced then always a new buffer is allocated
         # on reset.
@@ -197,11 +197,11 @@ try:
 
     # Save the image. The image is automatically converted to a format that
     # can be saved if needed.
-    image_saved.Save(pylon.ImageFileFormat_Tiff, "_utility_image_saved.tiff")
-    print("Saved synthetic image to _utility_image_saved.tiff")
+    image_saved.Save(pylon.ImageFileFormat_Tiff, "utility_image_saved.tiff")
+    print("Saved synthetic image to utility_image_saved.tiff")
 
     image_loaded = pylon.PylonImage()
-    image_loaded.Load("_utility_image_saved.tiff")
+    image_loaded.Load("utility_image_saved.tiff")
     print_image_info("The properties of the loaded image.", image_loaded)
 
     # ----------------------------------------------------------------
@@ -272,8 +272,8 @@ try:
 
     # Save the image. The image is automatically converted to a format that
     # can be saved if needed.
-    image_rgb8_planar.Save(pylon.ImageFileFormat_Png, "_planar_image.png")
-    print("Saved synthetic image to _planar_image.png")
+    image_rgb8_planar.Save(pylon.ImageFileFormat_Png, "planar_image.png")
+    print("Saved synthetic image to planar_image.png")
 
     # Create images to access the planes of the planar image.
     # No image data is copied. The same image buffer is referenced.
@@ -296,8 +296,8 @@ try:
     del plane_arr
     mv.release()
 
-    image_rgb8_planar.Save(pylon.ImageFileFormat_Png, "_planar_image_2.png")
-    print("Saved synthetic image to _planar_image_2.png")
+    image_rgb8_planar.Save(pylon.ImageFileFormat_Png, "planar_image_2.png")
+    print("Saved synthetic image to planar_image_2.png")
 
 except Exception as e:
     print("An exception occurred:", e)

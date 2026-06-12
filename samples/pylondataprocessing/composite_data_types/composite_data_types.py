@@ -4,11 +4,13 @@ Demonstrate handling composite data types with the pylon data processing API
 (no license required).
 
 The recipe was created with the pylon Viewer Workbench, where it can also
-be inspected and modified. It configures a Camera vTool and a shape-detection
-vTool. The camera emulator provides images of shapes from disk. For each
-image, the recipe outputs detected bounding boxes as RectangleF composite
-data. The sample prints the center, width, height, and rotation of each
-detected box.
+be inspected and modified. It configures a pipeline of four vTools: a Camera
+vTool, an AbsoluteThresholding vTool, a RegionMorphology vTool, and a
+RegionFeatureExtraction vTool. The camera emulator loads images of shapes
+from disk. The recipe outputs the loaded images, detected center points as
+PointF composite data, and bounding boxes as RectangleF composite data. The
+sample displays the image and prints the center, width, height, and rotation
+of each detected bounding box.
 """
 import os
 import sys

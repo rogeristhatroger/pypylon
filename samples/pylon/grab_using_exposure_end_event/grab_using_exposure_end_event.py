@@ -82,7 +82,7 @@ class SharedEventState:
                 "Warning: expected exposure-end frame",
                 self.next_expected_exposure,
                 "but got",
-                frame_number,
+                frame_number
             )
         self.next_expected_exposure = self._increment(frame_number)
 
@@ -100,7 +100,7 @@ class SharedEventState:
                 "Warning: expected image frame",
                 self.next_expected_image,
                 "but got",
-                frame_number,
+                frame_number
             )
         self.next_expected_image = self._increment(frame_number)
 
@@ -185,7 +185,7 @@ try:
         camera.RegisterImageEventHandler(
             SampleImageEventHandler(state),
             pylon.RegistrationMode_Append,
-            pylon.Cleanup_Delete,
+            pylon.Cleanup_Delete
         )
 
         # Open the camera to configure parameters.
@@ -202,7 +202,7 @@ try:
                 "ExposureEndEventData",
                 EXPOSURE_END_EVENT_ID,
                 pylon.RegistrationMode_ReplaceAll,
-                pylon.Cleanup_Delete,
+                pylon.Cleanup_Delete
             )
         else:
             camera.RegisterCameraEventHandler(
@@ -210,7 +210,7 @@ try:
                 "EventExposureEndData",
                 EXPOSURE_END_EVENT_ID,
                 pylon.RegistrationMode_ReplaceAll,
-                pylon.Cleanup_Delete,
+                pylon.Cleanup_Delete
             )
 
         # Enable the sending of Exposure End events.

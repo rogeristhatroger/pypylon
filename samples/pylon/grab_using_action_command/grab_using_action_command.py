@@ -48,7 +48,7 @@ try:
             else:
                 print(
                     "Camera will not be used because it is in a different subnet:",
-                    info.SubnetAddress,
+                    info.SubnetAddress
                 )
 
         # Generate a random device key and a fixed group key.
@@ -67,7 +67,7 @@ try:
                         device_key, group_key, pylon.AllGroupMask
                     ),
                     pylon.RegistrationMode_Append,
-                    pylon.Cleanup_Delete,
+                    pylon.Cleanup_Delete
                 )
 
                 cam.SetCameraContext(i)
@@ -140,7 +140,7 @@ try:
                         print(
                             "Error:",
                             f"{grab_result.ErrorCode:#x}",
-                            grab_result.ErrorDescription,
+                            grab_result.ErrorDescription
                         )
 
             # In case you want to trigger again you should wait for the camera
