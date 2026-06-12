@@ -13,7 +13,7 @@ C++ includes: ParameterNames.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::ArrayParameterName::ArrayParameterName "
-Pylon::DataProcessing::ArrayParameterName::ArrayParameterName";
+";
 
 // File: struct_pylon_1_1_data_processing_1_1_boolean_parameter_name.xml
 
@@ -27,7 +27,7 @@ C++ includes: ParameterNames.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::BooleanParameterName::BooleanParameterName "
-Pylon::DataProcessing::BooleanParameterName::BooleanParameterName";
+";
 
 // File: class_pylon_1_1_data_processing_1_1_c_builders_recipe.xml
 
@@ -40,21 +40,21 @@ C++ includes: BuildersRecipe.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::CBuildersRecipe "
-Pylon::DataProcessing::CBuildersRecipe::CBuildersRecipe
+
 Creates a `CBuildersRecipe` object.  
 
 \\error Doesn't throw C++ exceptions.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::~CBuildersRecipe "
-Pylon::DataProcessing::CBuildersRecipe::~CBuildersRecipe
+
 Destroys a `CBuildersRecipe` object.  
 
 \\error Doesn't throw C++ exceptions.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::GetAvailableVToolTypeIDs "
-Pylon::DataProcessing::CBuildersRecipe::GetAvailableVToolTypeIDs
+
 Retrieves a list of type IDs of all available vTool types and returns the number
 of available types.  
 
@@ -83,7 +83,7 @@ The number of available type IDs.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::GetVToolDisplayNameForTypeID "
-Pylon::DataProcessing::CBuildersRecipe::GetVToolDisplayNameForTypeID
+
 Retrieves the display name of the vTool type identified by the given type ID.  
 
 Parameters
@@ -108,7 +108,7 @@ The display name of the vTool type identified by `vToolTypeID`.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::AddVTool "
-Pylon::DataProcessing::CBuildersRecipe::AddVTool
+
 Creates a vTool of a specific type and adds it to the recipe with the given
 identifier.  
 
@@ -144,7 +144,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::AddVTool "
-Pylon::DataProcessing::CBuildersRecipe::AddVTool
+
 Creates a vTool of a specific type and adds it to the recipe with an
 automatically generated identifier.  
 
@@ -178,7 +178,7 @@ Returns the identifier of the newly created vTool instance.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::GetVToolIdentifiers "
-Pylon::DataProcessing::CBuildersRecipe::GetVToolIdentifiers
+
 Retrieves a list of the identifiers of all vTools that exist in the recipe and
 returns the total number of vTools.  
 
@@ -207,7 +207,7 @@ The number of vTools contained in the recipe.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::GetVToolTypeID "
-Pylon::DataProcessing::CBuildersRecipe::GetVToolTypeID
+
 Returns the type ID of the vTool instance with the given identifier.  
 
 Parameters
@@ -229,7 +229,7 @@ The type ID of the vTool instance with the identifier `identifier`.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::HasVTool "
-Pylon::DataProcessing::CBuildersRecipe::HasVTool
+
 Checks whether the recipe contains a vTool with a specific identifier.  
 
 Parameters
@@ -252,7 +252,7 @@ otherwise false.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::RenameVTool "
-Pylon::DataProcessing::CBuildersRecipe::RenameVTool
+
 Assigns a new identifier to an existing vTool instance.  
 
 Parameters
@@ -282,7 +282,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::RemoveVTool "
-Pylon::DataProcessing::CBuildersRecipe::RemoveVTool
+
 Removes an existing vTool instance. Any connections attached to any of the
 vTool's pins will be removed as well.  
 
@@ -310,7 +310,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::AddInput "
-Pylon::DataProcessing::CBuildersRecipe::AddInput
+
 Adds an input of a specific type to the recipe with a given identifier.  
 
 Parameters
@@ -347,7 +347,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::AddInput "
-Pylon::DataProcessing::CBuildersRecipe::AddInput
+
 Adds an input of a specific type to the recipe with an automatically generated
 identifier.  
 
@@ -383,7 +383,7 @@ Returns the automatically generated identifier of the newly created input.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::RenameInput "
-Pylon::DataProcessing::CBuildersRecipe::RenameInput
+
 Assigns a new identifier to an existing input.  
 
 Parameters
@@ -415,7 +415,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::GetInputNames "
-Pylon::DataProcessing::CBuildersRecipe::GetInputNames
+
 Retrieves a list of the identifiers of all inputs that exist in the recipe and
 returns the total number of inputs.  
 
@@ -439,7 +439,7 @@ The number of inputs that the recipe currently has.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::RemoveInput "
-Pylon::DataProcessing::CBuildersRecipe::RemoveInput
+
 Removes an input from the recipe. If any connections are attached to this input,
 they will be removed as well.  
 
@@ -466,7 +466,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::AddOutput "
-Pylon::DataProcessing::CBuildersRecipe::AddOutput
+
 Adds an output of a specific type to the recipe with a given identifier.  
 
 Parameters
@@ -504,7 +504,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::AddOutput "
-Pylon::DataProcessing::CBuildersRecipe::AddOutput
+
 Adds an output of a specific type to the recipe with an automatically generated
 identifier.  
 
@@ -539,7 +539,7 @@ Returns the automatically generated identifier of the newly created output.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::RenameOutput "
-Pylon::DataProcessing::CBuildersRecipe::RenameOutput
+
 Assigns a new identifier to an existing output.  
 
 Parameters
@@ -571,7 +571,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::RemoveOutput "
-Pylon::DataProcessing::CBuildersRecipe::RemoveOutput
+
 Removes an output from the recipe. If a connection is attached to this output,
 it will be removed as well.  
 
@@ -599,7 +599,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::AddConnection "
-Pylon::DataProcessing::CBuildersRecipe::AddConnection
+
 Creates a connection between vTool pins and/or recipe inputs or outputs with a
 given identifier.  
 
@@ -653,7 +653,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::AddConnection "
-Pylon::DataProcessing::CBuildersRecipe::AddConnection
+
 Creates a connection between vTool pins and/or recipe inputs or outputs with an
 automatically generated identifier.  
 
@@ -706,7 +706,7 @@ Returns the identifier of the newly created connection.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::GetConnectionMaxQueueSize "
-Pylon::DataProcessing::CBuildersRecipe::GetConnectionMaxQueueSize
+
 Gets the current maximum queue size for a connection identified by its
 identifier.  
 
@@ -730,7 +730,7 @@ The maximum queue size of the connection with the identifier `identifier`.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::GetConnectionSource "
-Pylon::DataProcessing::CBuildersRecipe::GetConnectionSource
+
 Gets the full name of a connection's source.  
 
 Parameters
@@ -753,7 +753,7 @@ The full name of the connection's source.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::GetConnectionDestination "
-Pylon::DataProcessing::CBuildersRecipe::GetConnectionDestination
+
 Gets the full name of a connection's destination.  
 
 Parameters
@@ -776,7 +776,7 @@ The full name of the connection's destination.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::GetConnectionQueueMode "
-Pylon::DataProcessing::CBuildersRecipe::GetConnectionQueueMode
+
 Gets the current queue mode for a connection identified by its identifier.  
 
 Parameters
@@ -799,7 +799,7 @@ The queue mode of the connection with the identifier `identifier`.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::HasConnection "
-Pylon::DataProcessing::CBuildersRecipe::HasConnection
+
 Checks whether the recipe contains a connection with a specific identifier.  
 
 Parameters
@@ -822,7 +822,7 @@ Returns true if the recipe contains a connection with the identifier
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::GetConnectionIdentifiers "
-Pylon::DataProcessing::CBuildersRecipe::GetConnectionIdentifiers
+
 Retrieves a list of the identifiers of all connections that exist in the recipe
 and returns the total number of connections.  
 
@@ -851,7 +851,7 @@ The number of connections contained in the recipe.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::RenameConnection "
-Pylon::DataProcessing::CBuildersRecipe::RenameConnection
+
 Assigns a new identifier to an existing connection.  
 
 Parameters
@@ -882,7 +882,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::SetConnectionSettings "
-Pylon::DataProcessing::CBuildersRecipe::SetConnectionSettings
+
 Modifies the settings of an existing connection.  
 
 Parameters
@@ -913,7 +913,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::SetConnectionQueueMode "
-Pylon::DataProcessing::CBuildersRecipe::SetConnectionQueueMode
+
 Modifies the queue mode of an existing connection.  
 
 Parameters
@@ -939,7 +939,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::SetConnectionMaxQueueSize "
-Pylon::DataProcessing::CBuildersRecipe::SetConnectionMaxQueueSize
+
 Modifies the maximum queue size of an existing connection.  
 
 Parameters
@@ -967,7 +967,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::RemoveConnection "
-Pylon::DataProcessing::CBuildersRecipe::RemoveConnection
+
 Removes an existing connection.  
 
 Parameters
@@ -992,7 +992,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::Save "
-Pylon::DataProcessing::CBuildersRecipe::Save
+
 Writes the recipe to a recipe file.  
 
 Parameters
@@ -1019,7 +1019,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::SaveAs "
-Pylon::DataProcessing::CBuildersRecipe::SaveAs
+
 Writes the recipe to a recipe file in a format specified by you.  
 
 Parameters
@@ -1049,7 +1049,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CBuildersRecipe::ResetToEmpty "
-Pylon::DataProcessing::CBuildersRecipe::ResetToEmpty
+
 Resets the recipe by removing all vTools, inputs, outputs, connections, and
 observers. Stop() is called implicitly with an infinite timeout if the recipe
 has been started.  
@@ -1080,7 +1080,7 @@ C++ includes: CallableEventObserver.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CCallableEventObserver::CCallableEventObserver "
-Pylon::DataProcessing::CCallableEventObserver::CCallableEventObserver
+
 Constructs an event observer with a given callable.  
 
 The callable must be invocable with the following signature: void (CRecipe&
@@ -1104,10 +1104,10 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CCallableEventObserver::~CCallableEventObserver "
-Pylon::DataProcessing::CCallableEventObserver::~CCallableEventObserver";
+";
 
 %feature("docstring") Pylon::DataProcessing::CCallableEventObserver::OnEventSignaled "
-Pylon::DataProcessing::CCallableEventObserver::OnEventSignaled
+
 This method is called when the graph of the `CRecipe` detects an event, e.g., an
 error change of a vtool.  
 
@@ -1124,7 +1124,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CCallableEventObserver::OnDeregistered "
-Pylon::DataProcessing::CCallableEventObserver::OnDeregistered
+
 This method is called when the event observer is deregistered from the recipe.
 It can be used to delete the event observer by overloading the method. The
 default implementation of this method does nothing.  
@@ -1152,7 +1152,7 @@ C++ includes: CallableOutputObserver.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CCallableOutputObserver::CCallableOutputObserver "
-Pylon::DataProcessing::CCallableOutputObserver::CCallableOutputObserver
+
 Constructs an output observer with a given callable.  
 
 The callable must be invocable with the following signature: void (CRecipe&
@@ -1176,10 +1176,10 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CCallableOutputObserver::~CCallableOutputObserver "
-Pylon::DataProcessing::CCallableOutputObserver::~CCallableOutputObserver";
+";
 
 %feature("docstring") Pylon::DataProcessing::CCallableOutputObserver::OutputDataPush "
-Pylon::DataProcessing::CCallableOutputObserver::OutputDataPush
+
 This method is called when an output of the `CRecipe` pushes data out.  
 
 Parameters
@@ -1198,7 +1198,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CCallableOutputObserver::OnDeregistered "
-Pylon::DataProcessing::CCallableOutputObserver::OnDeregistered
+
 This method is called when the output observer is deregistered from the recipe.
 It can be used to delete the output observer by overloading the method. The
 default implementation of this method does nothing.  
@@ -1226,7 +1226,7 @@ C++ includes: CallableUpdateObserver.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CCallableUpdateObserver::CCallableUpdateObserver "
-Pylon::DataProcessing::CCallableUpdateObserver::CCallableUpdateObserver
+
 Constructs an update observer with a given callable.  
 
 The callable must be invocable with the following signature: void (CRecipe&
@@ -1250,10 +1250,10 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CCallableUpdateObserver::~CCallableUpdateObserver "
-Pylon::DataProcessing::CCallableUpdateObserver::~CCallableUpdateObserver";
+";
 
 %feature("docstring") Pylon::DataProcessing::CCallableUpdateObserver::UpdateDone "
-Pylon::DataProcessing::CCallableUpdateObserver::UpdateDone
+
 This method is called when an update of a `Pylon::DataProcessing::CRecipe` has
 been processed completely.  
 
@@ -1296,14 +1296,14 @@ C++ includes: GenericOutputObserver.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CGenericOutputObserver::CGenericOutputObserver "
-Pylon::DataProcessing::CGenericOutputObserver::CGenericOutputObserver
+
 Creates a `CGenericOutputObserver` object.  
 
 \\error Doesn't throw C++ exceptions.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::CGenericOutputObserver::~CGenericOutputObserver "
-Pylon::DataProcessing::CGenericOutputObserver::~CGenericOutputObserver
+
 Destroys a `CGenericOutputObserver` object and resets the wait object provided
 by GetWaitObject().  
 
@@ -1311,7 +1311,7 @@ by GetWaitObject().
 ";
 
 %feature("docstring") Pylon::DataProcessing::CGenericOutputObserver::GetWaitObject "
-Pylon::DataProcessing::CGenericOutputObserver::GetWaitObject
+
 Returns a WaitObject that is in Signaled state if the queue is not empty and in
 Reset state if it is empty.  
 
@@ -1325,7 +1325,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CGenericOutputObserver::RetrieveResult "
-Pylon::DataProcessing::CGenericOutputObserver::RetrieveResult
+
 Retrieves the oldest CVariantContainer from the recipe output in the queue. The
 SGenericOutputObserverResult containing the CVariantContainer will be removed
 from the queue.  
@@ -1341,7 +1341,7 @@ queue is empty.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CGenericOutputObserver::RetrieveFullResult "
-Pylon::DataProcessing::CGenericOutputObserver::RetrieveFullResult
+
 Retrieves the oldest SGenericOutputObserverResult from the recipe output in the
 queue. The SGenericOutputObserverResult will be removed from the queue.  
 
@@ -1357,7 +1357,7 @@ if the queue is empty.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CGenericOutputObserver::GetNumResults "
-Pylon::DataProcessing::CGenericOutputObserver::GetNumResults
+
 Gets the number of SGenericOutputObserverResults in the queue.  
 
 Returns
@@ -1370,12 +1370,128 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CGenericOutputObserver::Clear "
-Pylon::DataProcessing::CGenericOutputObserver::Clear
+
 Removes all CVariantContainers from the queue.  
 
 \\error Doesn't throw C++ exceptions.  
 
 \\threading This method is thread safe.  
+";
+
+// File: class_pylon_1_1_data_processing_1_1_c_image_parameter.xml
+
+
+%feature("docstring") Pylon::DataProcessing::CImageParameter "
+
+Provides convenient access to vTool parameters of type image.  
+
+note: Don't create instances of this class directly. Use
+    IParameterCollection::Get() instead.  \\threading This class isn't thread-
+    safe.  
+
+C++ includes: ImageParameter.h
+";
+
+%feature("docstring") Pylon::DataProcessing::CImageParameter::CImageParameter "
+
+Default constructor. Creates an empty `CImageParameter` object. \\error Doesn't
+throw C++ exceptions.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CImageParameter::CImageParameter "
+
+Constructs a `CImageParameter` object and attaches it to a node retrieved from
+the provided node map.  
+
+Parameters
+----------
+* `pNodeMap` :  
+    Pointer to the node map that is the source of the parameter.  
+* `pImageName` :  
+    The name of the parameter to attach.  
+
+post:  
+
+    *   If `pNodeMap` or `pImageName` is NULL, the parameter will be empty (see
+        `IsValid()`).  
+    *   If the node can't be used to access an image, the parameter will be
+        empty (see `IsValid()`).  
+    *   If the node can be used to access an image, it is attached and the
+        parameter object can be used to access the node's functionality.  
+    *   The parameter object must not be used to access the node's functionality
+        if the provided node map has been destroyed. In this case, call
+        Release() or attach a new node.  
+
+    \\error The call to GenApi::INodeMap::GetNode can throw C++ exceptions.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CImageParameter::CImageParameter "
+
+Constructs a `CImageParameter` object and attaches it to a node, typically
+retrieved from a node map by calling GetNode().  
+
+Parameters
+----------
+* `pNode` :  
+    Pointer to the node to attach.  
+
+post:  
+
+    *   If the passed node can't be used to access an image, the parameter will
+        be empty (see `IsValid()`).  
+    *   If the passed node can be used to access an image, it is attached and
+        the parameter object can be used to access the node's functionality.  
+    *   The parameter object must not be used to access the node's functionality
+        if the source of the attached `pNode` has been destroyed. In this case,
+        call Release() or attach a new node.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CImageParameter::CImageParameter "
+
+Copy constructor.  
+
+Parameters
+----------
+* `rhs` :  
+    The object to copy. \\error Doesn't throw C++ exceptions.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CImageParameter::~CImageParameter "
+
+Destructor. Destroys the CImageParameter object.  
+
+note: Doesn't access the attached node. \\error Doesn't throw C++ exceptions.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CImageParameter::IsValid "
+
+Checks whether the object can be used to access an image parameter.  
+
+Returns
+-------
+Returns true if the object can be used to access an image parameter, false
+otherwise. \\error Doesn't throw C++ exceptions.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CImageParameter::SetValue "
+
+Sets the value of the image parameter.  
+
+Parameters
+----------
+* `value` :  
+    The image value to set. \\error Throws a C++ exception if the value couldn't
+    be set.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CImageParameter::GetValue "
+
+Gets the value of the image parameter.  
+
+Returns
+-------
+The image value read. \\error Throws a C++ exception if the value couldn't be
+read.  
 ";
 
 // File: struct_pylon_1_1_data_processing_1_1_command_parameter_name.xml
@@ -1390,7 +1506,7 @@ C++ includes: ParameterNames.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CommandParameterName::CommandParameterName "
-Pylon::DataProcessing::CommandParameterName::CommandParameterName";
+";
 
 // File: class_pylon_1_1_data_processing_1_1_c_smart_instant_camera_t_1_1_c_output_observer.xml
 
@@ -1406,14 +1522,14 @@ C++ includes: Recipe.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::CRecipe "
-Pylon::DataProcessing::CRecipe::CRecipe
+
 Creates a `CRecipe` object with no recipe loaded.  
 
 \\error Doesn't throw C++ exceptions.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::~CRecipe "
-Pylon::DataProcessing::CRecipe::~CRecipe
+
 Destroys a `CRecipe` object.  
 
 Calls `Unload()` for cleaning up if any recipe is currently loaded.  
@@ -1422,7 +1538,7 @@ Calls `Unload()` for cleaning up if any recipe is currently loaded.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::Load "
-Pylon::DataProcessing::CRecipe::Load
+
 Loads a recipe from disk and creates the objects of the design described by the
 recipe. Relative paths, i.e., relative to the directory the recipe file is
 located in, are used for loading external recipe components, e.g., images.  
@@ -1450,7 +1566,7 @@ if an error occurred.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::LoadFromBinary "
-Pylon::DataProcessing::CRecipe::LoadFromBinary
+
 Loads a recipe from binary buffer and creates the objects of the design
 described by the recipe. Relative paths, i.e., relative to the current
 directory, are used for loading external recipe components, e.g., images.  
@@ -1480,7 +1596,7 @@ if an error occurred.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::LoadFromBinary "
-Pylon::DataProcessing::CRecipe::LoadFromBinary
+
 Loads a recipe from binary buffer and creates the objects of the design
 described by the recipe.  
 
@@ -1512,7 +1628,7 @@ if an error occurred.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::IsLoaded "
-Pylon::DataProcessing::CRecipe::IsLoaded
+
 Checks whether a recipe is loaded.  
 
 Returns
@@ -1525,7 +1641,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::PreAllocateResources "
-Pylon::DataProcessing::CRecipe::PreAllocateResources
+
 Optional method to pre-allocate resources.  
 
 All resources that could be allocated successfully stay allocated until a call
@@ -1549,7 +1665,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::Start "
-Pylon::DataProcessing::CRecipe::Start
+
 Prepares the data processing and allocates resources required by the design. All
 Camera and Image Loading vTools keep their individual acquisition modes and the
 recipe is started like that (this corresponds to
@@ -1566,7 +1682,7 @@ the preconditions aren't met.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::Start "
-Pylon::DataProcessing::CRecipe::Start
+
 Prepares the data processing and allocates resources required by the design. In
 addition, the acquisition mode for all Camera and Image Loading vTools can be
 specified (see `EAcquisitionMode` for more details).  
@@ -1588,7 +1704,7 @@ the preconditions aren't met.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::IsStarted "
-Pylon::DataProcessing::CRecipe::IsStarted
+
 Returns information about the recipe being started.  
 
 Returns
@@ -1601,7 +1717,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::Stop "
-Pylon::DataProcessing::CRecipe::Stop
+
 Finishes the data processing and deallocates all resources allocated at start.  
 
 Updates may accumulate at some places in the design, e.g., when updates are
@@ -1628,7 +1744,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::DeallocateResources "
-Pylon::DataProcessing::CRecipe::DeallocateResources
+
 Deallocates all resources used by the recipe.  
 
 Calls `Stop()` if the design described by the recipe has been started.  
@@ -1643,11 +1759,12 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::Unload "
-Pylon::DataProcessing::CRecipe::Unload
+
 Unloads the recipe currently loaded.  
 
 Calls `DeallocateResources()` if the design described by the recipe has
-allocated resources. Unregisters all observers that have been connected.  
+allocated resources. Unregisters all observers that have been connected and
+stops the measurement if it is running.  
 
 pre:  
 
@@ -1663,7 +1780,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::GetParameters "
-Pylon::DataProcessing::CRecipe::GetParameters
+
 Returns a parameter collection to access the parameters of the recipe.  
 
 note: The `IParameterCollection` returns objects based on `CParameter` that can
@@ -1686,7 +1803,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::SetRecipeContext "
-Pylon::DataProcessing::CRecipe::SetRecipeContext
+
 Sets a context.  
 
 This is useful when handling multiple recipes.  
@@ -1706,7 +1823,7 @@ context.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::GetRecipeContext "
-Pylon::DataProcessing::CRecipe::GetRecipeContext
+
 Returns the context.  
 
 This is useful when handling multiple recipes.  
@@ -1725,7 +1842,7 @@ context.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::HasInput "
-Pylon::DataProcessing::CRecipe::HasInput
+
 Checks whether an input pin is available.  
 
 Parameters
@@ -1743,7 +1860,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::HasOutput "
-Pylon::DataProcessing::CRecipe::HasOutput
+
 Checks whether an output pin is available.  
 
 Parameters
@@ -1761,7 +1878,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::GetInputType "
-Pylon::DataProcessing::CRecipe::GetInputType
+
 Returns the variant data type of the input pin.  
 
 Parameters
@@ -1783,7 +1900,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::GetInputContainerType "
-Pylon::DataProcessing::CRecipe::GetInputContainerType
+
 Returns the variant container type of the input pin.  
 
 Parameters
@@ -1805,7 +1922,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::GetOutputType "
-Pylon::DataProcessing::CRecipe::GetOutputType
+
 Returns the variant data type of the output pin.  
 
 Parameters
@@ -1827,7 +1944,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::GetOutputContainerType "
-Pylon::DataProcessing::CRecipe::GetOutputContainerType
+
 Returns the variant container type of the output pin.  
 
 Parameters
@@ -1849,7 +1966,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::CanTriggerUpdate "
-Pylon::DataProcessing::CRecipe::CanTriggerUpdate
+
 Checks whether triggering an update is possible.  
 
 An update can't be triggered if the recipe is not started or at least one
@@ -1866,7 +1983,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::TriggerUpdateAsync "
-Pylon::DataProcessing::CRecipe::TriggerUpdateAsync
+
 Starts an update asynchronously for a single input pin.  
 
 Parameters
@@ -1900,7 +2017,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::TriggerUpdateAsync "
-Pylon::DataProcessing::CRecipe::TriggerUpdateAsync
+
 Starts an update asynchronously for a number of input pins.  
 
 Parameters
@@ -1934,7 +2051,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::TriggerUpdate "
-Pylon::DataProcessing::CRecipe::TriggerUpdate
+
 Starts an update in a blocking call for a single input pin.  
 
 Parameters
@@ -1976,7 +2093,7 @@ while not waiting for the update to finish completely.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::TriggerUpdate "
-Pylon::DataProcessing::CRecipe::TriggerUpdate
+
 Starts an update in a blocking call for a number of input pins.  
 
 Parameters
@@ -2018,7 +2135,7 @@ while not waiting for the update to finish completely.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::TriggerUpdateWithReturn "
-Pylon::DataProcessing::CRecipe::TriggerUpdateWithReturn
+
 Starts an update in a blocking call for a number of input pins. After the update
 has been processed, a variant container containing the recipe output is
 returned. This method is only intended for cases where the input triggers
@@ -2056,7 +2173,7 @@ while not waiting for the update to finish completely.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::GetOutputNames "
-Pylon::DataProcessing::CRecipe::GetOutputNames
+
 Returns the count and the list of names of all output pins.  
 
 Parameters
@@ -2074,7 +2191,7 @@ Number of output pin names of the recipe.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::RegisterOutputObserver "
-Pylon::DataProcessing::CRecipe::RegisterOutputObserver
+
 Adds an output observer to the list of registered output observers.  
 
 If mode equals `RegistrationMode_ReplaceAll`, the list of registered observes is
@@ -2118,7 +2235,7 @@ be called.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::RegisterOutputObserver "
-Pylon::DataProcessing::CRecipe::RegisterOutputObserver
+
 Adds an output observer to the list of registered output observers.  
 
 If `mode` equals `RegistrationMode_ReplaceAll`, the list of registered observes
@@ -2162,7 +2279,7 @@ be called.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::RegisterAllOutputsObserver "
-Pylon::DataProcessing::CRecipe::RegisterAllOutputsObserver
+
 Adds an output observer to the list of registered output observers.  
 
 If `mode` equals `RegistrationMode_ReplaceAll`, the list of registered observes
@@ -2203,7 +2320,7 @@ be called.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::UnregisterOutputObserver "
-Pylon::DataProcessing::CRecipe::UnregisterOutputObserver
+
 Removes an output observer from the list of registered output observers and
 calls the observer's `OnDeregistered` method.  
 
@@ -2243,7 +2360,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::UnregisterOutputObserver "
-Pylon::DataProcessing::CRecipe::UnregisterOutputObserver
+
 Removes an output observer from the list of registered output observers for all
 output pins and calls the observer's `OnDeregistered` method.  
 
@@ -2280,7 +2397,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::RegisterEventObserver "
-Pylon::DataProcessing::CRecipe::RegisterEventObserver
+
 Registers an event observer to the recipe. Only one single observer per recipe
 is supported. Registering a new one automatically unregisters the old one.
 Registered observers must be unregistered before destruction.  
@@ -2308,7 +2425,7 @@ observer handling.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::UnregisterEventObserver "
-Pylon::DataProcessing::CRecipe::UnregisterEventObserver
+
 Removes any registered event observer from the recipe and calls the observer's
 `OnDeregistered` method.  
 
@@ -2321,7 +2438,7 @@ observer handling.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::HasError "
-Pylon::DataProcessing::CRecipe::HasError
+
 Checks to see whether any of the vTools in the recipe has an error (see also the
 `RegisterEventObserver` method to get a notification when an error state
 changes).  
@@ -2336,7 +2453,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::IsVToolEnabled "
-Pylon::DataProcessing::CRecipe::IsVToolEnabled
+
 Checks to see whether a vTool is enabled.  
 
 pre:  
@@ -2350,7 +2467,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRecipe::SetVToolEnabled "
-Pylon::DataProcessing::CRecipe::SetVToolEnabled
+
 Enables or disables the vTool with the provided identifier.  
 
 Parameters
@@ -2371,8 +2488,65 @@ pre:
 \\threading This method is synchronized using the lock provided by `GetLock()`.  
 ";
 
+%feature("docstring") Pylon::DataProcessing::CRecipe::StartMeasurement "
+
+Starts the measurement for the recipe. This should usually be done after loading
+the recipe and before starting it but can also be used while the recipe is
+running.  
+
+Parameters
+----------
+* `samplesPerVTool` :  
+    The number of samples to be collected per vTool. The default is 100,000
+    samples.  
+
+pre:  
+
+    *   A recipe is loaded.  
+    *   `samplesPerVTool` must not be 0.  
+
+\\error The measurement is not started if an error occurred. Throws an exception
+if the preconditions aren't met.  
+
+\\threading This method is synchronized using the lock provided by `GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CRecipe::StopMeasurement "
+
+Stops the measurement for the recipe and returns a CSV-formatted report
+(compatible with the TimingAnalyzer sample). This should usually be done after
+stopping the recipe but can also be used while the recipe is running. The
+measurement is also stopped automatically when unloading the recipe.  
+
+Returns
+-------
+A report formatted as CSV file or an empty string if the measurement wasn't
+running.  
+
+\\error Doesn't throw C++ exceptions.  
+
+post:  
+
+    *   The measurement is stopped.  
+
+\\threading This method is synchronized using the lock provided by `GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CRecipe::IsMeasurementRunning "
+
+Checks whether a measurement is running on this recipe.  
+
+Returns
+-------
+`true` if measurement is running or false otherwise.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by `GetLock()`.  
+";
+
 %feature("docstring") Pylon::DataProcessing::CRecipe::GetLock "
-Pylon::DataProcessing::CRecipe::GetLock
+
 Provides access to the lock used for synchronizing the access to the recipe.  
 
 This lock can be used when extending the Recipe class.  
@@ -2408,7 +2582,7 @@ C++ includes: Region.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::CRegion "
-Pylon::DataProcessing::CRegion::CRegion
+
 Creates an invalid region.  
 
 See Release() for the properties of an invalid region.  
@@ -2417,7 +2591,7 @@ See Release() for the properties of an invalid region.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::CRegion "
-Pylon::DataProcessing::CRegion::CRegion
+
 Creates a region and allocates a buffer for it.  
 
 Parameters
@@ -2454,7 +2628,7 @@ if no buffer with the required size could be allocated.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::CRegion "
-Pylon::DataProcessing::CRegion::CRegion
+
 Copies the region properties and creates a reference to the buffer of the source
 region.  
 
@@ -2472,7 +2646,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::CRegion "
-Pylon::DataProcessing::CRegion::CRegion
+
 Move constructor. Constructs the region with the contents of `source` using move
 semantics. `source` is left invalid.  
 
@@ -2491,14 +2665,14 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::~CRegion "
-Pylon::DataProcessing::CRegion::~CRegion
+
 Destroys a pylon region object.  
 
 \\error Doesn't throw C++ exceptions.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::CopyRegion "
-Pylon::DataProcessing::CRegion::CopyRegion
+
 Copies the region data from a different region.  
 
 This method is used for making a full copy of a region. Calls the Reset() method
@@ -2523,7 +2697,7 @@ met.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::CopyRegion "
-Pylon::DataProcessing::CRegion::CopyRegion
+
 Copies the region data from a buffer provided.  
 
 This method is used for making a full copy of a region. Calls the Reset() method
@@ -2571,7 +2745,7 @@ met.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::AttachUserBuffer "
-Pylon::DataProcessing::CRegion::AttachUserBuffer
+
 Attaches a user buffer.  
 
 Parameters
@@ -2634,7 +2808,7 @@ optional handler passed in \\ pEventHandler won't be called.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::AttachUserBuffer "
-Pylon::DataProcessing::CRegion::AttachUserBuffer
+
 Attaches a user buffer.  
 
 Parameters
@@ -2693,12 +2867,12 @@ post:
     *   The user buffer must not be freed while being attached.  
 
 \\error Throws an exception if the preconditions aren't met. In this case, the
-optional handler passed in \\ pEventHandler won't be called. This overload can
-be used for read-only buffers.  
+optional handler passed in \\ pEventHandler won't be called.    This overload
+can be used for read-only buffers.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::IsValid "
-Pylon::DataProcessing::CRegion::IsValid
+
 Can be used to check whether a region is valid.  
 
 Returns
@@ -2709,7 +2883,7 @@ Returns false if the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::IsReadOnly "
-Pylon::DataProcessing::CRegion::IsReadOnly
+
 Can be used to check whether a region data buffer is read-only.  
 
 Returns
@@ -2720,7 +2894,7 @@ Returns true if the region data buffer is read-only or the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetRegionType "
-Pylon::DataProcessing::CRegion::GetRegionType
+
 Get the current region type.  
 
 Returns
@@ -2731,7 +2905,7 @@ Returns the Region type or RegionType_Undefined if the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::IsUserBufferAttached "
-Pylon::DataProcessing::CRegion::IsUserBufferAttached
+
 Indicates whether a user buffer is attached.  
 
 Returns
@@ -2743,7 +2917,7 @@ invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetAllocatedBufferSize "
-Pylon::DataProcessing::CRegion::GetAllocatedBufferSize
+
 Returns the size of the buffer used.  
 
 This method is useful when working with so-called user buffers.  
@@ -2756,7 +2930,7 @@ Returns the size of the buffer used in bytes or 0 if the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetDataSize "
-Pylon::DataProcessing::CRegion::GetDataSize
+
 Get the size of the region in bytes.  
 
 Returns
@@ -2767,7 +2941,7 @@ Returns the size of the region in bytes or 0 if the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::IsUnique "
-Pylon::DataProcessing::CRegion::IsUnique
+
 Indicates whether the referenced buffer is only referenced by this region.  
 
 Returns
@@ -2779,7 +2953,7 @@ false if the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::HasReferenceSize "
-Pylon::DataProcessing::CRegion::HasReferenceSize
+
 Indicates whether reference size information is available.  
 
 Returns
@@ -2791,7 +2965,7 @@ the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetReferenceWidth "
-Pylon::DataProcessing::CRegion::GetReferenceWidth
+
 Get the reference width in pixels.  
 
 Returns
@@ -2802,7 +2976,7 @@ Returns the reference width or 0 if the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetReferenceHeight "
-Pylon::DataProcessing::CRegion::GetReferenceHeight
+
 Get the reference height in pixels.  
 
 Returns
@@ -2813,7 +2987,7 @@ Returns the reference height or 0 if the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::HasBoundingBox "
-Pylon::DataProcessing::CRegion::HasBoundingBox
+
 Indicates whether bounding box information is available.  
 
 Returns
@@ -2825,7 +2999,7 @@ Returns false if the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetBoundingBoxTopLeftX "
-Pylon::DataProcessing::CRegion::GetBoundingBoxTopLeftX
+
 Use this method to get the smallest horizontal pixel position of the region.
 \\error Doesn't throw C++ exceptions.  
 
@@ -2836,7 +3010,7 @@ region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetBoundingBoxTopLeftY "
-Pylon::DataProcessing::CRegion::GetBoundingBoxTopLeftY
+
 Use this method to get the smallest vertical pixel position of the region.
 \\error Doesn't throw C++ exceptions.  
 
@@ -2847,7 +3021,7 @@ region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetBoundingBoxWidth "
-Pylon::DataProcessing::CRegion::GetBoundingBoxWidth
+
 Use this method to get the width of the region's bounding box. \\error Doesn't
 throw C++ exceptions.  
 
@@ -2858,7 +3032,7 @@ invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetBoundingBoxHeight "
-Pylon::DataProcessing::CRegion::GetBoundingBoxHeight
+
 Use this method to get the height of the region's bounding box. \\error Doesn't
 throw C++ exceptions.  
 
@@ -2869,7 +3043,7 @@ invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetBuffer "
-Pylon::DataProcessing::CRegion::GetBuffer
+
 Get the pointer to the buffer.  
 
 Returns
@@ -2887,7 +3061,7 @@ post: This GetBuffer overload implements copy-on-write. If IsUnique() returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetBuffer "
-Pylon::DataProcessing::CRegion::GetBuffer
+
 Get the pointer to the buffer containing the region.  
 
 The buffer is at least as large as the value returned by GetDataSize().  
@@ -2900,7 +3074,7 @@ Returns the pointer to the buffer used or NULL if the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::GetBufferConst "
-Pylon::DataProcessing::CRegion::GetBufferConst
+
 Get the pointer to the buffer containing the region.  
 
 The buffer is at least as large as the value returned by GetDataSize().  
@@ -2913,7 +3087,7 @@ Returns the pointer to the buffer used or NULL if the region is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::Reset "
-Pylon::DataProcessing::CRegion::Reset
+
 Resets the region properties and allocates a new buffer if required.  
 
 Parameters
@@ -2964,7 +3138,7 @@ if no buffer with the required size could be allocated.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::Resize "
-Pylon::DataProcessing::CRegion::Resize
+
 Resizes the region.  
 
 Parameters
@@ -2995,7 +3169,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegion::Release "
-Pylon::DataProcessing::CRegion::Release
+
 Releases the region buffer and resets to an invalid region.  
 
 post:  
@@ -3011,6 +3185,124 @@ post:
     *   No buffer is allocated.  
 
 \\error Doesn't throw C++ exceptions.  
+";
+
+// File: class_pylon_1_1_data_processing_1_1_c_region_parameter.xml
+
+
+%feature("docstring") Pylon::DataProcessing::CRegionParameter "
+
+Provides convenient access to vTool parameters of type region.  
+
+note: Don't create instances of this class directly. Use
+    IParameterCollection::Get() instead.  \\threading This class isn't thread-
+    safe.  
+
+C++ includes: RegionParameter.h
+";
+
+%feature("docstring") Pylon::DataProcessing::CRegionParameter::CRegionParameter "
+
+Default constructor. Creates an empty `CRegionParameter` object. \\error Doesn't
+throw C++ exceptions.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CRegionParameter::CRegionParameter "
+
+Constructs a `CRegionParameter` object and attaches it to a node retrieved from
+the provided node map.  
+
+Parameters
+----------
+* `pNodeMap` :  
+    Pointer to the node map that is the source of the parameter.  
+* `pRegionName` :  
+    The name of the parameter to attach.  
+
+post:  
+
+    *   If `pNodeMap` or `pRegionName` is NULL, the parameter will be empty (see
+        `IsValid()`).  
+    *   If the node can't be used to access a region, the parameter will be
+        empty (see `IsValid()`).  
+    *   If the node can be used to access a region, it is attached and the
+        parameter object can be used to access the node's functionality.  
+    *   The parameter object must not be used to access the node's functionality
+        if the provided node map has been destroyed. In this case, call
+        Release() or attach a new node.  
+
+    \\error The call to GenApi::INodeMap::GetNode can throw C++ exceptions.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CRegionParameter::CRegionParameter "
+
+Constructs a `CRegionParameter` object and attaches it to a node, typically
+retrieved from a node map by calling GetNode().  
+
+Parameters
+----------
+* `pNode` :  
+    Pointer to the node to attach.  
+
+post:  
+
+    *   If the passed node can't be used to access a region, the parameter will
+        be empty (see `IsValid()`).  
+    *   If the passed node can be used to access a region, it is attached and
+        the parameter object can be used to access the node's functionality.  
+    *   The parameter object must not be used to access the node's functionality
+        if the source of the attached `pNode` has been destroyed. In this case,
+        call Release() or attach a new node.  
+
+    \\error Doesn't throw C++ exceptions.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CRegionParameter::CRegionParameter "
+
+Copy constructor.  
+
+Parameters
+----------
+* `rhs` :  
+    The object to copy. \\error Doesn't throw C++ exceptions.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CRegionParameter::~CRegionParameter "
+
+Destructor. Destroys the CRegionParameter object.  
+
+note: Doesn't access the attached node. \\error Doesn't throw C++ exceptions.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CRegionParameter::IsValid "
+
+Checks whether the object can be used to access a region parameter.  
+
+Returns
+-------
+Returns true if the object can be used to access a region parameter, false
+otherwise. \\error Doesn't throw C++ exceptions.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CRegionParameter::SetValue "
+
+Sets the value of the region parameter.  
+
+Parameters
+----------
+* `value` :  
+    The region value to set. \\error Throws a C++ exception if the value
+    couldn't be set.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CRegionParameter::GetValue "
+
+Gets the value of the region parameter.  
+
+Returns
+-------
+The region value read. \\error Throws a C++ exception if the value couldn't be
+read.  
 ";
 
 // File: class_pylon_1_1_data_processing_1_1_c_region_user_buffer_event_handler.xml
@@ -3034,7 +3326,7 @@ C++ includes: RegionUserBufferEventHandler.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CRegionUserBufferEventHandler::OnRegionUserBufferDetached "
-Pylon::DataProcessing::CRegionUserBufferEventHandler::OnRegionUserBufferDetached
+
 This method is called after the region class has released its user buffer.  
 
 This method is called after the region class releases its region buffer. If a
@@ -3074,7 +3366,7 @@ C++ includes: SmartInstantCamera.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::CSmartInstantCameraT "
-Pylon::DataProcessing::CSmartInstantCameraT::CSmartInstantCameraT
+
 Creates a Smart Instant Camera object with no attached Pylon device and no
 recipe configured.  
 
@@ -3082,7 +3374,7 @@ recipe configured.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::CSmartInstantCameraT "
-Pylon::DataProcessing::CSmartInstantCameraT::CSmartInstantCameraT
+
 Creates a Smart Instant Camera object and calls Attach(). No recipe is
 configured.  
 
@@ -3101,7 +3393,7 @@ throw C++ exceptions if the passed Pylon device is closed or NULL.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::CSmartInstantCameraT "
-Pylon::DataProcessing::CSmartInstantCameraT::CSmartInstantCameraT
+
 Creates a Smart Instant Camera object and calls Attach(). Sets the filename of
 the recipe to be loaded when Open() is called.  
 
@@ -3122,7 +3414,7 @@ throw C++ exceptions if the passed Pylon device is closed or NULL.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::~CSmartInstantCameraT "
-Pylon::DataProcessing::CSmartInstantCameraT::~CSmartInstantCameraT
+
 Destroys a Smart Instant Camera object.  
 
 *   Stops the grab to stop data processing.  
@@ -3133,7 +3425,7 @@ Destroys a Smart Instant Camera object.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::SetRecipeFilename "
-Pylon::DataProcessing::CSmartInstantCameraT::SetRecipeFilename
+
 Sets the filename of the recipe to be loaded when Open() is called.  
 
 If the filename is empty not recipe is opened. The recipe does not change its
@@ -3148,7 +3440,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::GetRecipeFilename "
-Pylon::DataProcessing::CSmartInstantCameraT::GetRecipeFilename
+
 Retrieves the filename of the recipe that will be loaded when Open() is called.  
 
 Returns
@@ -3159,7 +3451,7 @@ Provides the filename of the recipe that will be loaded when Open() is called.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::Open "
-Pylon::DataProcessing::CSmartInstantCameraT::Open
+
 Opens the attached Pylon device.  
 
 *   Opened by user flag is set, preventing closing of the device on
@@ -3202,7 +3494,7 @@ triggers an exception.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::IsLoaded "
-Pylon::DataProcessing::CSmartInstantCameraT::IsLoaded
+
 Checks whether a recipe is loaded.  
 
 Returns
@@ -3213,7 +3505,7 @@ recipe.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::Load "
-Pylon::DataProcessing::CSmartInstantCameraT::Load
+
 Loads a recipe from disk and creates the objects of the design described by the
 recipe. Relative paths , i.e., relative to the directory the recipe file is
 located in, are used for loading external recipe components, e.g., images.  
@@ -3243,7 +3535,7 @@ if an error occurred.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::LoadFromBinary "
-Pylon::DataProcessing::CSmartInstantCameraT::LoadFromBinary
+
 Loads a recipe from binary buffer and creates the objects of the design
 described by the recipe. Relative paths, i.e., relative to the current
 directory, are used for loading external recipe components, e.g., images.  
@@ -3275,7 +3567,7 @@ if an error occurred.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::LoadFromBinary "
-Pylon::DataProcessing::CSmartInstantCameraT::LoadFromBinary
+
 Loads a recipe from binary buffer and creates the objects of the design
 described by the recipe.  
 
@@ -3309,7 +3601,7 @@ if an error occurred.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::PreAllocateResources "
-Pylon::DataProcessing::CSmartInstantCameraT::PreAllocateResources
+
 Optional method to pre-allocate resources of the recipe used.  
 
 All resources that could be allocated successfully stay allocated until a call
@@ -3333,7 +3625,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::DeallocateResources "
-Pylon::DataProcessing::CSmartInstantCameraT::DeallocateResources
+
 Deallocates all resources used by the recipe.  
 
 Calls recipes `Stop()` method if the design described by the recipe has been
@@ -3349,7 +3641,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::Unload "
-Pylon::DataProcessing::CSmartInstantCameraT::Unload
+
 Unloads the recipe currently loaded.  
 
 Calls `DeallocateResources()` if the design described by the recipe has
@@ -3369,7 +3661,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::Close "
-Pylon::DataProcessing::CSmartInstantCameraT::Close
+
 Closes the attached Pylon device. Can unload the recipe.  
 
 *   If no Pylon device is attached, nothing is done.  
@@ -3394,7 +3686,7 @@ ignored.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::StartGrabbing "
-Pylon::DataProcessing::CSmartInstantCameraT::StartGrabbing
+
 Starts the grabbing of images.  
 
 *   If a grab loop thread has been used in the last grab session, the grab loop
@@ -3456,7 +3748,7 @@ together with USB camera devices.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::StartGrabbing "
-Pylon::DataProcessing::CSmartInstantCameraT::StartGrabbing
+
 Starts the grabbing for a maximum number of images.  
 
 Extends the StartGrabbing(EStrategy, EGrabLoop) by a number of images to grab.
@@ -3483,7 +3775,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::StartGrabbing "
-Pylon::DataProcessing::CSmartInstantCameraT::StartGrabbing
+
 Starts the grabbing. This method is an overload that with additional parameters.  
 
 See the corresponding StartGrabbing() method for more information.  
@@ -3506,7 +3798,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::StartGrabbing "
-Pylon::DataProcessing::CSmartInstantCameraT::StartGrabbing
+
 Starts the grabbing for a maximum number of images. This method is an overload
 that with additional parameters.  
 
@@ -3532,7 +3824,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::RetrieveResult "
-Pylon::DataProcessing::CSmartInstantCameraT::RetrieveResult
+
 Retrieves a smart result according to the strategy, waits if it is not yet
 available.  
 
@@ -3597,7 +3889,7 @@ while not waiting.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::GetParameters "
-Pylon::DataProcessing::CSmartInstantCameraT::GetParameters
+
 Returns a parameter collection to access the parameters of the recipe.  
 
 note: The `IParameterCollection` returns objects based on `CParameter` that can
@@ -3621,7 +3913,7 @@ of the recipe.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::StopGrabbing "
-Pylon::DataProcessing::CSmartInstantCameraT::StopGrabbing
+
 Stops the grabbing of smart results.  
 
 *   Nothing is done if the Instant Camera is not currently grabbing.  
@@ -3653,7 +3945,7 @@ ignored.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::StopGrabbing "
-Pylon::DataProcessing::CSmartInstantCameraT::StopGrabbing
+
 Stops the grabbing of smart results. This method is an overload that with an
 additional parameters.  
 
@@ -3666,7 +3958,7 @@ ignored.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::GrabOne "
-Pylon::DataProcessing::CSmartInstantCameraT::GrabOne
+
 Grabs one image.  
 
 The following code shows a simplified version of what is done (happy path):  
@@ -3710,7 +4002,7 @@ exceptions after StartGrabbing() the grabbing is stopped using StopGrabbing().
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::GrabOne "
-Pylon::DataProcessing::CSmartInstantCameraT::GrabOne
+
 Grabs one smart result.  
 
 The following code shows a simplified version of what is done (happy path):  
@@ -3757,7 +4049,7 @@ exceptions after StartGrabbing() the grabbing is stopped using StopGrabbing().
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::GetSmartResultWaitObject "
-Pylon::DataProcessing::CSmartInstantCameraT::GetSmartResultWaitObject
+
 Provides access to a wait object indicating available smart results.  
 
 Returns
@@ -3770,7 +4062,7 @@ A wait object indicating available smart results.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::RegisterSmartResultEventHandler "
-Pylon::DataProcessing::CSmartInstantCameraT::RegisterSmartResultEventHandler
+
 Adds an smart result event handler to the list of registered smart result event
 handler objects.  
 
@@ -3799,7 +4091,7 @@ handler registry lock.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::DeregisterSmartResultEventHandler "
-Pylon::DataProcessing::CSmartInstantCameraT::DeregisterSmartResultEventHandler
+
 Removes an smart result event handler from the list of registered smart result
 event handler objects.  
 
@@ -3828,7 +4120,7 @@ handler registry lock.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartInstantCameraT::GetGrabStopWaitObject "
-Pylon::DataProcessing::CSmartInstantCameraT::GetGrabStopWaitObject
+
 Provides access to a wait object indicating that the grabbing has stopped.  
 
 Returns
@@ -3847,10 +4139,10 @@ A wait object indicating that the grabbing has stopped.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartResultEventHandlerT::~CSmartResultEventHandlerT "
-Pylon::DataProcessing::CSmartResultEventHandlerT::~CSmartResultEventHandlerT";
+";
 
 %feature("docstring") Pylon::DataProcessing::CSmartResultEventHandlerT::OnResult "
-Pylon::DataProcessing::CSmartResultEventHandlerT::OnResult
+
 This method is called when a data processing result is ready.  
 
 Parameters
@@ -3870,7 +4162,7 @@ inside the lock of the smart result event handler registry.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CSmartResultEventHandlerT::OnDataProcessingError "
-Pylon::DataProcessing::CSmartResultEventHandlerT::OnDataProcessingError
+
 This method is called when an exception has been triggered using the data
 processing recipe.  
 
@@ -3908,7 +4200,7 @@ C++ includes: TransformationData.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CTransformationData::CTransformationData "
-Pylon::DataProcessing::CTransformationData::CTransformationData
+
 Creates invalid transformation data.  
 
 post:  
@@ -3924,7 +4216,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CTransformationData::CTransformationData "
-Pylon::DataProcessing::CTransformationData::CTransformationData
+
 Creates valid transformation data with the specified number of columns and rows.  
 
 Parameters
@@ -3950,7 +4242,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CTransformationData::CTransformationData "
-Pylon::DataProcessing::CTransformationData::CTransformationData
+
 Copies the transformation data properties and values from the source
 transformation data.  
 
@@ -3963,7 +4255,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CTransformationData::CTransformationData "
-Pylon::DataProcessing::CTransformationData::CTransformationData
+
 Move constructs the transformation data properties and values from the source
 transformation data.  
 
@@ -3976,14 +4268,14 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CTransformationData::~CTransformationData "
-Pylon::DataProcessing::CTransformationData::~CTransformationData
+
 Destroys a transformation data object.  
 
 \\error Doesn't throw C++ exceptions.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::CTransformationData::Reset "
-Pylon::DataProcessing::CTransformationData::Reset
+
 Resets the transformation data using the specified number of columns and rows.  
 
 Parameters
@@ -4009,7 +4301,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CTransformationData::IsValid "
-Pylon::DataProcessing::CTransformationData::IsValid
+
 Can be used to check whether the transformation data is valid.  
 
 Returns
@@ -4020,7 +4312,7 @@ Returns false if the transformation data is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CTransformationData::GetColumnCount "
-Pylon::DataProcessing::CTransformationData::GetColumnCount
+
 Get the number of columns of the transformation data.  
 
 Returns
@@ -4031,7 +4323,7 @@ Returns the number of columns or 0 if the transformation data is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CTransformationData::GetRowCount "
-Pylon::DataProcessing::CTransformationData::GetRowCount
+
 Get the number of rows of the transformation data.  
 
 Returns
@@ -4042,7 +4334,7 @@ Returns the number of rows or 0 if the transformation data is invalid.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CTransformationData::GetEntry "
-Pylon::DataProcessing::CTransformationData::GetEntry
+
 Get an entry at a specific position of the transformation data.  
 
 Parameters
@@ -4066,7 +4358,7 @@ Returns the entry retrieved at the specified position.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CTransformationData::SetEntry "
-Pylon::DataProcessing::CTransformationData::SetEntry
+
 Set an entry at a specific position in the transformation data.  
 
 Parameters
@@ -4085,6 +4377,25 @@ pre:
     *   Argument row must be lower than number of rows.  
 
 \\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CTransformationData::IsSimilar "
+
+Compares two CTransformationData instances for similarity within a given
+tolerance.  
+
+Parameters
+----------
+* `rhs` :  
+    The right-hand side object to compare with.  
+* `tolerance` :  
+    The tolerance used for the comparison of floating point values. \\error  
+
+    *   Doesn't throw C++ exceptions.  
+
+Returns
+-------
+Returns true if similar within the given tolerance or false otherwise.  
 ";
 
 // File: class_pylon_1_1_data_processing_1_1_c_update.xml
@@ -4106,7 +4417,7 @@ C++ includes: Update.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CUpdate::CUpdate "
-Pylon::DataProcessing::CUpdate::CUpdate
+
 Creates a `CUpdate` that can be used as placeholder for assigning a different
 `CUpdate` object later.  
 
@@ -4119,7 +4430,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CUpdate::CUpdate "
-Pylon::DataProcessing::CUpdate::CUpdate
+
 Copies a `CUpdate` object.  
 
 Parameters
@@ -4135,14 +4446,14 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CUpdate::~CUpdate "
-Pylon::DataProcessing::CUpdate::~CUpdate
+
 Destroys a `CUpdate` object.  
 
 \\error Doesn't throw C++ exceptions.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::CUpdate::GetNumPrecedingUpdates "
-Pylon::DataProcessing::CUpdate::GetNumPrecedingUpdates
+
 Get the number of updates that directly caused this update.  
 
 Returns
@@ -4153,7 +4464,7 @@ The number of updates that caused this update.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CUpdate::GetPrecedingUpdate "
-Pylon::DataProcessing::CUpdate::GetPrecedingUpdate
+
 Returns the preceding update at the corresponding index.  
 
 Parameters
@@ -4175,7 +4486,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CUpdate::HasBeenTriggeredBy "
-Pylon::DataProcessing::CUpdate::HasBeenTriggeredBy
+
 Checks whether the update passed has triggered this update.  
 
 Parameters
@@ -4191,8 +4502,27 @@ of preceding updates.
 \\error Doesn't throw C++ exceptions.  
 ";
 
+%feature("docstring") Pylon::DataProcessing::CUpdate::GetExecutionTime "
+
+Gets the execution time of this update in microseconds if the update is
+complete.  
+
+Parameters
+----------
+* `executionTime` :  
+    The execution time in microseconds.  
+
+Returns
+-------
+`true` if this update is already complete and the execution time is set. `false`
+if the update is not valid or if it has not completed yet (the execution time is
+not set in this case).  
+
+\\error Doesn't throw C++ exceptions.  
+";
+
 %feature("docstring") Pylon::DataProcessing::CUpdate::IsValid "
-Pylon::DataProcessing::CUpdate::IsValid
+
 Checks whether the update is valid.  
 
 Returns
@@ -4216,7 +4546,7 @@ C++ includes: Variant.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_None`.  
 
 post:  
@@ -4228,7 +4558,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `dataType`.  
 
 This constructor is useful if you want to create a variant for a corresponding
@@ -4239,7 +4569,8 @@ Parameters
 * `dataType` :  
     The data type of the variant to create.  
 
-pre: `dataType` is not VariantDataType_None or VariantDataType_Composite.  
+pre: `dataType` is not VariantDataType_None, VariantDataType_Composite or
+    VariantDataType_Unsupported.  
 
 post:  
 
@@ -4252,7 +4583,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates an array of type `dataType`.  
 
 Parameters
@@ -4262,7 +4593,8 @@ Parameters
 * `arraySize` :  
     The size of the variant array to create.  
 
-pre: `dataType` is not VariantDataType_None or VariantDataType_Composite.  
+pre: `dataType` is not VariantDataType_None, VariantDataType_Composite or
+    VariantDataType_Unsupported.  
 
 post:  
 
@@ -4274,7 +4606,331 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+* `readOnly` :  
+    If true the images must not be modified by the recipe and false otherwise.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+* `readOnly` :  
+    If true the images must not be modified by the recipe and false otherwise.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates an array using a standard vector.  
+
+Parameters
+----------
+* `valueList` :  
+    A standard vector containing the values to assign to the array.  
+
+post:  
+
+    *   `GetDataType()` returns the appropriate type according to
+        `EVariantDataType`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   `IsArray()` returns true.  
+    *   `GetNumArrayValues()` returns `valueList.size()`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
 Creates a `CVariant` of type `VariantDataType_Boolean`.  
 
 Parameters
@@ -4291,7 +4947,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_Int64`.  
 
 Parameters
@@ -4308,7 +4964,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a CVariant of type VariantDataType_UInt64.  
 
 Parameters
@@ -4325,7 +4981,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_Float`.  
 
 Parameters
@@ -4342,7 +4998,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_String`.  
 
 Parameters
@@ -4359,7 +5015,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_String`.  
 
 Parameters
@@ -4376,7 +5032,29 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
+Creates a `CVariant` of type `VariantDataType_String`.  
+
+Parameters
+----------
+* `value` :  
+    The value to assign.  
+
+pre:  
+
+    *   `value` is not NULL.  
+    *   `value` is a null-terminated string.  
+
+post:  
+
+    *   The `value` passed is copied and held by the `CVariant` created.  
+    *   `GetDataType()` returns `VariantDataType_String`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
 Creates a `CVariant` array of type `VariantDataType_String` with
 `VariantDataType_String` as elements.  
 
@@ -4395,7 +5073,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_PylonImage`. The image will be
 allowed to be modified by the recipe.  
 
@@ -4414,16 +5092,16 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_PylonImage` and lets you specify
-if the image can be changed by the recipe.  
+if the image can be modified by the recipe.  
 
 Parameters
 ----------
 * `value` :  
     The value to assign.  
 * `readOnly` :  
-    If true the image must not be changed by the recipe and false otherwise.  
+    If true the image must not be modified by the recipe and false otherwise.  
 
 post:  
 
@@ -4435,7 +5113,66 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
+Creates a `CVariant` of type `VariantDataType_PylonImage` from a grab result
+with image payload and lets you specify if the image can be modified by the
+recipe.  
+
+Parameters
+----------
+* `ptrGrabResult` :  
+    The grab result that contains the image.  
+* `readOnly` :  
+    If true the image must not be modified by the recipe and false otherwise.  
+
+pre:  
+
+    *   `ptrGrabResult` must be valid.  
+    *   The grab result must be successful.  
+    *   The payload of the grab result must contain an uncompressed image (and
+        not contain GenDC data).  
+    *   The pixel type must not be undefined.  
+
+post:  
+
+    *   The `ptrGrabResult` passed is shallow-copied (so no image data is
+        copied) and held by the `CVariant` created.  
+    *   `GetDataType()` returns `VariantDataType_PylonImage`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
+Creates a `CVariant` of type `VariantDataType_PylonImage` from a grab result
+with GenDC payload that contains an image in the specified data component.  
+
+Parameters
+----------
+* `componentIndex` :  
+    The index of the data component that contains the image.  
+* `ptrGrabResult` :  
+    The grab result that contains the GenDC data.  
+
+pre:  
+
+    *   `ptrGrabResult` must be valid.  
+    *   The grab result must be successful.  
+    *   The payload type of the grab result must be `PayloadType_GenDC`.  
+    *   `componentIndex` must be a valid index of a data component that contains
+        an image.  
+
+post:  
+
+    *   The `ptrGrabResult` passed is shallow-copied (so no image data is
+        copied) and held by the `CVariant` created.  
+    *   `GetDataType()` returns `VariantDataType_PylonImage`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
+
 Creates a `CVariant` of type `VariantDataType_Region`.  
 
 Parameters
@@ -4453,7 +5190,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_TransformationData`.  
 
 Parameters
@@ -4470,7 +5207,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_PointF2D`.  
 
 Parameters
@@ -4487,7 +5224,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_LineF2D`.  
 
 Parameters
@@ -4504,7 +5241,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_RectangleF`.  
 
 Parameters
@@ -4521,7 +5258,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_CircleF`.  
 
 Parameters
@@ -4538,7 +5275,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Creates a `CVariant` of type `VariantDataType_EllipseF`.  
 
 Parameters
@@ -4555,7 +5292,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Copies a variant.  
 
 Parameters
@@ -4573,7 +5310,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CVariant "
-Pylon::DataProcessing::CVariant::CVariant
+
 Move constructs a variant.  
 
 Parameters
@@ -4591,7 +5328,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::IsEqualInstance "
-Pylon::DataProcessing::CVariant::IsEqualInstance
+
 Compares a variant object.  
 
 Parameters
@@ -4607,7 +5344,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::Copy "
-Pylon::DataProcessing::CVariant::Copy
+
 Returns a deep copy of the variant object.  
 
 Returns
@@ -4625,7 +5362,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::~CVariant "
-Pylon::DataProcessing::CVariant::~CVariant
+
 Destroys a variant object.  
 
 note: Any C++ exception thrown internally while destroying the variant will be
@@ -4639,7 +5376,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::GetDataType "
-Pylon::DataProcessing::CVariant::GetDataType
+
 Returns the data type of the variant.  
 
 Returns
@@ -4650,7 +5387,7 @@ The data type of the data held.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::GetContainerType "
-Pylon::DataProcessing::CVariant::GetContainerType
+
 Returns the container type of the variant.  
 
 Returns
@@ -4661,7 +5398,7 @@ The container type of the data held.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::GetNumSubValues "
-Pylon::DataProcessing::CVariant::GetNumSubValues
+
 Returns the number of subvalues.  
 
 Returns
@@ -4673,7 +5410,7 @@ Y}.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::GetSubValueName "
-Pylon::DataProcessing::CVariant::GetSubValueName
+
 Returns the name of a subvalue of the value referenced by the variant.  
 
 note: The position of a subvalue is not fixed and can change for different
@@ -4701,7 +5438,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::HasSubValue "
-Pylon::DataProcessing::CVariant::HasSubValue
+
 Returns `true` if a sub alue of the value referenced by the variant with the
 name passed exists.  
 
@@ -4721,7 +5458,7 @@ is passed.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::GetSubValue "
-Pylon::DataProcessing::CVariant::GetSubValue
+
 Returns a variant object referencing the subvalue.  
 
 Parameters
@@ -4742,7 +5479,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::SetSubValue "
-Pylon::DataProcessing::CVariant::SetSubValue
+
 Changes the value of a subvalue of the value referenced by this variant.  
 
 Parameters
@@ -4766,7 +5503,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::GetValueName "
-Pylon::DataProcessing::CVariant::GetValueName
+
 Returns the name of the value referenced by the variant.  
 
 Parameters
@@ -4787,7 +5524,7 @@ by the variant if it references an array item.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::IsArray "
-Pylon::DataProcessing::CVariant::IsArray
+
 Returns `true` if the value referenced is an array.  
 
 Returns
@@ -4798,7 +5535,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::GetNumArrayValues "
-Pylon::DataProcessing::CVariant::GetNumArrayValues
+
 Returns the number of values in an array.  
 
 Returns
@@ -4809,7 +5546,7 @@ The number of values in an array. Returns 0 if the value is not an array.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::GetArrayValue "
-Pylon::DataProcessing::CVariant::GetArrayValue
+
 Returns a variant object referencing the array item value.  
 
 Parameters
@@ -4831,7 +5568,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ChangeArraySize "
-Pylon::DataProcessing::CVariant::ChangeArraySize
+
 Changes the size of an array so that it contains `size` items.  
 
 If `size` is smaller than the current array size, the array size is reduced to
@@ -4864,7 +5601,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::SetArrayItemValue "
-Pylon::DataProcessing::CVariant::SetArrayItemValue
+
 Changes the value of an array item of the value referenced by this variant.  
 
 Parameters
@@ -4889,7 +5626,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::GetArrayDataValues "
-Pylon::DataProcessing::CVariant::GetArrayDataValues
+
 Copies Array data values to a buffer.  
 
 Parameters
@@ -4929,7 +5666,7 @@ if the array or any array item is in an error state.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::SetArrayDataValues "
-Pylon::DataProcessing::CVariant::SetArrayDataValues
+
 Sets Array data values from a buffer.  
 
 Parameters
@@ -4962,7 +5699,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::CanConvert "
-Pylon::DataProcessing::CVariant::CanConvert
+
 Checks whether the value can be converted to target type.  
 
 Parameters
@@ -4978,7 +5715,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::Convert "
-Pylon::DataProcessing::CVariant::Convert
+
 Converts value to target type.  
 
 `CanConvert()` can be used to check whether this `CVariant` can be converted to
@@ -5001,7 +5738,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToBool "
-Pylon::DataProcessing::CVariant::ToBool
+
 Returns the value of the variant for a basic type as bool.  
 
 note: Conversions exist for `VariantDataType_Boolean`, `VariantDataType_Int64`,
@@ -5011,7 +5748,7 @@ note: Conversions exist for `VariantDataType_Boolean`, `VariantDataType_Int64`,
 
 Returns
 -------
-The value of the variant as `bool`.  
+The value of the variant as bool.  
 
 pre:  
 
@@ -5027,8 +5764,468 @@ pre:
 *   The conversion fails.  
 ";
 
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant for a basic type as bool.  
+
+note: Conversions exist for `VariantDataType_Boolean`, `VariantDataType_Int64`,
+    `VariantDataType_UInt64`, `VariantDataType_Float`, and
+    `VariantDataType_String`. Can be checked with
+    `CanConvert(VariantDataType_Boolean)`.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as bool.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_Boolean`,
+        `VariantDataType_Int64`, `VariantDataType_UInt64`,
+        `VariantDataType_Float`, or `VariantDataType_String`.  
+    *   `CanConvert(VariantDataType_Boolean)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant for a basic type as bool.  
+
+note: Conversions exist for `VariantDataType_Boolean`, `VariantDataType_Int64`,
+    `VariantDataType_UInt64`, `VariantDataType_Float`, and
+    `VariantDataType_String`. Can be checked with
+    `CanConvert(VariantDataType_Boolean)`.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as bool.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_Boolean`,
+        `VariantDataType_Int64`, `VariantDataType_UInt64`,
+        `VariantDataType_Float`, or `VariantDataType_String`.  
+    *   `CanConvert(VariantDataType_Boolean)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant for a basic type as int64_t.  
+
+note: The value is undefined if a conversion exceeds the range of the target
+    value.  
+
+Conversions exist for `VariantDataType_Boolean`, `VariantDataType_Int64`,
+`VariantDataType_UInt64`, `VariantDataType_Float`, and `VariantDataType_String`.
+Can be checked with `CanConvert(VariantDataType_Int64)`.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as int64_t.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_Boolean`,
+        `VariantDataType_Int64`, `VariantDataType_UInt64`,
+        `VariantDataType_Float`, or `VariantDataType_String`.  
+    *   `CanConvert(VariantDataType_Int64)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant for a basic type as uint64_t.  
+
+note: The value is undefined if a conversion exceeds the range of the target
+    value.  
+
+Conversions exist for `VariantDataType_Boolean`, `VariantDataType_Int64`,
+`VariantDataType_UInt64`, `VariantDataType_Float`, or `VariantDataType_String`.
+Can be checked with `CanConvert(VariantDataType_UInt64)`.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as uint64_t.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_Boolean`,
+        `VariantDataType_Int64`, `VariantDataType_UInt64`,
+        `VariantDataType_Float`, or `VariantDataType_String`.  
+    *   `CanConvert(VariantDataType_UInt64)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant for a basic type as double.  
+
+note: Conversions exist for `VariantDataType_Boolean`, `VariantDataType_Int64`,
+    `VariantDataType_UInt64`, `VariantDataType_Float`, or
+    `VariantDataType_String`. Can be checked with
+    `CanConvert(VariantDataType_Float)`.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as double.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_Boolean`,
+        `VariantDataType_Int64`, `VariantDataType_UInt64`,
+        `VariantDataType_Float`, or `VariantDataType_String`.  
+    *   `CanConvert(VariantDataType_Float)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant for a basic type as string.  
+
+note: The string conversion always uses a dot for decimals.  
+
+Conversions exist for `VariantDataType_Boolean`, `VariantDataType_Int64`,
+`VariantDataType_UInt64`, `VariantDataType_Float`, or `VariantDataType_String`.
+Can be checked with `CanConvert(VariantDataType_String)`.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as string.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_Boolean`,
+        `VariantDataType_Int64`, `VariantDataType_UInt64`,
+        `VariantDataType_Float`, `VariantDataType_String` or
+        `VariantDataType_Composite`  
+    *   `CanConvert(VariantDataType_String)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant for a basic type as string.  
+
+note: The string conversion always uses a dot for decimals.  
+
+Conversions exist for `VariantDataType_Boolean`, `VariantDataType_Int64`,
+`VariantDataType_UInt64`, `VariantDataType_Float`, or `VariantDataType_String`.
+Can be checked with `CanConvert(VariantDataType_String)`.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as string.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_Boolean`,
+        `VariantDataType_Int64`, `VariantDataType_UInt64`,
+        `VariantDataType_Float`, `VariantDataType_String` or
+        `VariantDataType_Composite`  
+    *   `CanConvert(VariantDataType_String)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant for a basic type as CPylonImage.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as CPylonImage.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_PylonImage`.  
+    *   `CanConvert(VariantDataType_PylonImage)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant for a basic type as CRegion.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as CRegion.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_Region`.  
+    *   `CanConvert(VariantDataType_Region)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant for a basic type as CTransformationData.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as
+    CTransformationData.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_TransformationData`.  
+    *   `CanConvert(VariantDataType_TransformationData)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant as SPointF2D.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as SPointF2D.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_PointF2D`.  
+    *   `CanConvert(VariantDataType_PointF2D)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant as SLineF2D.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as SLineF2D.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_LineF2D`.  
+    *   `CanConvert(VariantDataType_LineF2D)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant as SRectangleF.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as SRectangleF.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_RectangleF`.  
+    *   `CanConvert(VariantDataType_RectangleF)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant as SCircleF.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as SCircleF.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_CircleF`.  
+    *   `CanConvert(VariantDataType_CircleF)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the value of the variant as SEllipseF.  
+
+Parameters
+----------
+* `value` :  
+    The value of the variant is returned via this argument as SEllipseF.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_EllipseF`.  
+    *   `CanConvert(VariantDataType_EllipseF)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the values of an array in the variant as a vector of bool elements.  
+
+Parameters
+----------
+* `valueList` :  
+    The list of bool values to be filled.  
+
+pre:  
+
+    *   `HasError()` returns `false`.  
+    *   `IsArray()` returns `true`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   The elements in the array must be convertible to bool.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the values of an array in the variant as a vector of standard strings.  
+
+Parameters
+----------
+* `valueList` :  
+    The list of values to be filled.  
+
+pre:  
+
+    *   `HasError()` returns `false`.  
+    *   `IsArray()` returns `true`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   The elements in the array must be convertible to strings.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the values of an array in the variant as a vector.  
+
+Parameters
+----------
+* `valueList` :  
+    The list of values to be filled.  
+
+pre:  
+
+    *   `HasError()` returns `false`.  
+    *   `IsArray()` returns `true`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   The elements in the array must be convertible to the vector elements.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::To "
+
+Returns the values of an array in the variant as a vector.  
+
+Returns
+-------
+The list of values to be filled.  
+
+pre:  
+
+    *   `HasError()` returns `false`.  
+    *   `IsArray()` returns `true`.  
+    *   `GetContainerType()` returns VariantContainerType_Array.  
+    *   The elements in the array must be convertible to the vector elements.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
 %feature("docstring") Pylon::DataProcessing::CVariant::ToInt64 "
-Pylon::DataProcessing::CVariant::ToInt64
+
 Returns the value of the variant for a basic type as int64_t.  
 
 note: The value is undefined if a conversion exceeds the range of the target
@@ -5057,7 +6254,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToUInt64 "
-Pylon::DataProcessing::CVariant::ToUInt64
+
 Returns the value of the variant for a basic type as uint64_t.  
 
 note: The value is undefined if a conversion exceeds the range of the target
@@ -5086,7 +6283,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToDouble "
-Pylon::DataProcessing::CVariant::ToDouble
+
 Returns the value of the variant for a basic type as double.  
 
 note: Conversions exist for `VariantDataType_Boolean`, `VariantDataType_Int64`,
@@ -5113,7 +6310,36 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToString "
-Pylon::DataProcessing::CVariant::ToString
+
+Returns the value of the variant for a basic type as string.  
+
+note: The string conversion always uses a dot for decimals.  
+
+Conversions exist for `VariantDataType_Boolean`, `VariantDataType_Int64`,
+`VariantDataType_UInt64`, `VariantDataType_Float`, or `VariantDataType_String`.
+Can be checked with `CanConvert(VariantDataType_String)`.  
+
+Returns
+-------
+Returns the value of the variant as string.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_Boolean`,
+        `VariantDataType_Int64`, `VariantDataType_UInt64`,
+        `VariantDataType_Float`, `VariantDataType_String` or
+        `VariantDataType_Composite`  
+    *   `CanConvert(VariantDataType_String)` returns `true`.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::ToStdString "
+
 Returns the value of the variant for a basic type as string.  
 
 note: The string conversion always uses a dot for decimals.  
@@ -5142,7 +6368,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToImage "
-Pylon::DataProcessing::CVariant::ToImage
+
 Returns the value of the variant for a basic type as CPylonImage.  
 
 Returns
@@ -5162,7 +6388,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToRegion "
-Pylon::DataProcessing::CVariant::ToRegion
+
 Returns the value of the variant for a basic type as CRegion.  
 
 Returns
@@ -5182,7 +6408,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToTransformationData "
-Pylon::DataProcessing::CVariant::ToTransformationData
+
 Returns the value of the variant for a basic type as CTransformationData.  
 
 Returns
@@ -5202,7 +6428,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToPointF2D "
-Pylon::DataProcessing::CVariant::ToPointF2D
+
 Returns the value of the variant as SPointF2D.  
 
 Returns
@@ -5222,7 +6448,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToLineF2D "
-Pylon::DataProcessing::CVariant::ToLineF2D
+
 Returns the value of the variant as SLineF2D.  
 
 Returns
@@ -5242,7 +6468,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToRectangleF "
-Pylon::DataProcessing::CVariant::ToRectangleF
+
 Returns the value of the variant as SRectangleF.  
 
 Returns
@@ -5262,7 +6488,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToCircleF "
-Pylon::DataProcessing::CVariant::ToCircleF
+
 Returns the value of the variant as SCircleF.  
 
 Returns
@@ -5282,7 +6508,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::ToEllipseF "
-Pylon::DataProcessing::CVariant::ToEllipseF
+
 Returns the value of the variant as SEllipseF.  
 
 Returns
@@ -5302,7 +6528,7 @@ pre:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromBool "
-Pylon::DataProcessing::CVariant::FromBool
+
 Changes the value referenced by the variant.  
 
 Parameters
@@ -5326,7 +6552,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromInt64 "
-Pylon::DataProcessing::CVariant::FromInt64
+
 Changes the value referenced by the variant.  
 
 Parameters
@@ -5351,7 +6577,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromUInt64 "
-Pylon::DataProcessing::CVariant::FromUInt64
+
 Changes the value referenced by the variant.  
 
 Parameters
@@ -5376,7 +6602,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromDouble "
-Pylon::DataProcessing::CVariant::FromDouble
+
 Changes the value referenced by the variant.  
 
 Parameters
@@ -5404,7 +6630,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromString "
-Pylon::DataProcessing::CVariant::FromString
+
 Changes the value referenced by the variant.  
 
 note: This method will fail if the content of `newValue` is not convertible to
@@ -5435,8 +6661,74 @@ post:
 *   The conversion fails.  
 ";
 
+%feature("docstring") Pylon::DataProcessing::CVariant::FromString "
+
+Changes the value referenced by the variant.  
+
+note: This method will fail if the content of `newValue` is not convertible to
+    the type of this `CVariant`.  
+
+Parameters
+----------
+* `newValue` :  
+    The new value for the referenced value.  
+
+pre:  
+
+    *   `IsArray()` returns `false`.  
+    *   The variant data type is able to represent the value.  
+    *   The type of this `CVariant` is `VariantDataType_Boolean`,
+        `VariantDataType_Int64`, `VariantDataType_UInt64`,
+        `VariantDataType_Float`, or `VariantDataType_String`.  
+
+post:  
+
+    *   The referenced value has been changed to the value of `newValue` if the
+        conversion succeeded.  
+    *   The data type returned by `GetDataType()` hasn't changed.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::FromString "
+
+Changes the value referenced by the variant.  
+
+note: This method will fail if the content of `newValue` is not convertible to
+    the type of this `CVariant`.  
+
+Parameters
+----------
+* `newValue` :  
+    The new value for the referenced value.  
+
+pre:  
+
+    *   `newValue` is not NULL.  
+    *   `newValue` is a null-terminated string.  
+    *   `IsArray()` returns `false`.  
+    *   The variant data type is able to represent the value.  
+    *   The type of this `CVariant` is `VariantDataType_Boolean`,
+        `VariantDataType_Int64`, `VariantDataType_UInt64`,
+        `VariantDataType_Float`, or `VariantDataType_String`.  
+
+post:  
+
+    *   The referenced value has been changed to the value of `newValue` if the
+        conversion succeeded.  
+    *   The data type returned by `GetDataType()` hasn't changed.  
+
+\\error Throws an exception if:  
+
+*   The preconditions aren't met.  
+*   The conversion fails.  
+";
+
 %feature("docstring") Pylon::DataProcessing::CVariant::FromImage "
-Pylon::DataProcessing::CVariant::FromImage
+
 Changes the value referenced by the variant. The image will be allowed to be
 modified by the recipe.  
 
@@ -5460,8 +6752,8 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromImage "
-Pylon::DataProcessing::CVariant::FromImage
-Changes the value referenced by the variant and allow to specify if the image
+
+Changes the value referenced by the variant and allows to specify if the image
 may be modified by the recipe.  
 
 Parameters
@@ -5469,7 +6761,7 @@ Parameters
 * `newValue` :  
     The new value for the referenced value.  
 * `readOnly` :  
-    If true the image must not be changed by the recipe and false otherwise.  
+    If true the image must not be modified by the recipe and false otherwise.  
 
 pre:  
 
@@ -5485,8 +6777,71 @@ post:
 \\error Throws an exception if the preconditions aren't met.  
 ";
 
+%feature("docstring") Pylon::DataProcessing::CVariant::FromGrabResult "
+
+Changes the value referenced by the variant with a grab result with image
+payload and lets you specify if the image can be modified by the recipe.  
+
+Parameters
+----------
+* `ptrGrabResult` :  
+    The grab result that contains the image.  
+* `readOnly` :  
+    If true the image must not be modified by the recipe and false otherwise.  
+
+pre:  
+
+    *   `ptrGrabResult` must be valid.  
+    *   The grab result must be successful.  
+    *   The payload type of the grab result must be `PayloadType_GenDC`.  
+    *   `componentIndex` must be a valid index of a data component that contains
+        an image.  
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_PylonImage`.  
+
+post:  
+
+    *   The `ptrGrabResult` passed is shallow-copied (so no image data is
+        copied) and held by the `CVariant` now.  
+    *   The data type returned by `GetDataType()` hasn't changed.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::FromGrabResult "
+
+Changes the value referenced by the variant (the image must not be modified by
+the recipe) with a grab result with GenDC payload that contains an image in the
+specified data component.  
+
+Parameters
+----------
+* `componentIndex` :  
+    The index of the data component that contains the image.  
+* `ptrGrabResult` :  
+    The grab result that contains the GenDC data.  
+
+pre:  
+
+    *   `ptrGrabResult` must be valid.  
+    *   The grab result must be successful.  
+    *   The payload type of the grab result must be `PayloadType_GenDC`.  
+    *   `componentIndex` must be a valid index of a data component that contains
+        an image.  
+    *   `IsArray()` returns `false`.  
+    *   The type of this `CVariant` is `VariantDataType_PylonImage`.  
+
+post:  
+
+    *   The `ptrGrabResult` passed is shallow-copied (so no image data is
+        copied) and held by the `CVariant` now.  
+    *   The data type returned by `GetDataType()` hasn't changed.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
 %feature("docstring") Pylon::DataProcessing::CVariant::FromRegion "
-Pylon::DataProcessing::CVariant::FromRegion
+
 Changes the value referenced by the variant.  
 
 Parameters
@@ -5509,7 +6864,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromTransformationData "
-Pylon::DataProcessing::CVariant::FromTransformationData
+
 Changes the value referenced by the variant.  
 
 Parameters
@@ -5532,7 +6887,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromPointF2D "
-Pylon::DataProcessing::CVariant::FromPointF2D
+
 Changes the value referenced by the variant.  
 
 Parameters
@@ -5554,7 +6909,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromLineF2D "
-Pylon::DataProcessing::CVariant::FromLineF2D
+
 Changes the value referenced by the variant.  
 
 Parameters
@@ -5576,7 +6931,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromRectangleF "
-Pylon::DataProcessing::CVariant::FromRectangleF
+
 Changes the value referenced by the variant.  
 
 Parameters
@@ -5598,7 +6953,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromCircleF "
-Pylon::DataProcessing::CVariant::FromCircleF
+
 Changes the value referenced by the variant.  
 
 Parameters
@@ -5620,7 +6975,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::FromEllipseF "
-Pylon::DataProcessing::CVariant::FromEllipseF
+
 Changes the value referenced by the variant.  
 
 Parameters
@@ -5642,7 +6997,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::GetErrorDescription "
-Pylon::DataProcessing::CVariant::GetErrorDescription
+
 Use this method to get the error description of the value.  
 
 Parameters
@@ -5658,7 +7013,7 @@ Error description if the value is in error state, an empty string otherwise.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::HasError "
-Pylon::DataProcessing::CVariant::HasError
+
 Use this method to check the error state of the value.  
 
 Parameters
@@ -5674,7 +7029,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariant::SetError "
-Pylon::DataProcessing::CVariant::SetError
+
 Sets an invalid data error.  
 
 This method is mainly intended for testing how invalid data are handled by a
@@ -5686,6 +7041,54 @@ Parameters
     The error message text.  
 
 pre: The data type is not VariantDataType_None.  
+
+post:  
+
+    *   An invalid data error with the message text provided has been added to
+        the value.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::SetError "
+
+Sets an invalid data error.  
+
+This method is mainly intended for testing how invalid data are handled by a
+recipe when a variant is provided as input value.  
+
+Parameters
+----------
+* `message` :  
+    The error message text.  
+
+pre: The data type is not VariantDataType_None.  
+
+post:  
+
+    *   An invalid data error with the message text provided has been added to
+        the value.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariant::SetError "
+
+Sets an invalid data error.  
+
+This method is mainly intended for testing how invalid data are handled by a
+recipe when a variant is provided as input value.  
+
+Parameters
+----------
+* `message` :  
+    The error message text.  
+
+pre:  
+
+    *   `value` is not NULL.  
+    *   `value` is a null-terminated string.  
+    *   `The` data type is not VariantDataType_None.  
 
 post:  
 
@@ -5711,14 +7114,14 @@ C++ includes: VariantContainer.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::CVariantContainer "
-Pylon::DataProcessing::CVariantContainer::CVariantContainer
+
 Creates an empty variant container object.  
 
 \\error Doesn't throw C++ exceptions.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::CVariantContainer "
-Pylon::DataProcessing::CVariantContainer::CVariantContainer
+
 Copies a variant container object.  
 
 Parameters
@@ -5730,7 +7133,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::CVariantContainer "
-Pylon::DataProcessing::CVariantContainer::CVariantContainer
+
 Move constructs a variant container object.  
 
 Parameters
@@ -5742,14 +7145,98 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::~CVariantContainer "
-Pylon::DataProcessing::CVariantContainer::~CVariantContainer
+
 Destroys a variant container object.  
 
 \\error Doesn't throw C++ exceptions.  
 ";
 
+%feature("docstring") Pylon::DataProcessing::CVariantContainer::at "
+
+Gets the element with the `key` passed. If the `key` passed is not contained in
+the `CVariantContainer`, an exception is thrown.  
+
+Parameters
+----------
+* `key` :  
+    The key as string value, typically the name of an input or an output.  
+
+Returns
+-------
+The value as `CVariant` reference.  
+
+pre:  
+
+    *   The `key` passed is contained in the `CVariantContainer`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariantContainer::at "
+
+Gets the element with the `key` passed. If the `key` passed is not contained in
+the `CVariantContainer`, an exception is thrown.  
+
+Parameters
+----------
+* `key` :  
+    The key as string value, typically the name of an input or an output.  
+
+Returns
+-------
+The value as `CVariant` reference.  
+
+pre:  
+
+    *   The `key` passed is contained in the `CVariantContainer`.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariantContainer::at "
+
+Gets the element with the `key` passed. If the `key` passed is not contained in
+the `CVariantContainer`, an exception is thrown.  
+
+Parameters
+----------
+* `key` :  
+    The key as string value, typically the name of an input or an output.  
+
+Returns
+-------
+The value converted to the desired template type.  
+
+pre:  
+
+    *   The `key` passed is contained in the `CVariantContainer`.  
+    *   The element must be convertible to the template type.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
+%feature("docstring") Pylon::DataProcessing::CVariantContainer::at "
+
+Gets the element with the `key` passed. If the `key` passed is not contained in
+the `CVariantContainer`, an exception is thrown.  
+
+Parameters
+----------
+* `key` :  
+    The key as string value, typically the name of an input or an output.  
+* `value` :  
+    The value converted to the desired template type.  
+
+pre:  
+
+    *   The `key` passed is contained in the `CVariantContainer`.  
+    *   The element must be convertible to the template parameter.  
+
+\\error Throws an exception if the preconditions aren't met.  
+";
+
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::begin "
-Pylon::DataProcessing::CVariantContainer::begin
+
 Gets the `iterator` to the first element.  
 
 Returns
@@ -5760,7 +7247,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::end "
-Pylon::DataProcessing::CVariantContainer::end
+
 Gets the `iterator` to the element after the last element.  
 
 Returns
@@ -5771,7 +7258,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::find "
-Pylon::DataProcessing::CVariantContainer::find
+
 Finds an element.  
 
 Parameters
@@ -5787,7 +7274,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::count "
-Pylon::DataProcessing::CVariantContainer::count
+
 Number of elements with key.  
 
 Parameters
@@ -5803,7 +7290,7 @@ The number of elements with key, which is either 1 or 0.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::clear "
-Pylon::DataProcessing::CVariantContainer::clear
+
 Clears all elements.  
 
 post:  
@@ -5815,7 +7302,7 @@ post:
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::empty "
-Pylon::DataProcessing::CVariantContainer::empty
+
 Checks `CVariantContainer` has no elements.  
 
 Returns
@@ -5826,7 +7313,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::size "
-Pylon::DataProcessing::CVariantContainer::size
+
 Returns the number of elements.  
 
 Returns
@@ -5837,7 +7324,7 @@ The number of elements.
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::erase "
-Pylon::DataProcessing::CVariantContainer::erase
+
 Erases an element.  
 
 Returns
@@ -5848,7 +7335,7 @@ Returns
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::erase "
-Pylon::DataProcessing::CVariantContainer::erase
+
 Erases an element by key.  
 
 Parameters
@@ -5875,7 +7362,7 @@ C++ includes: ParameterNames.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::EnumParameterName::EnumParameterName "
-Pylon::DataProcessing::EnumParameterName::EnumParameterName";
+";
 
 // File: struct_pylon_1_1_data_processing_1_1_float_parameter_name.xml
 
@@ -5889,7 +7376,7 @@ C++ includes: ParameterNames.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::FloatParameterName::FloatParameterName "
-Pylon::DataProcessing::FloatParameterName::FloatParameterName";
+";
 
 // File: class_pylon_1_1_data_processing_1_1_i_event_observer.xml
 
@@ -5905,10 +7392,10 @@ C++ includes: IEventObserver.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::IEventObserver::~IEventObserver "
-Pylon::DataProcessing::IEventObserver::~IEventObserver";
+";
 
 %feature("docstring") Pylon::DataProcessing::IEventObserver::OnEventSignaled "
-Pylon::DataProcessing::IEventObserver::OnEventSignaled
+
 This method is called when the graph of the `CRecipe` detects an event, e.g., an
 error change of a vtool.  
 
@@ -5925,7 +7412,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::IEventObserver::OnDeregistered "
-Pylon::DataProcessing::IEventObserver::OnDeregistered
+
 This method is called when the event observer is deregistered from the recipe.
 It can be used to delete the event observer by overloading the method. The
 default implementation of this method does nothing.  
@@ -5936,6 +7423,20 @@ Parameters
     The recipe that the observer is deregistered from.  
 
 \\error C++ Exceptions thrown by this method are caught and ignored.  
+";
+
+// File: struct_pylon_1_1_data_processing_1_1_image_parameter_name.xml
+
+
+%feature("docstring") Pylon::DataProcessing::ImageParameterName "
+
+Defines an image parameter name by combining the parameter name string and the
+parameter type information.  
+
+C++ includes: ParameterNames.h
+";
+
+%feature("docstring") Pylon::DataProcessing::ImageParameterName::ImageParameterName "
 ";
 
 // File: struct_pylon_1_1_data_processing_1_1_integer_parameter_name.xml
@@ -5950,7 +7451,7 @@ C++ includes: ParameterNames.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::IntegerParameterName::IntegerParameterName "
-Pylon::DataProcessing::IntegerParameterName::IntegerParameterName";
+";
 
 // File: class_pylon_1_1_data_processing_1_1_i_output_observer.xml
 
@@ -5966,10 +7467,10 @@ C++ includes: IOutputObserver.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::IOutputObserver::~IOutputObserver "
-Pylon::DataProcessing::IOutputObserver::~IOutputObserver";
+";
 
 %feature("docstring") Pylon::DataProcessing::IOutputObserver::OutputDataPush "
-Pylon::DataProcessing::IOutputObserver::OutputDataPush
+
 This method is called when an output of the `CRecipe` pushes data out.  
 
 Parameters
@@ -5988,7 +7489,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::IOutputObserver::OnDeregistered "
-Pylon::DataProcessing::IOutputObserver::OnDeregistered
+
 This method is called when the output observer is deregistered from the recipe.
 It can be used to delete the output observer by overloading the method.  
 
@@ -5998,6 +7499,522 @@ Parameters
     The recipe that the observer is deregistered from.  
 
 \\error C++ Exceptions thrown by this method are caught and ignored.  
+";
+
+// File: class_pylon_1_1_data_processing_1_1_i_parameter_collection.xml
+
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection "
+
+Interface to access the parameter collection.  
+
+A parameter is accessed by its parameter name. The name is path-like. Example:
+for an ImageFormatConverter vTool called ImageFormatConverter1 or  for a Camera
+vTool called Camera1.  
+
+The path consists of these elements: <vTool Identifier>/<NodeMapName>/]/NodeName  
+
+It is possible to join multiple possible parameter names of the same type using
+\"|\" as a separator:  The first available parameter name is used when mutliple
+names are provided.  
+
+C++ includes: IParameterCollection.h
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::~IParameterCollection "
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Get "
+
+Returns a `Pylon::CParameter` from the requested parameter name.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`Pylon::CParameter` from the `parameterName` passed or an empty
+Pylon::CParameter if `parameterName` is not contained.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Get "
+
+Returns a `Pylon::CParameter` from the requested parameter name.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`Pylon::CParameter` from the `parameterName` passed or an empty
+Pylon::CParameter if `parameterName` is not contained.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Get "
+
+Returns a `Pylon::CIntegerParameter` from the requested parameter name.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`Pylon::CIntegerParameter` from the `parameterName` passed or an empty
+Pylon::CIntegerParameter if `parameterName` is not contained.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Get "
+
+Returns a `Pylon::CFloatParameter` from the requested parameter name.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`Pylon::CFloatParameter` from the `parameterName` passed or an empty
+Pylon::CFloatParameter if `parameterName` is not contained.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Get "
+
+Returns a `Pylon::CStringParameter` from the requested parameter name.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`Pylon::CStringParameter` from the `parameterName` passed or an empty
+Pylon::CStringParameter if `parameterName` is not contained.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Get "
+
+Returns a `Pylon::CBooleanParameter` from the requested parameter name.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`Pylon::CBooleanParameter` from the `parameterName` passed or an empty
+Pylon::CBooleanParameter if `parameterName` is not contained.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Get "
+
+Returns a `Pylon::CArrayParameter` from the requested parameter name.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`Pylon::CArrayParameter` from the `parameterName` passed or an empty
+Pylon::CArrayParameter if `parameterName` is not contained.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Get "
+
+Returns a `Pylon::CCommandParameter` from the requested parameter name.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`Pylon::CCommandParameter` from the `parameterName` passed or an empty
+Pylon::CCommandParameter if `parameterName` is not contained.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Get "
+
+Returns a `Pylon::CEnumParameter` from the requested parameter name.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`Pylon::CEnumParameter` from the `parameterName` passed or an empty
+Pylon::CEnumParameter if `parameterName` is not contained.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Get "
+
+Returns a `Pylon::DataProcessing::CImageParameter` from the requested parameter
+name.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`Pylon::DataProcessing::CImageParameter` from the `parameterName` passed or an
+empty Pylon::DataProcessing::CImageParameter if `parameterName` is not
+contained.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Get "
+
+Returns a `Pylon::DataProcessing::CRegionParameter` from the requested parameter
+name.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`Pylon::DataProcessing::CRegionParameter` from the `parameterName` passed or an
+empty Pylon::DataProcessing::CRegionParameter if `parameterName` is not
+contained.  
+
+\\error Doesn't throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Contains "
+
+Indicates whether the parameter is contained in the parameter collection.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`true` if a parameter with the `parameterName` passed is contained in the
+parameter collection, false otherwise.  
+
+Exceptions
+----------
+* `Doesn't` :  
+    throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Contains "
+
+Indicates whether the parameter is contained in the parameter collection.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the parameter.  
+
+Returns
+-------
+`true`, if a parameter with the `parameterName` passed is contained in the
+parameter collection, false otherwise.  
+
+Exceptions
+----------
+* `Doesn't` :  
+    throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Contains "
+
+Indicates whether the integer parameter is contained in the parameter
+collection.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the integer parameter.  
+
+Returns
+-------
+`true` if a parameter with the `parameterName` passed is contained in the
+parameter collection, false otherwise.  
+
+Exceptions
+----------
+* `Doesn't` :  
+    throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Contains "
+
+Indicates whether the boolean parameter is contained in the parameter
+collection.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the boolean parameter.  
+
+Returns
+-------
+`true` if a parameter with the `parameterName` passed is contained in the
+parameter collection, false otherwise.  
+
+Exceptions
+----------
+* `Doesn't` :  
+    throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Contains "
+
+Indicates whether the enum parameter is contained in the parameter collection.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the enum parameter.  
+
+Returns
+-------
+`true` if a parameter with the `parameterName` passed is contained in the
+parameter collection, false otherwise.  
+
+Exceptions
+----------
+* `Doesn't` :  
+    throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Contains "
+
+Indicates whether the string parameter is contained in the parameter collection.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the string parameter.  
+
+Returns
+-------
+`true` if a parameter with the `parameterName` passed is contained in the
+parameter collection, false otherwise.  
+
+Exceptions
+----------
+* `Doesn't` :  
+    throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Contains "
+
+Indicates whether the float parameter is contained in the parameter collection.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the float parameter.  
+
+Returns
+-------
+`true` if a parameter with the `parameterName` passed is contained in the
+parameter collection, false otherwise.  
+
+Exceptions
+----------
+* `Doesn't` :  
+    throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Contains "
+
+Indicates whether the array parameter is contained in the parameter collection.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the port parameter.  
+
+Returns
+-------
+`true` if a parameter with the `parameterName` passed is contained in the
+parameter collection, false otherwise.  
+
+Exceptions
+----------
+* `Doesn't` :  
+    throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Contains "
+
+Indicates whether the command parameter is contained in the parameter
+collection.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the command parameter.  
+
+Returns
+-------
+`true` if a parameter with the `parameterName` passed is contained in the
+parameter collection, false otherwise.  
+
+Exceptions
+----------
+* `Doesn't` :  
+    throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Contains "
+
+Indicates whether the image parameter is contained in the parameter collection.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the image parameter.  
+
+Returns
+-------
+`true` if a parameter with the `parameterName` passed is contained in the
+parameter collection, false otherwise.  
+
+Exceptions
+----------
+* `Doesn't` :  
+    throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::Contains "
+
+Indicates whether the region parameter is contained in the parameter collection.  
+
+Parameters
+----------
+* `parameterName` :  
+    The name of the region parameter.  
+
+Returns
+-------
+`true` if a parameter with the `parameterName` passed is contained in the
+parameter collection, false otherwise.  
+
+Exceptions
+----------
+* `Doesn't` :  
+    throw C++ exceptions.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
+";
+
+%feature("docstring") Pylon::DataProcessing::IParameterCollection::GetAllParameterNames "
+
+Gets a `StringList_t` with the names of all parameters in this parameter
+collection.  
+
+Returns
+-------
+`StringList_t` with the names of all parameters in this parameter collection.  
+
+\\threading This method is synchronized using the lock provided by
+`CRecipe::GetLock()`.  
 ";
 
 // File: struct_pylon_1_1_data_processing_1_1_c_variant_container_1_1iterator.xml
@@ -6011,12 +8028,12 @@ C++ includes: VariantContainer.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::iterator::iterator "
-Pylon::DataProcessing::CVariantContainer::iterator::iterator
+
 Creates an empty variant container iterator object.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::iterator::iterator "
-Pylon::DataProcessing::CVariantContainer::iterator::iterator
+
 Copies a variant container iterator object.  
 
 Parameters
@@ -6026,7 +8043,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::iterator::iterator "
-Pylon::DataProcessing::CVariantContainer::iterator::iterator
+
 Move constructs a variant container iterator object.  
 
 Parameters
@@ -6036,7 +8053,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::CVariantContainer::iterator::~iterator "
-Pylon::DataProcessing::CVariantContainer::iterator::~iterator
+
 Destroys a variant container iterator object.  
 ";
 
@@ -6054,10 +8071,10 @@ C++ includes: IUpdateObserver.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::IUpdateObserver::~IUpdateObserver "
-Pylon::DataProcessing::IUpdateObserver::~IUpdateObserver";
+";
 
 %feature("docstring") Pylon::DataProcessing::IUpdateObserver::UpdateDone "
-Pylon::DataProcessing::IUpdateObserver::UpdateDone
+
 This method is called when an update of a `Pylon::DataProcessing::CRecipe` has
 been processed completely.  
 
@@ -6099,7 +8116,21 @@ C++ includes: ParameterNames.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::ParameterName::ParameterName "
-Pylon::DataProcessing::ParameterName::ParameterName";
+";
+
+// File: struct_pylon_1_1_data_processing_1_1_region_parameter_name.xml
+
+
+%feature("docstring") Pylon::DataProcessing::RegionParameterName "
+
+Defines a region parameter name by combining the parameter name string and the
+parameter type information.  
+
+C++ includes: ParameterNames.h
+";
+
+%feature("docstring") Pylon::DataProcessing::RegionParameterName::RegionParameterName "
+";
 
 // File: struct_pylon_1_1_data_processing_1_1_c_smart_instant_camera_t_1_1_result_with_update.xml
 
@@ -6114,12 +8145,12 @@ C++ includes: CircleF.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::SCircleF::SCircleF "
-Pylon::DataProcessing::SCircleF::SCircleF
+
 Creates a circle and initializes it with 0.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::SCircleF::SCircleF "
-Pylon::DataProcessing::SCircleF::SCircleF
+
 Creates a circle and initializes it.  
 
 Parameters
@@ -6133,7 +8164,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::SCircleF::SCircleF "
-Pylon::DataProcessing::SCircleF::SCircleF
+
 Creates a circle and initializes it.  
 
 Parameters
@@ -6142,6 +8173,24 @@ Parameters
     The center of the circle.  
 * `radius` :  
     The radius of the circle.  
+";
+
+%feature("docstring") Pylon::DataProcessing::SCircleF::IsSimilar "
+
+Compares two SCircleF instances for similarity within a given tolerance.  
+
+Parameters
+----------
+* `rhs` :  
+    The right-hand side object to compare with.  
+* `tolerance` :  
+    The tolerance used for the comparison of floating point values. \\error  
+
+    *   Doesn't throw C++ exceptions.  
+
+Returns
+-------
+Returns true if similar within the given tolerance or false otherwise.  
 ";
 
 // File: struct_pylon_1_1_data_processing_1_1_s_ellipse_f.xml
@@ -6155,12 +8204,12 @@ C++ includes: EllipseF.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::SEllipseF::SEllipseF "
-Pylon::DataProcessing::SEllipseF::SEllipseF
+
 Creates an ellipse and initializes it with 0.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::SEllipseF::SEllipseF "
-Pylon::DataProcessing::SEllipseF::SEllipseF
+
 Creates an ellipse and initializes it.  
 
 Parameters
@@ -6180,7 +8229,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::SEllipseF::SEllipseF "
-Pylon::DataProcessing::SEllipseF::SEllipseF
+
 Creates an ellipse and initializes it.  
 
 Parameters
@@ -6195,6 +8244,24 @@ Parameters
     in its original state, i.e., it hasn't been rotated.  
 * `rotation` :  
     The rotation of the ellipse in radiant.  
+";
+
+%feature("docstring") Pylon::DataProcessing::SEllipseF::IsSimilar "
+
+Compares two SEllipseF instances for similarity within a given tolerance.  
+
+Parameters
+----------
+* `rhs` :  
+    The right-hand side object to compare with.  
+* `tolerance` :  
+    The tolerance used for the comparison of floating point values. \\error  
+
+    *   Doesn't throw C++ exceptions.  
+
+Returns
+-------
+Returns true if similar within the given tolerance or false otherwise.  
 ";
 
 // File: struct_pylon_1_1_data_processing_1_1_s_generic_output_observer_result.xml
@@ -6218,12 +8285,12 @@ C++ includes: LineF2D.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::SLineF2D::SLineF2D "
-Pylon::DataProcessing::SLineF2D::SLineF2D
+
 Creates a line and initializes it with 0.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::SLineF2D::SLineF2D "
-Pylon::DataProcessing::SLineF2D::SLineF2D
+
 Creates a line and initializes it.  
 
 Parameters
@@ -6239,7 +8306,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::SLineF2D::SLineF2D "
-Pylon::DataProcessing::SLineF2D::SLineF2D
+
 Creates a line and initializes it.  
 
 Parameters
@@ -6248,6 +8315,24 @@ Parameters
     Point A of the line.  
 * `pointB` :  
     Point B of the line.  
+";
+
+%feature("docstring") Pylon::DataProcessing::SLineF2D::IsSimilar "
+
+Compares two SLineF2D instances for similarity within a given tolerance.  
+
+Parameters
+----------
+* `rhs` :  
+    The right-hand side object to compare with.  
+* `tolerance` :  
+    The tolerance used for the comparison of floating point values. \\error  
+
+    *   Doesn't throw C++ exceptions.  
+
+Returns
+-------
+Returns true if similar within the given tolerance or false otherwise.  
 ";
 
 // File: class_smart_result_event_handler.xml
@@ -6261,6 +8346,8 @@ C++ includes: SmartResultEventHandler.h
 ";
 
 // File: class_pylon_1_1_data_processing_1_1_c_smart_instant_camera_t_1_1_smart_result_event_handler_data.xml
+
+// File: struct_pylon_1_1_data_processing_1_1_c_variant_1_1_s_memberwise.xml
 
 // File: struct_pylon_1_1_data_processing_1_1_s_point_f2_d.xml
 
@@ -6276,13 +8363,31 @@ C++ includes: PointF2D.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::SPointF2D::SPointF2D "
-Pylon::DataProcessing::SPointF2D::SPointF2D
+
 Creates a point and initializes it with (0,0).  
 ";
 
 %feature("docstring") Pylon::DataProcessing::SPointF2D::SPointF2D "
-Pylon::DataProcessing::SPointF2D::SPointF2D
+
 Creates a point and initializes it with (x,y).  
+";
+
+%feature("docstring") Pylon::DataProcessing::SPointF2D::IsSimilar "
+
+Compares two SPointF2D instances for similarity within a given tolerance.  
+
+Parameters
+----------
+* `rhs` :  
+    The right-hand side object to compare with.  
+* `tolerance` :  
+    The tolerance used for the comparison of floating point values. \\error  
+
+    *   Doesn't throw C++ exceptions.  
+
+Returns
+-------
+Returns true if similar within the given tolerance or false otherwise.  
 ";
 
 // File: struct_pylon_1_1_data_processing_1_1_s_rectangle_f.xml
@@ -6296,12 +8401,12 @@ C++ includes: RectangleF.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::SRectangleF::SRectangleF "
-Pylon::DataProcessing::SRectangleF::SRectangleF
+
 Creates a rectangle and initializes it with 0.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::SRectangleF::SRectangleF "
-Pylon::DataProcessing::SRectangleF::SRectangleF
+
 Creates a rectangle and initializes it.  
 
 Parameters
@@ -6319,7 +8424,7 @@ Parameters
 ";
 
 %feature("docstring") Pylon::DataProcessing::SRectangleF::SRectangleF "
-Pylon::DataProcessing::SRectangleF::SRectangleF
+
 Creates a rectangle and initializes it.  
 
 Parameters
@@ -6332,6 +8437,24 @@ Parameters
     The height of the rectangle.  
 * `rotation` :  
     The rotation of the rectangle in radiant.  
+";
+
+%feature("docstring") Pylon::DataProcessing::SRectangleF::IsSimilar "
+
+Compares two SRectangleF instances for similarity within a given tolerance.  
+
+Parameters
+----------
+* `rhs` :  
+    The right-hand side object to compare with.  
+* `tolerance` :  
+    The tolerance used for the comparison of floating point values. \\error  
+
+    *   Doesn't throw C++ exceptions.  
+
+Returns
+-------
+Returns true if similar within the given tolerance or false otherwise.  
 ";
 
 // File: struct_pylon_1_1_data_processing_1_1_s_region_entry_r_l_e32.xml
@@ -6371,7 +8494,7 @@ C++ includes: SmartResult.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::SSmartInstantCameraResultT::SetGrabResult "
-Pylon::DataProcessing::SSmartInstantCameraResultT::SetGrabResult
+
 Sets the grab result.  
 
 Parameters
@@ -6388,7 +8511,7 @@ internal grab loop thread of the CInstantCamera.
 ";
 
 %feature("docstring") Pylon::DataProcessing::SSmartInstantCameraResultT::SetInitialUpdate "
-Pylon::DataProcessing::SSmartInstantCameraResultT::SetInitialUpdate
+
 Sets the update returned by CRecipe::TriggerUpdateAsync() or an invalid Update
 if the recipe is not started.  
 
@@ -6406,7 +8529,7 @@ internal grab loop thread of the CInstantCamera.
 ";
 
 %feature("docstring") Pylon::DataProcessing::SSmartInstantCameraResultT::SetVariantContainer "
-Pylon::DataProcessing::SSmartInstantCameraResultT::SetVariantContainer
+
 Moves the variant container that contains the result from data processing to
 this object.  
 
@@ -6423,7 +8546,7 @@ are caught and ignored.
 ";
 
 %feature("docstring") Pylon::DataProcessing::SSmartInstantCameraResultT::Release "
-Pylon::DataProcessing::SSmartInstantCameraResultT::Release
+
 The currently held data is released.  
 
 post: The currently held data is released.  
@@ -6447,417 +8570,34 @@ C++ includes: ParameterNames.h
 ";
 
 %feature("docstring") Pylon::DataProcessing::StringParameterName::StringParameterName "
-Pylon::DataProcessing::StringParameterName::StringParameterName";
+";
 
 // File: namespace_pylon.xml
 
 // File: namespace_pylon_1_1_data_processing.xml
 
-%feature("docstring") Pylon::DataProcessing::Get "
-Pylon::DataProcessing::Get
-Returns a `Pylon::CParameter` from the requested parameter name.  
+%feature("docstring") Pylon::DataProcessing::IsSimilar "
+
+Compares two double values for similarity within a given tolerance.  
 
 Parameters
 ----------
-* `parameterName` :  
-    The name of the parameter.  
+* `a` :  
+    The first double value to compare.  
+* `b` :  
+    The second double value to compare.  
+* `tolerance` :  
+    The tolerance used for the comparison of floating point values. \\error  
+
+    *   Doesn't throw C++ exceptions.  
 
 Returns
 -------
-`Pylon::CParameter` from the `parameterName` passed or an empty
-Pylon::CParameter if `parameterName` is not contained.  
-
-\\error Doesn't throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Get "
-Pylon::DataProcessing::Get
-Returns a `Pylon::CParameter` from the requested parameter name.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the parameter.  
-
-Returns
--------
-`Pylon::CParameter` from the `parameterName` passed or an empty
-Pylon::CParameter if `parameterName` is not contained.  
-
-\\error Doesn't throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Get "
-Pylon::DataProcessing::Get
-Returns a `Pylon::CIntegerParameter` from the requested parameter name.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the parameter.  
-
-Returns
--------
-`Pylon::CIntegerParameter` from the `parameterName` passed or an empty
-Pylon::CIntegerParameter if `parameterName` is not contained.  
-
-\\error Doesn't throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Get "
-Pylon::DataProcessing::Get
-Returns a `Pylon::CFloatParameter` from the requested parameter name.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the parameter.  
-
-Returns
--------
-`Pylon::CFloatParameter` from the `parameterName` passed or an empty
-Pylon::CFloatParameter if `parameterName` is not contained.  
-
-\\error Doesn't throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Get "
-Pylon::DataProcessing::Get
-Returns a `Pylon::CStringParameter` from the requested parameter name.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the parameter.  
-
-Returns
--------
-`Pylon::CStringParameter` from the `parameterName` passed or an empty
-Pylon::CStringParameter if `parameterName` is not contained.  
-
-\\error Doesn't throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Get "
-Pylon::DataProcessing::Get
-Returns a `Pylon::CBooleanParameter` from the requested parameter name.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the parameter.  
-
-Returns
--------
-`Pylon::CBooleanParameter` from the `parameterName` passed or an empty
-Pylon::CBooleanParameter if `parameterName` is not contained.  
-
-\\error Doesn't throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Get "
-Pylon::DataProcessing::Get
-Returns a `Pylon::CArrayParameter` from the requested parameter name.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the parameter.  
-
-Returns
--------
-`Pylon::CArrayParameter` from the `parameterName` passed or an empty
-Pylon::CArrayParameter if `parameterName` is not contained.  
-
-\\error Doesn't throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Get "
-Pylon::DataProcessing::Get
-Returns a `Pylon::CCommandParameter` from the requested parameter name.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the parameter.  
-
-Returns
--------
-`Pylon::CCommandParameter` from the `parameterName` passed or an empty
-Pylon::CCommandParameter if `parameterName` is not contained.  
-
-\\error Doesn't throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Get "
-Pylon::DataProcessing::Get
-Returns a `Pylon::CEnumParameter` from the requested parameter name.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the parameter.  
-
-Returns
--------
-`Pylon::CEnumParameter` from the `parameterName` passed or an empty
-Pylon::CEnumParameter if `parameterName` is not contained.  
-
-\\error Doesn't throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Contains "
-Pylon::DataProcessing::Contains
-Indicates whether the parameter is contained in the parameter collection.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the parameter.  
-
-Returns
--------
-`true` if a parameter with the `parameterName` passed is contained in the
-parameter collection, false otherwise.  
-
-Exceptions
-----------
-* `Doesn't` :  
-    throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Contains "
-Pylon::DataProcessing::Contains
-Indicates whether the parameter is contained in the parameter collection.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the parameter.  
-
-Returns
--------
-`true`, if a parameter with the `parameterName` passed is contained in the
-parameter collection, false otherwise.  
-
-Exceptions
-----------
-* `Doesn't` :  
-    throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Contains "
-Pylon::DataProcessing::Contains
-Indicates whether the integer parameter is contained in the parameter
-collection.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the integer parameter.  
-
-Returns
--------
-`true` if a parameter with the `parameterName` passed is contained in the
-parameter collection, false otherwise.  
-
-Exceptions
-----------
-* `Doesn't` :  
-    throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Contains "
-Pylon::DataProcessing::Contains
-Indicates whether the boolean parameter is contained in the parameter
-collection.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the boolean parameter.  
-
-Returns
--------
-`true` if a parameter with the `parameterName` passed is contained in the
-parameter collection, false otherwise.  
-
-Exceptions
-----------
-* `Doesn't` :  
-    throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Contains "
-Pylon::DataProcessing::Contains
-Indicates whether the enum parameter is contained in the parameter collection.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the enum parameter.  
-
-Returns
--------
-`true` if a parameter with the `parameterName` passed is contained in the
-parameter collection, false otherwise.  
-
-Exceptions
-----------
-* `Doesn't` :  
-    throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Contains "
-Pylon::DataProcessing::Contains
-Indicates whether the string parameter is contained in the parameter collection.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the string parameter.  
-
-Returns
--------
-`true` if a parameter with the `parameterName` passed is contained in the
-parameter collection, false otherwise.  
-
-Exceptions
-----------
-* `Doesn't` :  
-    throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Contains "
-Pylon::DataProcessing::Contains
-Indicates whether the float parameter is contained in the parameter collection.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the float parameter.  
-
-Returns
--------
-`true` if a parameter with the `parameterName` passed is contained in the
-parameter collection, false otherwise.  
-
-Exceptions
-----------
-* `Doesn't` :  
-    throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Contains "
-Pylon::DataProcessing::Contains
-Indicates whether the array parameter is contained in the parameter collection.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the port parameter.  
-
-Returns
--------
-`true` if a parameter with the `parameterName` passed is contained in the
-parameter collection, false otherwise.  
-
-Exceptions
-----------
-* `Doesn't` :  
-    throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::Contains "
-Pylon::DataProcessing::Contains
-Indicates whether the command parameter is contained in the parameter
-collection.  
-
-Parameters
-----------
-* `parameterName` :  
-    The name of the command parameter.  
-
-Returns
--------
-`true` if a parameter with the `parameterName` passed is contained in the
-parameter collection, false otherwise.  
-
-Exceptions
-----------
-* `Doesn't` :  
-    throw C++ exceptions.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
-";
-
-%feature("docstring") Pylon::DataProcessing::GetAllParameterNames "
-Pylon::DataProcessing::GetAllParameterNames
-Gets a `StringList_t` with the names of all parameters in this parameter
-collection.  
-
-Returns
--------
-`StringList_t` with the names of all parameters in this parameter collection.  
-
-\\threading This method is synchronized using the lock provided by
-`CRecipe::GetLock()`.  
+Returns true if similar within the given tolerance or false otherwise.  
 ";
 
 %feature("docstring") Pylon::DataProcessing::IsValidRegionType "
-Pylon::DataProcessing::IsValidRegionType
+
 Checks whether a given region type is valid.  
 
 Parameters
@@ -6873,7 +8613,7 @@ Returns true if the region type is valid or false otherwise.
 ";
 
 %feature("docstring") Pylon::DataProcessing::BitPerRegionElement "
-Pylon::DataProcessing::BitPerRegionElement
+
 Determines the element size in bits of a given region type.  
 
 Parameters
@@ -6893,7 +8633,7 @@ Returns the size of an element of a region type in bits.
 ";
 
 %feature("docstring") Pylon::DataProcessing::ComputeRegionSize "
-Pylon::DataProcessing::ComputeRegionSize
+
 Determines the required data size of a region with a given region type and
 number of region elements.  
 
@@ -6917,7 +8657,7 @@ of region elements.
 ";
 
 %feature("docstring") Pylon::DataProcessing::ComputeRegionEntryCount "
-Pylon::DataProcessing::ComputeRegionEntryCount
+
 Determines the number of region elements that fit in the given region size in
 bytes.  
 
@@ -6951,11 +8691,15 @@ The number of region elements that fit in the given region size in bytes.
 
 // File: _circle_f_8h.xml
 
+// File: _compare_8h.xml
+
 // File: _ellipse_f_8h.xml
 
 // File: _generic_output_observer_8h.xml
 
 // File: _i_event_observer_8h.xml
+
+// File: _image_parameter_8h.xml
 
 // File: _i_output_observer_8h.xml
 
@@ -6987,6 +8731,8 @@ The number of region elements that fit in the given region size in bytes.
 
 // File: _region_entry_8h.xml
 
+// File: _region_parameter_8h.xml
+
 // File: _region_type_8h.xml
 
 // File: _region_user_buffer_event_handler_8h.xml
@@ -7009,15 +8755,17 @@ The number of region elements that fit in the given region size in bytes.
 
 // File: _variant_data_type_8h.xml
 
-// File: dir_5043b2f144d5f322b3d454b2efef9db4.xml
+// File: dir_fda5dbd265c4e0b31f39462b7177e062.xml
 
-// File: dir_af9bb8737c55f5611432d4cc677ceb6f.xml
+// File: dir_e6bb53534ac0e427887cf7a94c0c004e.xml
 
-// File: dir_fe434566b258aa8bf049cded0f256ae4.xml
+// File: dir_8a53cb3417c421d6e22675e810326db9.xml
 
-// File: dir_7a153bad9178605b17280b5b16bdfe05.xml
+// File: dir_4792e202dce0fa56dddef38746dee659.xml
 
-// File: dir_0f607d4bdd74fcc03ea5fbef7b1612e0.xml
+// File: dir_f1243e97fe9b0c5516b3fd6668bdc794.xml
 
-// File: dir_6da13fe8e64f545d83d168f37854bac0.xml
+// File: dir_9f6818100ef0bcd1ba470133c65fb9cb.xml
+
+// File: dir_a2d5bc44c104385e4066e7cb20d75ac3.xml
 

@@ -50,6 +50,23 @@ Set node value.
 Get node value.  
 ";
 
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_boolean_value_array.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CBooleanValueArray "
+
+Concrete value array implementation to be used with IBoolean based target value
+nodes.  
+
+The value is presented as uint8_t, contrary to IBoolean itself, to avoid
+possible problems with vector<bool>.  
+
+C++ includes: ValueArrayAdapter.h
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CBooleanValueArray::CBooleanValueArray "
+";
+
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_category_ref_t.xml
 
 
@@ -71,24 +88,14 @@ Connects a chunked buffer to a node map.
 C++ includes: ChunkAdapter.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CChunkAdapter::UpdateBuffer "
-
-Updates the base address of the buffer.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CChunkAdapter::ClearCaches "
-
-Clears the chunk caches.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CChunkAdapter::DetachBuffer "
-
-Detaches a buffer.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CChunkAdapter::~CChunkAdapter "
 
 Destructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapter::AttachNodeMap "
+
+Attaches to a node map and retrieves the chunk ports.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CChunkAdapter::DetachNodeMap "
@@ -110,9 +117,19 @@ Attaches a buffer to the matching ChunkPort.
 Implement that for a specific buffer layout  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CChunkAdapter::AttachNodeMap "
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapter::DetachBuffer "
 
-Attaches to a node map and retrieves the chunk ports.  
+Detaches a buffer.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapter::UpdateBuffer "
+
+Updates the base address of the buffer.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapter::ClearCaches "
+
+Clears the chunk caches.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_chunk_adapter_dcam.xml
@@ -125,19 +142,9 @@ Connects a chunked DCAM buffer to a node map.
 C++ includes: ChunkAdapterDcam.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterDcam::CheckCRC "
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterDcam::CChunkAdapterDcam "
 
-Checks CRC sum of buffer.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterDcam::CheckBufferLayout "
-
-Checks if a buffer contains chunks in a known format.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterDcam::HasCRC "
-
-Checks if buffer has a CRC attached.  
+Constructor.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CChunkAdapterDcam::~CChunkAdapterDcam "
@@ -145,14 +152,44 @@ Checks if buffer has a CRC attached.
 Destructor.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterDcam::CheckBufferLayout "
+
+Checks if a buffer contains chunks in a known format.  
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CChunkAdapterDcam::AttachBuffer "
 
 Attaches a buffer to the matching ChunkPort.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterDcam::CChunkAdapterDcam "
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterDcam::HasCRC "
+
+Checks if buffer has a CRC attached.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterDcam::CheckCRC "
+
+Checks CRC sum of buffer.  
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_chunk_adapter_gen_d_c.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterGenDC "
+
+Connects a GenDC Metadata GenICam Chunk Part buffer to a node map.  
+
+C++ includes: ChunkAdapterGenDC.h
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterGenDC::CChunkAdapterGenDC "
 
 Constructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterGenDC::~CChunkAdapterGenDC "
+
+Destructor.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_chunk_adapter_generic.xml
@@ -215,14 +252,14 @@ Constructor.
 Destructor.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterGEV::AttachBuffer "
-
-Attaches a buffer to the matching ChunkPort.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CChunkAdapterGEV::CheckBufferLayout "
 
 Checks if a buffer contains chunks in a known format.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterGEV::AttachBuffer "
+
+Attaches a buffer to the matching ChunkPort.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_chunk_adapter_u3_v.xml
@@ -245,14 +282,75 @@ Constructor.
 Destructor.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterU3V::CheckBufferLayout "
+
+Checks if a buffer contains chunks in a known format.  
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CChunkAdapterU3V::AttachBuffer "
 
 Attaches a buffer to the matching ChunkPort.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterU3V::CheckBufferLayout "
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_chunk_adapter_universal.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal "
+
+Connects a universal chunked buffer to a node map.  
+
+C++ includes: ChunkAdapterUniversal.h
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::CChunkAdapterUniversal "
+
+Constructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::~CChunkAdapterUniversal "
+
+Destructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::CheckBufferLayout "
 
 Checks if a buffer contains chunks in a known format.  
+
+Implement that for a specific buffer layout  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::CheckBufferLayoutBE "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::CheckBufferLayoutLE "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::AttachBuffer "
+
+Attaches a buffer to the matching ChunkPort.  
+
+Implement that for a specific buffer layout  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::AttachBufferBE "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::AttachBufferLE "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::AttachBufferGEV "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::AttachBufferU3V "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::AttachBufferGenDC "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::AttachBufferGeneric "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkAdapterUniversal::AttachBufferGeneric "
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_chunk_port.xml
@@ -265,37 +363,9 @@ Port attachable to a chunk in a buffer.
 C++ includes: ChunkPort.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CChunkPort::SetPortImpl "
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::CChunkPort "
 
-Called from the port node to give the chunk port a pointer to itself.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CChunkPort::Write "
-
-Writes a chunk of bytes to the port.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CChunkPort::InvalidateNode "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CChunkPort::Read "
-
-Reads a chunk of bytes from the port.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CChunkPort::GetPrincipalInterfaceType "
-
-Get the type of the main interface of a node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CChunkPort::DetachChunk "
-
-Detaches the Chunk from the ChunkPort.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CChunkPort::UpdateBuffer "
-
-Updates the base address of the chunk.  
+Constructor; can attach to a port.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CChunkPort::~CChunkPort "
@@ -308,9 +378,29 @@ Destructor; detaches from the port.
 Get the access mode of the node.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CChunkPort::GetChunkIDLength "
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::GetPrincipalInterfaceType "
 
-Gets the ChunkID length.  
+Get the type of the main interface of a node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::Read "
+
+Reads a chunk of bytes from the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::Write "
+
+Writes a chunk of bytes to the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::SetPortImpl "
+
+Called from the port node to give the chunk port a pointer to itself.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::SetPortImpl "
+
+Called from the port node to give the chunk port a pointer to itself.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CChunkPort::GetSwapEndianess "
@@ -318,9 +408,7 @@ Gets the ChunkID length.
 Determines if the port adapter must perform an endianess swap.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CChunkPort::AttachChunk "
-
-Attaches the Chunk to the ChunkPort.  
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::InvalidateNode "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CChunkPort::AttachPort "
@@ -333,9 +421,19 @@ Attaches the ChunkPort to the Port.
 Detaches the ChunkPort to the Port.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CChunkPort::ClearCache "
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::AttachChunk "
 
-Clears the chunk cache.  
+Attaches the Chunk to the ChunkPort.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::DetachChunk "
+
+Detaches the Chunk from the ChunkPort.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::GetChunkIDLength "
+
+Gets the ChunkID length.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CChunkPort::CheckChunkID "
@@ -348,9 +446,14 @@ Checks if a ChunkID matches.
 Checks if a ChunkID matches, version using uint64_t ID representation.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CChunkPort::CChunkPort "
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::UpdateBuffer "
 
-Constructor; can attach to a port.  
+Updates the base address of the chunk.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CChunkPort::ClearCache "
+
+Clears the chunk cache.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_command_ref_t.xml
@@ -375,9 +478,9 @@ Query whether the command is executed.
 %feature("docstring") GENAPI_NAMESPACE::CEnumEntryRefT "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CEnumEntryRefT::IsSelfClearing "
+%feature("docstring") GENAPI_NAMESPACE::CEnumEntryRefT::GetValue "
 
-Indicates if the corresponding EnumEntry is self clearing.  
+Get numeric enum value.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEnumEntryRefT::GetSymbolic "
@@ -385,14 +488,14 @@ Indicates if the corresponding EnumEntry is self clearing.
 Get symbolic enum value.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CEnumEntryRefT::GetValue "
+%feature("docstring") GENAPI_NAMESPACE::CEnumEntryRefT::GetNumericValue "
 
 Get numeric enum value.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CEnumEntryRefT::GetNumericValue "
+%feature("docstring") GENAPI_NAMESPACE::CEnumEntryRefT::IsSelfClearing "
 
-Get numeric enum value.  
+Indicates if the corresponding EnumEntry is self clearing.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_enumeration_t_ref.xml
@@ -401,14 +504,72 @@ Get numeric enum value.
 %feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetEntryByName "
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::CEnumerationTRef "
+";
 
-Get an entry node by name.  
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::SetReference "
+
+sets the implementation to the reference  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::SetNumEnums "
+
+sets the number of enum values  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::SetEnumReference "
+
+sets the Enum value corresponding to a value  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetAccessMode "
+
+Get the access mode of the node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetNode "
+
+Get the INode interface of the node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::ToString "
+
+Get content of the node as string.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::FromString "
 
 Set content of the node as string.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::IsValueCacheValid "
+
+Checks if the value comes from cache or is requested from another node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetSymbolics "
+
+Get list of symbolic Values.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetEntries "
+
+Get list of entry nodes.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::SetIntValue "
+
+Set node value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetIntValue "
+
+Get node value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetEntryByName "
+
+Get an entry node by name.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetEntry "
@@ -421,14 +582,9 @@ Get an entry node by its IntValue.
 returns the EnumEntry object belonging to the Value  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::ToString "
+%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetCurrentEntry "
 
-Get content of the node as string.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetNode "
-
-Get the INode interface of the node.  
+Get the current entry.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::SetValue "
@@ -436,62 +592,9 @@ Get the INode interface of the node.
 Set node value.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetCurrentEntry "
-
-Get the current entry.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetIntValue "
-
-Get node value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::SetEnumReference "
-
-sets the Enum value corresponding to a value  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetValue "
 
 Get node value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetEntries "
-
-Get list of entry nodes.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::SetReference "
-
-sets the implementation to the reference  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::SetIntValue "
-
-Set node value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::SetNumEnums "
-
-sets the number of enum values  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetSymbolics "
-
-Get list of symbolic Values.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::IsValueCacheValid "
-
-Checks if the value comes from cache or is requested from another node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::GetAccessMode "
-
-Get the access mode of the node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEnumerationTRef::CEnumerationTRef "
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_event_adapter.xml
@@ -504,14 +607,14 @@ Delivers Events to ports.
 C++ includes: EventAdapter.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CEventAdapter::DetachNodeMap "
-
-Detaches from the node emap.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CEventAdapter::CEventAdapter "
 
 Constructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapter::~CEventAdapter "
+
+Destructor.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEventAdapter::AttachNodeMap "
@@ -519,14 +622,14 @@ Constructor.
 Attaches to a node map and retrieves the chunk ports.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapter::DetachNodeMap "
+
+Detaches from the node emap.  
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CEventAdapter::DeliverMessage "
 
 Deliver message.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventAdapter::~CEventAdapter "
-
-Destructor.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_event_adapter1394.xml
@@ -546,7 +649,7 @@ constructor
 
 %feature("docstring") GENAPI_NAMESPACE::CEventAdapter1394::~CEventAdapter1394 "
 
-desctructor  
+destructor  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEventAdapter1394::DeliverMessage "
@@ -559,6 +662,36 @@ Deliver message.
 distributes events to node map  
 ";
 
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_event_adapter_c_l.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapterCL "
+
+Connects a U3V Event to a node map.  
+
+C++ includes: EventAdapterCL.h
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapterCL::CEventAdapterCL "
+
+Constructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapterCL::~CEventAdapterCL "
+
+Destructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapterCL::DeliverMessage "
+
+Deliver message.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapterCL::DeliverEventData "
+
+Delivers the Event + Data listed in the packet.  
+";
+
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_event_adapter_generic.xml
 
 
@@ -567,6 +700,16 @@ distributes events to node map
 Connects a generic event to a node map.  
 
 C++ includes: EventAdapterGeneric.h
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapterGeneric::CEventAdapterGeneric "
+
+Constructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapterGeneric::~CEventAdapterGeneric "
+
+Destructor.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEventAdapterGeneric::DeliverMessage "
@@ -578,16 +721,6 @@ Deliver message.
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEventAdapterGeneric::DeliverMessage "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventAdapterGeneric::CEventAdapterGeneric "
-
-Constructor.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventAdapterGeneric::~CEventAdapterGeneric "
-
-Destructor.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_event_adapter_g_e_v.xml
@@ -603,6 +736,11 @@ C++ includes: EventAdapterGEV.h
 %feature("docstring") GENAPI_NAMESPACE::CEventAdapterGEV::CEventAdapterGEV "
 
 Constructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapterGEV::~CEventAdapterGEV "
+
+Destructor.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEventAdapterGEV::DeliverMessage "
@@ -631,11 +769,6 @@ Delivers the Events listed in the Event packet (Extended ID flag set).
 Delivers the Event + Data listed in the EventData packet (Extended ID flag set).  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CEventAdapterGEV::~CEventAdapterGEV "
-
-Destructor.  
-";
-
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_event_adapter_u3_v.xml
 
 
@@ -646,24 +779,24 @@ Connects a U3V Event to a node map.
 C++ includes: EventAdapterU3V.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CEventAdapterU3V::~CEventAdapterU3V "
-
-Destructor.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventAdapterU3V::DeliverEventMessage "
-
-Delivers the Event + Data listed in the packet.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CEventAdapterU3V::CEventAdapterU3V "
 
 Constructor.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapterU3V::~CEventAdapterU3V "
+
+Destructor.  
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CEventAdapterU3V::DeliverMessage "
 
 Deliver message.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventAdapterU3V::DeliverEventMessage "
+
+Delivers the Event + Data listed in the packet.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_event_port.xml
@@ -676,9 +809,9 @@ Port attachable to an event.
 C++ includes: EventPort.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CEventPort::GetAccessMode "
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::CEventPort "
 
-Get the access mode of the node.  
+Constructor; can attach to a node.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEventPort::~CEventPort "
@@ -686,37 +819,14 @@ Get the access mode of the node.
 Destructor; detaches from the port.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::GetAccessMode "
+
+Get the access mode of the node.  
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CEventPort::GetPrincipalInterfaceType "
 
 Get the type of the main interface of a node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventPort::GetEventIDLength "
-
-Gets the EventID length.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventPort::AttachNode "
-
-Attaches to the Node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventPort::InvalidateNode "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventPort::DetachEvent "
-
-Detaches the Event from the EventPort.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventPort::CheckEventID "
-
-Checks if a EventID matches.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventPort::CheckEventID "
-
-Checks if a EventID matches, version using uint64_t ID representation.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEventPort::Read "
@@ -729,24 +839,9 @@ Reads a chunk of bytes from the port.
 Writes a chunk of bytes to the port.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CEventPort::DetachNode "
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::SetPortImpl "
 
-Detaches from the Node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventPort::CEventPort "
-
-Constructor; can attach to a node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventPort::AttachEvent "
-
-Attaches the an Event to the EventPort.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CEventPort::GetSwapEndianess "
-
-Determines if the port adapter must perform an endianess swap.  
+Called from the port node to give the chunk port a pointer to itself.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CEventPort::SetPortImpl "
@@ -754,45 +849,67 @@ Determines if the port adapter must perform an endianess swap.
 Called from the port node to give the chunk port a pointer to itself.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::GetSwapEndianess "
+
+Determines if the port adapter must perform an endianess swap.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::InvalidateNode "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::AttachNode "
+
+Attaches to the Node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::DetachNode "
+
+Detaches from the Node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::GetEventIDLength "
+
+Gets the EventID length.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::CheckEventID "
+
+Checks if a EventID matches.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::CheckEventID "
+
+Checks if a EventID matches, version using uint64_t ID representation.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::AttachEvent "
+
+Attaches the an Event to the EventPort.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CEventPort::DetachEvent "
+
+Detaches the Event from the EventPort.  
+";
+
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_feature_bag.xml
 
 
 %feature("docstring") GENAPI_NAMESPACE::CFeatureBag "
 
-Basic interface to persist values to.  
-
-Bag holding streamable features of a nodetree  
+Bag holding streamable features of a nodetree.  
 
 C++ includes: Persistence.h
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::StoreToBag "
-
-Stores the streamable nodes to this feature bag.  
-
-Parameters
-----------
-* `pNodeMap` :  
-    The node map to persist  
-* `MaxNumPersistSkriptEntries` :  
-    The max number of entries in the container; -1 means unlimited  
-
-Returns
--------
-number of entries in the bag  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::PersistFeature "
-
-Stores a feature.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::ToString "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CFeatureBag::SetInfo "
 
 sets information about the node map  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::PersistFeature "
+
+Stores a feature.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CFeatureBag::LoadFromBag "
@@ -802,7 +919,7 @@ Loads the features from the bag to the node tree
 Parameters
 ----------
 * `pNodeMap` :  
-    The node map  
+    The node map to load into  
 * `Verify` :  
     If true, all streamable features are read back  
 * `pErrorList` :  
@@ -815,6 +932,119 @@ the value is read from the camera and compared with the value from the feature
 bag.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::StoreToBag "
+
+Stores the streamable nodes to this feature bag.  
+
+Parameters
+----------
+* `pNodeMap` :  
+    The node map to persist  
+* `MaxNumPersistSkriptEntries` :  
+    The max number of entries in the container; -1 means unlimited  
+* `pFeatureFilter` :  
+    List of valid feature; all feature if NULL.  
+
+Returns
+-------
+number of entries in the bag  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::ToString "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::Destroy "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::GetBagName "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::SetBagName "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::CFeatureBag "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::CFeatureBag "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBag::~CFeatureBag "
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_feature_bagger.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger "
+
+Class use to bag features.  
+
+C++ includes: Persistence.h
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger::CFeatureBagger "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger::~CFeatureBagger "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger::Bag "
+
+Stores the streamable nodes to this feature bags in different device
+configurations.  
+
+Parameters
+----------
+* `handleDefaultNodeMap` :  
+    Stores the current nodemap if True  
+* `handleUserSets` :  
+    Store all user sets if True  
+* `handleSequencerSets` :  
+    Store all sequencer sets if True  
+* `pNodeMap` :  
+    The node map to persist  
+* `MaxNumPersistSkriptEntries` :  
+    The max number of entries in the container. -1 means unlimited  
+
+Returns
+-------
+number of bags  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger::UnBag "
+
+Loads the features from the bag to the node tree  
+
+Parameters
+----------
+* `Verify` :  
+    If true, all streamable features are read back  
+* `pErrorList` :  
+    If an error occurs during loading the error message is stored in the list
+    and the loading continues  
+
+For Verify=true the list of names in the feature bag is replayed again. If a
+node is a selector it's value is set to the value from the feature bag If not
+the value is read from the camera and compared with the value from the feature
+bag.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger::SetInfo "
+
+sets information about the node map  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger::begin "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger::end "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger::at "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger::size "
+";
+
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_float_ptr.xml
 
 
@@ -823,16 +1053,6 @@ bag.
 SmartPointer for IFloat interface pointer.  
 
 C++ includes: Pointer.h
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFloatPtr::GetEnumAlias "
-
-gets the interface of an enum alias node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFloatPtr::GetIntAlias "
-
-gets the interface of an integer alias node.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CFloatPtr::CFloatPtr "
@@ -845,20 +1065,20 @@ Default constructor.
 Constructor from IBase pointer type.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CFloatPtr::GetIntAlias "
+
+gets the interface of an integer alias node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFloatPtr::GetEnumAlias "
+
+gets the interface of an enum alias node.  
+";
+
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_float_ref_t.xml
 
 
 %feature("docstring") GENAPI_NAMESPACE::CFloatRefT "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::ImposeMin "
-
-Restrict minimum value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetUnit "
-
-Get unit.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CFloatRefT::SetValue "
@@ -866,14 +1086,57 @@ Get unit.
 Set node value.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetValue "
+
+Get node value.  
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetMin "
 
 Get minimum value allowed.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::ImposeMax "
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetMax "
 
-Restrict maximum value.  
+Get maximum value allowed.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::HasInc "
+
+True if the float has a constant increment.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetIncMode "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetInc "
+
+Get the constant increment if there is any.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetListOfValidValues "
+
+Get list of valid value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetRepresentation "
+
+Get recommended representation.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetUnit "
+
+Get unit.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetDisplayNotation "
+
+Get the way the float should be converted to a string.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetDisplayPrecision "
+
+Get the precision to be used when converting the float to a string.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetIntAlias "
@@ -886,47 +1149,30 @@ gets the interface of an alias node.
 gets the interface of an alias node.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetValue "
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::ImposeMin "
 
-Get node value.  
+Restrict minimum value.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::HasInc "
+%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::ImposeMax "
 
-True if the float has a constant increment.  
+Restrict maximum value.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetRepresentation "
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_float_value_array.xml
 
-Get recommended representation.  
+
+%feature("docstring") GENAPI_NAMESPACE::CFloatValueArray "
+
+Concrete value array implementation to be used with IFloat based target value
+nodes.  
+
+The value is presented as double, same as by IFloat itself.  
+
+C++ includes: ValueArrayAdapter.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetInc "
-
-Get the constant increment if there is any.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetIncMode "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetDisplayNotation "
-
-Get the way the float should be converted to a string.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetMax "
-
-Get maximum value allowed.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetDisplayPrecision "
-
-Get the precision to be used when converting the float to a string.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CFloatRefT::GetListOfValidValues "
-
-Get list of valid value.  
+%feature("docstring") GENAPI_NAMESPACE::CFloatValueArray::CFloatValueArray "
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_generic___x_m_l_loader_params.xml
@@ -945,49 +1191,14 @@ C++ includes: NodeMapRef.h
 %feature("docstring") GENAPI_NAMESPACE::CIntegerRefT "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetValue "
-
-Get node value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetUnit "
-
-Get the physical unit name.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetListOfValidValues "
-
-Implementation of IInteger::GetListOfValidValues.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetMax "
-
-Get maximum value allowed.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::ImposeMin "
-
-Restrict minimum value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetFloatAlias "
-
-gets the interface of an alias node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetIncMode "
-
-Get increment.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::SetValue "
 
 Set node value.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetRepresentation "
+%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetValue "
 
-Get recommended representation.  
+Get node value.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetMin "
@@ -995,14 +1206,105 @@ Get recommended representation.
 Get minimum value allowed.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetMax "
+
+Get maximum value allowed.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetIncMode "
+
+Get increment.  
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetInc "
 
 Get increment.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetListOfValidValues "
+
+Implementation of IInteger::GetListOfValidValues.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetRepresentation "
+
+Get recommended representation.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetUnit "
+
+Get the physical unit name.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::GetFloatAlias "
+
+gets the interface of an alias node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::ImposeMin "
+
+Restrict minimum value.  
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CIntegerRefT::ImposeMax "
 
 Restrict maximum value.  
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_integer_value_array.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CIntegerValueArray "
+
+Concrete value array implementation to be used with IInteger based target value
+nodes.  
+
+The value is presented as int64_t, same as by IInteger itself.  
+
+C++ includes: ValueArrayAdapter.h
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CIntegerValueArray::CIntegerValueArray "
+";
+
+// File: struct_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_l___c_o_m_m_a_n_d___h_e_a_d_e_r.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CL_COMMAND_HEADER "
+
+CL/GenCP command header.  
+
+C++ includes: EventAdapterCL.h
+";
+
+// File: struct_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_l___e_v_e_n_t___d_a_t_a.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CL_EVENT_DATA "
+
+CL/GenCP EVENT_CMD specific command data WITHOUT event specific data.  
+
+C++ includes: EventAdapterCL.h
+";
+
+// File: struct_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_l___e_v_e_n_t___d_a_t_a1.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CL_EVENT_DATA1 "
+
+CL/GenCP EVENT_CMD specific command data WITH event specific data.  
+
+C++ includes: EventAdapterCL.h
+";
+
+// File: struct_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_l___e_v_e_n_t___m_e_s_s_a_g_e.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CL_EVENT_MESSAGE "
+
+Entire event data message.  
+
+C++ includes: EventAdapterCL.h
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_lock.xml
@@ -1015,9 +1317,14 @@ A lock class.
 C++ includes: Synch.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CLock::Unlock "
+%feature("docstring") GENAPI_NAMESPACE::CLock::CLock "
 
-leaves the critical section  
+Constructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CLock::~CLock "
+
+Destructor.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CLock::TryLock "
@@ -1030,14 +1337,9 @@ tries to enter the critical section; returns true if successful
 enters the critical section (may block)  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CLock::CLock "
+%feature("docstring") GENAPI_NAMESPACE::CLock::Unlock "
 
-Constructor.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CLock::~CLock "
-
-Destructor.  
+leaves the critical section  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_lock_ex.xml
@@ -1062,6 +1364,9 @@ callback body instance for INode pointers
 C++ includes: NodeCallback.h
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CNodeCallback::CNodeCallback "
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CNodeCallback::~CNodeCallback "
 
 virtual destructor  
@@ -1070,9 +1375,6 @@ virtual destructor
 %feature("docstring") GENAPI_NAMESPACE::CNodeCallback::Destroy "
 
 destroys the object  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeCallback::CNodeCallback "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CNodeCallback::GetNode "
@@ -1095,49 +1397,11 @@ par: Examples
 
 attention: The is CNodeMapFactory not thread-safe.  
 
-    You need to take care when camera description file data can be actually be
-    freed, see method documentation of the node map factory for more detail.  
+attention: You need to take care when camera description file data can be
+    actually be freed, see method documentation of the node map factory for more
+    detail.  
 
 C++ includes: NodeMapFactory.h
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::ReleaseCameraDescriptionFileData "
-
-Advanced: Releases any in constructors provided camera description file data
-buffers or files.  
-
-This step is usually done automatically. All references to added injection data
-are dropped in this step to free the data. After this step any in constructors
-provided buffers can be freed or any in constructors given files can be deleted.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::IsEmpty "
-
-Returns true if nothing is loaded (IsLoaded()) and no source data is available,
-e.g. when the node map factory has been created with the default constructor.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::ToXml "
-
-Outputs the pre-processed node map in XML form (mainly for debug purpose).  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::ExtractSubtree "
-
-The name of the node that represents the root of the subtree that shall be
-extracted.  
-
-Parameters
-----------
-* `SubTreeRootNodeName` :  
-    The root of the branch to extract, e.g. \"ChunkData\".  
-* `doRenameToRoot` :  
-    Renames the extracted subtree root node SubTreeRootNodeName to \"Root\",
-    sets the IsFeature property. Preprocess() is automatically called if needed
-    to create the memory internal representation of the camera description
-    file(s). The preprocessed result can be read from the cache or written to
-    the cache in this step. This depends on the availability of a cache and the
-    used CacheUsage setting.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::CNodeMapFactory "
@@ -1225,50 +1489,16 @@ Parameters
 Throws an invalid argument exception if XmlData is empty.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::ToString "
-
-Outputs the pre-processed node map in string form (for debug purpose).  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::ApplyStyleSheet "
-
-Applies a style sheet to the pre-processed node map.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::IsCameraDescriptionFileDataReleased "
-
-Can be used to check whether the ReleaseCameraDescriptionFileData() processing
-step has been performed.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::IsLoaded "
-
-Can be used to check whether the LoadAndInject() processing step has been
-performed. Returns true if IsPreprocessed() returns true (Preprocessed Data has
-been loaded from cache).  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::Preprocess "
-
-Advanced: Creates the preprocessed memory internal representation of the camera
-description file(s), the CNodeDataMap (not part of the public interface).  
-
-This step is usually done automatically. Preprocessed data can be read from the
-cache or written to the cache in this step. This depends on the availability of
-a cache and the used CacheUsage setting. By calling this method directly direct
-cache load is suppressed, see CreateNodeMap() for more information.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::~CNodeMapFactory "
 
 Destroys the node map factory data if all references to the data have been
 released.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::IsPreprocessed "
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::IsEmpty "
 
-Can be used to check whether the Preprocess() processing step has been
-performed.  
+Returns true if nothing is loaded (IsLoaded()) and no source data is available,
+e.g. when the node map factory has been created with the default constructor.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::AddInjectionData "
@@ -1286,13 +1516,71 @@ preprocessing has been done before. The cache usage of injection data is
 ignored.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::CreateEmptyNodeMap "
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::LoadAndInject "
 
-Creates an empty node map usable as placeholder, e.g. if certain features are
-not supported by a module.  
+Advanced: Loads, Parses, and Injects the camera description files recursively.
+The result is a memory internal representation of the camera description
+file(s), the CNodeDataMap (not part of the public interface).  
+
+This step is usually done automatically. Prevents cache read if called manually.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::CreateNodeDataFromNodeMap "
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::IsLoaded "
+
+Can be used to check whether the LoadAndInject() processing step has been
+performed. Returns true if IsPreprocessed() returns true (Preprocessed Data has
+been loaded from cache).  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::ExtractSubtree "
+
+The name of the node that represents the root of the subtree that shall be
+extracted.  
+
+Parameters
+----------
+* `SubTreeRootNodeName` :  
+    The root of the branch to extract, e.g. \"ChunkData\".  
+* `doRenameToRoot` :  
+    Renames the extracted subtree root node SubTreeRootNodeName to \"Root\",
+    sets the IsFeature property. Preprocess() is automatically called if needed
+    to create the memory internal representation of the camera description
+    file(s). The preprocessed result can be read from the cache or written to
+    the cache in this step. This depends on the availability of a cache and the
+    used CacheUsage setting.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::Preprocess "
+
+Advanced: Creates the preprocessed memory internal representation of the camera
+description file(s), the CNodeDataMap (not part of the public interface).  
+
+This step is usually done automatically. Preprocessed data can be read from the
+cache or written to the cache in this step. This depends on the availability of
+a cache and the used CacheUsage setting. By calling this method directly direct
+cache load is suppressed, see CreateNodeMap() for more information.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::IsPreprocessed "
+
+Can be used to check whether the Preprocess() processing step has been
+performed.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::ReleaseCameraDescriptionFileData "
+
+Advanced: Releases any in constructors provided camera description file data
+buffers or files.  
+
+This step is usually done automatically. All references to added injection data
+are dropped in this step to free the data. After this step any in constructors
+provided buffers can be freed or any in constructors given files can be deleted.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::IsCameraDescriptionFileDataReleased "
+
+Can be used to check whether the ReleaseCameraDescriptionFileData() processing
+step has been performed.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::CreateNodeMap "
@@ -1324,7 +1612,36 @@ an external lock to avoid using too many locks in an application.
 attention: The provided lock must not be destroyed before the created node map.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::GetSupportedSchemaVersions "
+
+Each list entry is a string with the format \"{Major}.{Minor}\" were {Major} and
+{Minor} are integers Example: {\"1.1\", \"1.2\"} indicates that the schema v1.1
+and v1.2 are supported. The SubMinor version number is not given since it is for
+fully compatible bug fixes only  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::ToString "
+
+Outputs the pre-processed node map in string form (for debug purpose).  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::ToXml "
+
+Outputs the pre-processed node map in XML form (mainly for debug purpose).  
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::GetNodeStatistics "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::ApplyStyleSheet "
+
+Applies a style sheet to the pre-processed node map.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::CreateEmptyNodeMap "
+
+Creates an empty node map usable as placeholder, e.g. if certain features are
+not supported by a module.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::ClearCache "
@@ -1332,21 +1649,7 @@ attention: The provided lock must not be destroyed before the created node map.
 Deletes all preprocessed camera description files from the cache.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::LoadAndInject "
-
-Advanced: Loads, Parses, and Injects the camera description files recursively.
-The result is a memory internal representation of the camera description
-file(s), the CNodeDataMap (not part of the public interface).  
-
-This step is usually done automatically. Prevents cache read if called manually.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::GetSupportedSchemaVersions "
-
-Each list entry is a string with the format \"{Major}.{Minor}\" were {Major} and
-{Minor} are integers Example: {\"1.1\", \"1.2\"} indicates that the schema v1.1
-and v1.2 are supported. The SubMinor version number is not given since it is for
-fully compatible bug fixes only  
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapFactory::CreateNodeDataFromNodeMap "
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_node_map_ref.xml
@@ -1392,14 +1695,19 @@ templateparam
 C++ includes: NodeMapRef.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_GetNodes "
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::CNodeMapRefT "
 
-Retrieves all nodes in the node map.  
+Constructor.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_LoadXMLFromFileInject "
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::CNodeMapRefT "
 
-Creates the object from a XML target and an inject file with given file name.  
+Constructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::CNodeMapRefT "
+
+Copy constructor.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::~CNodeMapRefT "
@@ -1407,9 +1715,19 @@ Creates the object from a XML target and an inject file with given file name.
 Destructor.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_LoadXMLFromString "
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_Destroy "
 
-Creates the object from XML data given in a string.  
+Destroys the node map.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_LoadXMLFromFile "
+
+Creates the object from a XML file with given file name.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_LoadXMLFromZIPFile "
+
+Creates the object from a ZIP'd XML file with given file name.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_LoadXMLFromZIPData "
@@ -1417,14 +1735,64 @@ Creates the object from XML data given in a string.
 Creates the object from a ZIP'd XML file given in a string.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_LoadXMLFromFileInject "
+
+Creates the object from a XML target and an inject file with given file name.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_LoadXMLFromString "
+
+Creates the object from XML data given in a string.  
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_LoadXMLFromStringInject "
 
 Creates the object from XML data given in a string with injection.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_GetSupportedSchemaVersions "
+
+Gets a list of supported schema versions.  
+
+Each list entry is a string with the format \"{Major}.{Minor}\" were {Major} and
+{Minor} are integers Example: {\"1.1\", \"1.2\"} indicates that the schema v1.1
+and v1.2 are supported. The SubMinor version number is not given since it is for
+fully compatible bug fixes only  
+";
+
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_GetDeviceName "
 
 Get device name.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_Poll "
+
+Fires nodes which have a polling time.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_GetNodes "
+
+Retrieves all nodes in the node map.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_GetNode "
+
+Retrieves the node from the central map by name.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_SetSuppressCallbackMode "
+
+Set suppress callback mode.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_NewNodeWriteConcatenator "
+
+Create a new write concatenator object.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_ConcatenatedWrite "
+
+Execute the transaction.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_InvalidateNodes "
@@ -1442,34 +1810,19 @@ Connects a port to a port node with given name.
 Connects a port to the standard port \"Device\".  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::CNodeMapRefT "
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_Connect "
 
-Constructor.  
+Connects a port to a port node with given name.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::CNodeMapRefT "
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_Connect "
 
-Constructor.  
+Connects a port to the standard port \"Device\".  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::CNodeMapRefT "
+%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_ParseSwissKnifes "
 
-Copy constructor.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_Destroy "
-
-Destroys the node map.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_LoadXMLFromFile "
-
-Creates the object from a XML file with given file name.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_Poll "
-
-Fires nodes which have a polling time.  
+Parse all Swissknife equations.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_ClearXMLCache "
@@ -1477,24 +1830,122 @@ Fires nodes which have a polling time.
 Clears the cache of the camera description files.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_GetNode "
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_node_write_concatenator.xml
 
-Retrieves the node from the central map by name.  
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenator "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_GetSupportedSchemaVersions "
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenator::Add "
 
-Gets a list of supported schema versions.  
-
-Each list entry is a string with the format \"{Major}.{Minor}\" were {Major} and
-{Minor} are integers Example: {\"1.1\", \"1.2\"} indicates that the schema v1.1
-and v1.2 are supported. The SubMinor version number is not given since it is for
-fully compatible bug fixes only  
+Add a write with value of type gcstring.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CNodeMapRefT::_LoadXMLFromZIPFile "
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenator::Add "
 
-Creates the object from a ZIP'd XML file with given file name.  
+Add a write with value of type char *.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenator::Add "
+
+Add a write with value of type int64_t.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenator::Add "
+
+Add a write with value of type double.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenator::Add "
+
+Add a write with value of type bool.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenator::Clear "
+
+Remove all write from the container.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenator::Destroy "
+
+//! Destroys this container  
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_node_write_concatenator_ref.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef "
+
+Reference object for CNodeWriteConcatenator create with NewNodeWriteConcatenator
+function of nodemap objects.  
+
+C++ includes: ConcatenatedWrite.h
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef::CNodeWriteConcatenatorRef "
+
+Constructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef::CNodeWriteConcatenatorRef "
+
+Constructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef::~CNodeWriteConcatenatorRef "
+
+Destructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef::_Add "
+
+Add a write with value of type gcstring.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef::_Add "
+
+Add a write with value of type char *.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef::_Add "
+
+Add a write with value of type int64_t.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef::_Add "
+
+Add a write with value of type double.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef::_Add "
+
+Add a write with value of type bool.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef::_Clear "
+
+Remove all write from the container.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef::Release "
+
+Release owenership of the write concatenator object.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CNodeWriteConcatenatorRef::get "
+
+Returns a pointer tthe object owned by *this or nullptr if no object is owned.  
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_feature_bag_1_1const__iterator.xml
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_feature_bagger_1_1const__iterator.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger::const_iterator "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CFeatureBagger::const_iterator::const_iterator "
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_counter.xml
@@ -1503,13 +1954,13 @@ Creates the object from a ZIP'd XML file with given file name.
 %feature("docstring") GENAPI_NAMESPACE::Counter "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::Counter::IsZero "
-";
-
 %feature("docstring") GENAPI_NAMESPACE::Counter::Counter "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::Counter::GetValue "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Counter::IsZero "
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_pointer.xml
@@ -1522,14 +1973,6 @@ Encapsulates a GenApi pointer dealing with the dynamic_cast automatically.
 C++ includes: Pointer.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CPointer::IsValid "
-
-true if the pointer is valid  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CPointer::~CPointer "
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CPointer::CPointer "
 
 Default constructor.  
@@ -1540,17 +1983,23 @@ Default constructor.
 Constructor from INode pointer type.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CPointer::~CPointer "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPointer::IsValid "
+
+true if the pointer is valid  
+";
+
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_port_impl.xml
 
 
 %feature("docstring") GENAPI_NAMESPACE::CPortImpl "
 
-Standard implementation for a port !  
+    \\brief Standard implementation for a port
+ !  
 
 C++ includes: PortImpl.h
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CPortImpl::InvalidateNode "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CPortImpl::CPortImpl "
@@ -1558,14 +2007,9 @@ C++ includes: PortImpl.h
 Constructor.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CPortImpl::Write "
+%feature("docstring") GENAPI_NAMESPACE::CPortImpl::~CPortImpl "
 
-Writes a chunk of bytes to the port.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CPortImpl::GetSwapEndianess "
-
-Determines if the port adapter must perform an endianess swap.  
+Destructor.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CPortImpl::GetAccessMode "
@@ -1580,9 +2024,19 @@ Driver closed => NI, Driver open => RW, analysing a struct, RO
 Reads a chunk of bytes from the port.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CPortImpl::~CPortImpl "
+%feature("docstring") GENAPI_NAMESPACE::CPortImpl::Write "
 
-Destructor.  
+Writes a chunk of bytes to the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortImpl::SetPortImpl "
+
+Sets pointer the real port implementation; this function may called only once.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortImpl::GetSwapEndianess "
+
+Determines if the port adapter must perform an endianess swap.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CPortImpl::Replay "
@@ -1595,25 +2049,13 @@ implementation can however use a special command which sends all register write
 commands as one package.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CPortImpl::SetPortImpl "
-
-Sets pointer the real port implementation; this function may called only once.  
+%feature("docstring") GENAPI_NAMESPACE::CPortImpl::InvalidateNode "
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_port_recorder_ref_t.xml
 
 
 %feature("docstring") GENAPI_NAMESPACE::CPortRecorderRefT "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CPortRecorderRefT::StartRecording "
-
-starts logging all WriteRegister commands to a list  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CPortRecorderRefT::StopRecording "
-
-stops recording  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CPortRecorderRefT::Replay "
@@ -1626,10 +2068,25 @@ implementation can however use a special command which sends all register write
 commands as one package.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CPortRecorderRefT::StartRecording "
+
+starts logging all WriteRegister commands to a list  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortRecorderRefT::StopRecording "
+
+stops recording  
+";
+
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_port_ref_t.xml
 
 
 %feature("docstring") GENAPI_NAMESPACE::CPortRefT "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortRefT::Read "
+
+Reads a chunk of bytes from the port.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CPortRefT::Write "
@@ -1637,9 +2094,86 @@ commands as one package.
 Writes a chunk of bytes to the port.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CPortRefT::Read "
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_port_stacked_impl.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedImpl "
+
+    \\brief Standard implementation for a port
+ !  
+
+C++ includes: PortStackedImpl.h
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedImpl::CPortStackedImpl "
+
+Constructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedImpl::~CPortStackedImpl "
+
+Destructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedImpl::GetAccessMode "
+
+Get the access mode of the node.  
+
+Driver closed => NI, Driver open => RW, analysing a struct, RO  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedImpl::Read "
 
 Reads a chunk of bytes from the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedImpl::Write "
+
+Writes a chunk of bytes to the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedImpl::Write "
+
+Writes a chunk of bytes to the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedImpl::SetPortImpl "
+
+Sets pointer the real port implementation; this function may called only once.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedImpl::GetSwapEndianess "
+
+Determines if the port adapter must perform an endianess swap.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedImpl::Replay "
+
+sends the commands to the camera.  
+
+the default implementation just walks the list and issues each command using the
+WriteRegister method. Depending on the capabilities of the transport layer the
+implementation can however use a special command which sends all register write
+commands as one package.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedImpl::InvalidateNode "
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_port_stacked_ref_t.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedRefT "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedRefT::Read "
+
+Reads a chunk of bytes from the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortStackedRefT::Write "
+
+Writes a chunk of bytes to the port.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_port_write_list.xml
@@ -1652,21 +2186,6 @@ Container holding a list of port write commands.
 C++ includes: PortWriteList.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CPortWriteList::Replay "
-
-Replays the write command to the given port interface.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CPortWriteList::SetCookie "
-
-Sets a cookie in case the port implementation want to cache a command list.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CPortWriteList::Write "
-
-Writes a chunk of bytes to the port.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CPortWriteList::CPortWriteList "
 
 Constructor.  
@@ -1675,6 +2194,21 @@ Constructor.
 %feature("docstring") GENAPI_NAMESPACE::CPortWriteList::~CPortWriteList "
 
 Destructor.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortWriteList::Write "
+
+Writes a chunk of bytes to the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortWriteList::Replay "
+
+Replays the write command to the given port interface.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CPortWriteList::SetCookie "
+
+Sets a cookie in case the port implementation want to cache a command list.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CPortWriteList::GetCookie "
@@ -1687,9 +2221,7 @@ Gets the cookie a port implementation may have set for caching a command list.
 
 %feature("docstring") GENAPI_NAMESPACE::CReferenceT "
 
-Interface to construct a reference.  
-
-Interface to construct an enum reference Reference to an IBase derived pointer  
+Reference to an IBase derived pointer.  
 
 C++ includes: Reference.h
 ";
@@ -1718,14 +2250,14 @@ Set the register's contents.
 Fills a buffer with the register's contents.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CRegisterRefT::GetAddress "
-
-Retrieves the Address of the register.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CRegisterRefT::GetLength "
 
 Retrieves the Length of the register [Bytes].  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CRegisterRefT::GetAddress "
+
+Retrieves the Address of the register.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_register_set_helper.xml
@@ -1738,9 +2270,9 @@ Copies data from buffer to variables in a typesafe manner.
 C++ includes: RegisterSetHelper.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CRegisterSetHelper::CopyFromBuffer "
+%feature("docstring") GENAPI_NAMESPACE::CRegisterSetHelper::CopyData "
 
-Typesafe copy from buffer to variable.  
+memcpy firing exceptions  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CRegisterSetHelper::CopyToBuffer "
@@ -1748,20 +2280,15 @@ Typesafe copy from buffer to variable.
 Typesafe copy from variable to buffer.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CRegisterSetHelper::CopyData "
+%feature("docstring") GENAPI_NAMESPACE::CRegisterSetHelper::CopyFromBuffer "
 
-memcpy firing exceptions  
+Typesafe copy from buffer to variable.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_selector_ref_t.xml
 
 
 %feature("docstring") GENAPI_NAMESPACE::CSelectorRefT "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CSelectorRefT::IsSelector "
-
-true iff this feature selects a group of features  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CSelectorRefT::GetSelectedFeatures "
@@ -1774,6 +2301,11 @@ Get all features of the Selector.
 retrieve the group of features selecting this node  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CSelectorRefT::IsSelector "
+
+true iff this feature selects a group of features  
+";
+
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_selector_set.xml
 
 
@@ -1784,7 +2316,9 @@ The set of selectors selecting a given node.
 C++ includes: SelectorSet.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CSelectorSet::GetSelectorList "
+%feature("docstring") GENAPI_NAMESPACE::CSelectorSet::CSelectorSet "
+
+Constructor.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CSelectorSet::~CSelectorSet "
@@ -1792,9 +2326,12 @@ C++ includes: SelectorSet.h
 Destructor.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CSelectorSet::CSelectorSet "
+%feature("docstring") GENAPI_NAMESPACE::CSelectorSet::IsEmpty "
 
-Constructor.  
+returns true if no selectors are present  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CSelectorSet::SetFirst "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CSelectorSet::SetNext "
@@ -1803,15 +2340,82 @@ Constructor.
 %feature("docstring") GENAPI_NAMESPACE::CSelectorSet::Restore "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CSelectorSet::SetFirst "
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CSelectorSet::ToString "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CSelectorSet::IsEmpty "
+%feature("docstring") GENAPI_NAMESPACE::CSelectorSet::GetState "
+";
 
-returns true if no selectors are present  
+%feature("docstring") GENAPI_NAMESPACE::CSelectorSet::GetSelectorList "
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_selector_state.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CSelectorState "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CSelectorState::CSelectorState "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CSelectorState::SetFirst "
+
+Sets the state to the first selector.  
+
+Returns
+-------
+true if the resulting value is valid  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CSelectorState::SetNext "
+
+Sets state to next selector.  
+
+Returns
+-------
+true if the resulting value is valid  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CSelectorState::AddSelector "
+
+Add a node the the selector state.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CSelectorState::AddSelector "
+
+Add a node the the selector state.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CSelectorState::GetNodeName "
+
+Get the name of the current selector.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CSelectorState::GetNodeValue "
+
+Get the value of the current selector.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CSelectorState::IsEmpty "
+
+Sets state to next selector.  
+
+Returns
+-------
+true if the selector states is empty  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CSelectorState::RestoreState "
+
+Sets the selector of the nodemap to the saved state.  
+
+Parameters
+----------
+* `pNodeMap` :  
+    The node map to load into  
+* `pErrorList` :  
+    If an error occurs during loading the error message is stored in the list
+    and the loading continues  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_string_ref_t.xml
@@ -1825,14 +2429,14 @@ returns true if no selectors are present
 Set node value.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CStringRefT::GetMaxLength "
-
-Get max length of string.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CStringRefT::GetValue "
 
 Get node value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CStringRefT::GetMaxLength "
+
+Get max length of string.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_test_port_struct.xml
@@ -1845,39 +2449,6 @@ Implements a register spaces based on a C++ struct.
 C++ includes: StructPort.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::GetNumWrites "
-
-Returns the number of writes since lastReset Statistics.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::Write "
-
-Writes a chunk of bytes to the port.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::Read "
-
-Reads a chunk of bytes from the port.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::ResetStatistics "
-
-Resets the read/write statistics.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::GetPrincipalInterfaceType "
-
-Get the type of the main interface of a node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::MemSet "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::GetNumReads "
-
-Returns the number of reads since lastReset Statistics.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::CTestPortStruct "
 ";
 
@@ -1886,15 +2457,187 @@ Returns the number of reads since lastReset Statistics.
 Get the access mode of the node.  
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::GetPrincipalInterfaceType "
+
+Get the type of the main interface of a node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::Read "
+
+Reads a chunk of bytes from the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::Write "
+
+Writes a chunk of bytes to the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::MemSet "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::ResetStatistics "
+
+Resets the read/write statistics.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::GetNumReads "
+
+Returns the number of reads since lastReset Statistics.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CTestPortStruct::GetNumWrites "
+
+Returns the number of writes since lastReset Statistics.  
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_value_array_adapter.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CValueArrayAdapter "
+
+Adapter for accessing structured register known to include an array of selector-
+iterated values.  
+
+Generic worker for any numeric \"output\" type, typically used through
+\"concretized\" children, CIntegerValueArray, CFloatValueArray or
+CBooleanValueArray. Intended to significantly improve performance when reading
+large contiguous arrays that would otherwise be read using selector-based
+iteration. To be eligible for use with the adapter, the XML definition of the
+feature and its selector must conform to specific rules that are documented with
+SFNC feature ValueArrayCandidates (and can be tested using member function
+CheckAdvertisedCompatibility). The \"effective\" value type is expected to be
+usually same as the \"output\" value type, with exception of retrieving the bool
+array as vector<uint8_t> instead of the possibly problematic vector<bool>.  
+
+C++ includes: ValueArrayAdapter.h
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CValueArrayAdapter::CValueArrayAdapter "
+
+Creates a CValueArrayAdapter object.  
+
+Parameters
+----------
+* `base_value` :  
+    The value node holding the array of values (selector iterated).  
+* `selector` :  
+    The selector node iterating the base_value array.  
+
+Does not throw C++ exceptions, except when memory allocation fails.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CValueArrayAdapter::IsValid "
+
+Check if the instance is valid and useable.  
+
+The created instance might be invalid in particular if given value/selector
+feature pair is not eligible for use with the adapter (they do not conform to
+required rules).  
+
+Does not throw C++ exceptions.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CValueArrayAdapter::GetAllValues "
+
+Get all values of the array.  
+
+Gets all values of the array (for current selector range) as a vector. Returns
+same results as if the value array was iterated using the corresponding selector
+- if given value/selector pair is eligible for use with the adapter and conforms
+to the required rules, otherwise the results are undefined.  
+
+The nodemap is expected to advertise the value/selector pairs suitable for use
+with the adapter using the ValueArrayCandidates feature (defined in SFNC). The
+device (nodemap) designer guarantees compatibility with the adapter for the
+advertised features.  
+
+The function does not check access mode of the value feature, user should verify
+its readability when desirable.  
+
+Note that the first run might be little bit slower than following runs, because
+of some initial internal allocations. The data are not cached, the array is
+retrieved fresh on each run.  
+
+Throws C++ exceptions if the operation fails.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CValueArrayAdapter::GetAllValues "
+
+Get all values of the array.  
+
+Parameters
+----------
+* `values` :  
+    The output vector carrying the 'array' values.  
+
+Gets all values of the array (for current selector range) as a vector. Returns
+same results as if the value array was iterated using the corresponding selector
+- if given value/selector pair is eligible for use with the adapter and conforms
+to the required rules, otherwise the results are undefined.  
+
+The nodemap is expected to advertise the value/selector pairs suitable for use
+with the adapter using the ValueArrayCandidates feature (defined in SFNC). The
+device (nodemap) designer guarantees compatibility with the adapter for the
+advertised features.  
+
+The function does not check access mode of the value feature, user should verify
+its readability when desirable.  
+
+Note that the first run might be little bit slower than following runs, because
+of some initial internal allocations. The data are not cached, the array is
+retrieved fresh on each run.  
+
+This overload outputs the values in an out-parameter rather than as a return
+value which might offer small performance advantage if the same vector is reused
+across multiple calls (its capacity is reused).  
+
+Throws C++ exceptions if the operation fails.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CValueArrayAdapter::CheckAdvertisedCompatibility "
+
+Check value/selector feature pair suitability for use with the adapter.  
+
+Parameters
+----------
+* `base_value` :  
+    The value node holding the array of values (selector iterated).  
+* `selector` :  
+    The selector node iterating the base_value array.  
+
+Returns
+-------
+Returns true if the value/selector pair is advertised to be eligible for use
+with the adapter.  
+
+The function does not directly touch the value/selector nodes, it rather checks,
+if the nodemap they belong to advertises their compatibility with the adapter
+using the ValueArrayCandidates SFNC feature. It is the device/nodemap designer's
+responsibility to advertise this compatibility only for suitable features.  
+
+Does not throw C++ exceptions.  
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_value_array_adapter_base.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::CValueArrayAdapterBase "
+
+Base class wrapping internal implementation details of the value array adapter
+functionality.  
+
+Not expected to be used directly. Responsible for initialization/preparation
+tasks required by concrete value array adapter classes. The nodemap
+corresponding to the base_value and selector features must stay valid throughout
+the lifetime of the adapter.  
+
+C++ includes: ValueArrayAdapter.h
+";
+
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_value_ref_t.xml
 
 
 %feature("docstring") GENAPI_NAMESPACE::CValueRefT "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CValueRefT::FromString "
-
-Set content of the node as string.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::CValueRefT::GetNode "
@@ -1902,14 +2645,19 @@ Set content of the node as string.
 Get the INode interface of the node.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::CValueRefT::IsValueCacheValid "
-
-Checks if the value comes from cache or is requested from another node.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::CValueRefT::ToString "
 
 Get content of the node as string.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CValueRefT::FromString "
+
+Set content of the node as string.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CValueRefT::IsValueCacheValid "
+
+Checks if the value comes from cache or is requested from another node.  
 ";
 
 // File: struct_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_d_c_a_m___c_h_e_c_k_s_u_m.xml
@@ -1924,6 +2672,9 @@ Get content of the node as string.
 %feature("docstring") GENAPI_NAMESPACE::DCAM_CHUNK_TRAILER "
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::DCAM_CHUNK_TRAILER::DCAM_CHUNK_TRAILER "
+";
+
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1double__autovector__t.xml
 
 
@@ -1934,19 +2685,19 @@ Vector of doubles with reference counting.
 C++ includes: Autovector.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::double_autovector_t::size "
+%feature("docstring") GENAPI_NAMESPACE::double_autovector_t::double_autovector_t "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::double_autovector_t::double_autovector_t "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::double_autovector_t::double_autovector_t "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::double_autovector_t::~double_autovector_t "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::double_autovector_t::double_autovector_t "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::double_autovector_t::double_autovector_t "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::double_autovector_t::double_autovector_t "
+%feature("docstring") GENAPI_NAMESPACE::double_autovector_t::size "
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_e_access_mode_class.xml
@@ -1959,19 +2710,19 @@ EAccessModeClass holds conversion methods for the access mode enumeration.
 C++ includes: EnumClasses.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::EAccessModeClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::EAccessModeClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::EAccessModeClass::FromString "
 
 Converts a string to enum value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::EAccessModeClass::ToString "
+
+Converts a string to an int32_t property.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::EAccessModeClass::ToString "
+
+Converts a string to an int32_t property.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_e_caching_mode_class.xml
@@ -2032,19 +2783,19 @@ EEndianessClass holds conversion methods for the endianess enumeration.
 C++ includes: EnumClasses.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::EEndianessClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::EEndianessClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::EEndianessClass::FromString "
 
 Converts a string to enum value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::EEndianessClass::ToString "
+
+Converts a string to an int32_t property.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::EEndianessClass::ToString "
+
+Converts a string to an int32_t property.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_e_gen_api_schema_version_class.xml
@@ -2133,19 +2884,19 @@ enumeration.
 C++ includes: EnumClasses.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::ERepresentationClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::ERepresentationClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::ERepresentationClass::FromString "
 
 Converts a string to enum value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ERepresentationClass::ToString "
+
+Converts a string to an int32_t property.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ERepresentationClass::ToString "
+
+Converts a string to an int32_t property.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_e_sign_class.xml
@@ -2158,19 +2909,19 @@ ESignClass holds conversion methods for the sign enumeration.
 C++ includes: EnumClasses.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::ESignClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::ESignClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::ESignClass::FromString "
 
 Converts a string to enum value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ESignClass::ToString "
+
+Converts a string to an int32_t property.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ESignClass::ToString "
+
+Converts a string to an int32_t property.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_e_slope_class.xml
@@ -2208,19 +2959,19 @@ Holds conversion methods for the standard namespace enumeration.
 C++ includes: EnumClasses.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::EStandardNameSpaceClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::EStandardNameSpaceClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::EStandardNameSpaceClass::FromString "
 
 Converts a string to enum value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::EStandardNameSpaceClass::ToString "
+
+Converts a string to an int32_t property.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::EStandardNameSpaceClass::ToString "
+
+Converts a string to an int32_t property.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_e_visibility_class.xml
@@ -2233,19 +2984,19 @@ EVisibilityClass holds conversion methods for the visibility enumeration.
 C++ includes: EnumClasses.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::EVisibilityClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::EVisibilityClass::ToString "
-
-Converts a string to an int32_t property.  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::EVisibilityClass::FromString "
 
 Converts a string to enum value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::EVisibilityClass::ToString "
+
+Converts a string to an int32_t property.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::EVisibilityClass::ToString "
+
+Converts a string to an int32_t property.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_e_yes_no_class.xml
@@ -2281,70 +3032,10 @@ Converts a string to an int32_t property.
 Adapter between the std::iostreambuf and the SFNC Features representing the
 device filesystem.  
 
-Adapter between the std::iostreambuf and the SFNC Features representing the
-device filesystem The adapter assumes, that the features provide stdio
-fileaccess compatible semantic  
+The adapter assumes, that the features provide stdio fileaccess compatible
+semantic  
 
 C++ includes: Filestream.h
-";
-
-%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::openFile "
-
-open a file on the device  
-
-Parameters
-----------
-* `pFileName` :  
-    filename of the file to open. The filename must exist in the Enumeration
-    FileSelector  
-* `mode` :  
-    mode to open the file. The mode must exist in the Enumeration FileOpenMode  
-
-Returns
--------
-true on success, false on error  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::write "
-
-writes data into a file.  
-
-Parameters
-----------
-* `buf` :  
-    source buffer  
-* `offs` :  
-    offset into the device file  
-* `len` :  
-    count of bytes to write  
-* `pFileName` :  
-    filename of the file to write into The filename must exist in the
-    Enumeration FileSelector  
-
-Returns
--------
-count of bytes written  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::read "
-
-read data from the device into a buffer  
-
-Parameters
-----------
-* `buf` :  
-    target buffer  
-* `offs` :  
-    offset in the device file to read from  
-* `len` :  
-    count of bytes to read  
-* `pFileName` :  
-    filename of the file to write into The filename must exist in the
-    Enumeration FileSelector  
-
-Returns
--------
-count of bytes successfully read  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::FileProtocolAdapter "
@@ -2352,21 +3043,7 @@ count of bytes successfully read
 Constructor.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::getBufSize "
-
-fetch max FileAccessBuffer length for a file  
-
-Parameters
-----------
-* `pFileName` :  
-    filename of the file to open. The filename must exist in the Enumeration
-    FileSelector  
-* `mode` :  
-    mode to open the file. The mode must exist in the Enunmeration FileOpenMode  
-
-Returns
--------
-max length of FileAccessBuffer in the given mode on the given file  
+%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::~FileProtocolAdapter "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::attach "
@@ -2383,22 +3060,21 @@ Returns
 true if attach was successful, false if not  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::deleteFile "
+%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::openFile "
 
-Delete the content of the file.  
+open a file on the device  
 
 Parameters
 ----------
 * `pFileName` :  
-    filename of the file to open. The filename must exist in the Enumeration
+    file name of the file to open. The file name must exist in the Enumeration
     FileSelector  
+* `mode` :  
+    mode to open the file. The mode must exist in the Enumeration FileOpenMode  
 
 Returns
 -------
 true on success, false on error  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::~FileProtocolAdapter "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::closeFile "
@@ -2408,7 +3084,83 @@ close a file on the device
 Parameters
 ----------
 * `pFileName` :  
-    filename of the file to open. The filename must exist in the Enumeration
+    file name of the file to open. The file name must exist in the Enumeration
+    FileSelector  
+
+Returns
+-------
+true on success, false on error  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::write "
+
+writes data into a file  
+
+Parameters
+----------
+* `buf` :  
+    source buffer  
+* `offs` :  
+    offset into the device file  
+* `len` :  
+    count of bytes to write  
+* `pFileName` :  
+    file name of the file to write into. The file name must exist in the
+    Enumeration FileSelector  
+
+Returns
+-------
+count of bytes written. If less than len bytes are written an error has
+occurred.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::read "
+
+read data from the device into a buffer  
+
+Parameters
+----------
+* `buf` :  
+    target buffer  
+* `offs` :  
+    offset in the device file to read from  
+* `len` :  
+    count of bytes to read  
+* `pFileName` :  
+    file name of the file to write into. The file name must exist in the
+    Enumeration FileSelector  
+
+Returns
+-------
+count of bytes successfully read. . If less than len bytes are written an error
+has occurred.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::getBufSize "
+
+fetch max FileAccessBuffer length for a file  
+
+Parameters
+----------
+* `pFileName` :  
+    file name of the file to open. The file name must exist in the Enumeration
+    FileSelector  
+* `mode` :  
+    mode to open the file. The mode must exist in the Enumeration FileOpenMode  
+
+Returns
+-------
+max length of FileAccessBuffer in the given mode on the given file  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::FileProtocolAdapter::deleteFile "
+
+Delete the content of the file.  
+
+Parameters
+----------
+* `pFileName` :  
+    file name of the file to open. The file name must exist in the Enumeration
     FileSelector  
 
 Returns
@@ -2434,6 +3186,16 @@ Constructor.
 %feature("docstring") GENAPI_NAMESPACE::Function_NodeCallback::Destroy "
 
 destroys the object  
+";
+
+// File: struct_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_g_e_n_d_c___c_h_u_n_k___t_r_a_i_l_e_r.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::GENDC_CHUNK_TRAILER "
+
+Header of a GenDC chunk trailing tag.  
+
+C++ includes: ChunkAdapterGenDC.h
 ";
 
 // File: struct_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_g_v_c_p___c_h_u_n_k___t_r_a_i_l_e_r.xml
@@ -2535,10 +3297,10 @@ C++ includes: EventAdapterGEV.h
 %feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBase::rdbuf "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBase::open "
+%feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBase::is_open "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBase::is_open "
+%feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBase::open "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBase::close "
@@ -2552,19 +3314,19 @@ Close the file on the device.
 %feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBuf "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBuf::close "
+%feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBuf::IDevFileStreamBuf "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBuf::~IDevFileStreamBuf "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBuf::IDevFileStreamBuf "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBuf::open "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBuf::is_open "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::IDevFileStreamBuf::close "
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1int64__autovector__t.xml
@@ -2592,12 +3354,6 @@ C++ includes: Autovector.h
 %feature("docstring") GENAPI_NAMESPACE::int64_autovector_t::size "
 ";
 
-// File: class_i_reference.xml
-
-
-%feature("docstring") IReference "
-";
-
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_lockable_object_1_1_lock.xml
 
 
@@ -2609,10 +3365,10 @@ releases it when destroyed.
 C++ includes: Synch.h
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::LockableObject::Lock::~Lock "
+%feature("docstring") GENAPI_NAMESPACE::LockableObject::Lock::Lock "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::LockableObject::Lock::Lock "
+%feature("docstring") GENAPI_NAMESPACE::LockableObject::Lock::~Lock "
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_lockable_object.xml
@@ -2665,9 +3421,10 @@ destroys the object
 %feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBase "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBase::close "
+%feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBase::rdbuf "
+";
 
-Close the file on device.  
+%feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBase::is_open "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBase::open "
@@ -2684,10 +3441,9 @@ Parameters
     open mode  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBase::rdbuf "
-";
+%feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBase::close "
 
-%feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBase::is_open "
+Close the file on device.  
 ";
 
 // File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_o_dev_file_stream_buf.xml
@@ -2699,16 +3455,22 @@ Parameters
 %feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBuf::ODevFileStreamBuf "
 ";
 
+%feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBuf::~ODevFileStreamBuf "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBuf::open "
+";
+
 %feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBuf::is_open "
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBuf::close "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBuf::open "
-";
+// File: struct_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_s___p_o_r_t___r_e_g_i_s_t_e_r___s_t_a_c_k___e_n_t_r_y.xml
 
-%feature("docstring") GENAPI_NAMESPACE::ODevFileStreamBuf::~ODevFileStreamBuf "
+
+%feature("docstring") GENAPI_NAMESPACE::S_PORT_REGISTER_STACK_ENTRY "
 ";
 
 // File: struct_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_single_chunk_data__t.xml
@@ -2721,6 +3483,71 @@ Parameters
 
 
 %feature("docstring") GENAPI_NAMESPACE::SingleChunkDataStr_t "
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_swap_extractor.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::SwapExtractor "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::SwapExtractor::Extract "
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_swap_extractor_3_011_01_4.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::SwapExtractor< 1 > "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::SwapExtractor< 1 >::Extract "
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_swap_extractor_3_012_01_4.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::SwapExtractor< 2 > "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::SwapExtractor< 2 >::Extract "
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_swap_extractor_3_014_01_4.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::SwapExtractor< 4 > "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::SwapExtractor< 4 >::Extract "
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_swap_extractor_3_018_01_4.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::SwapExtractor< 8 > "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::SwapExtractor< 8 >::Extract "
+";
+
+// File: struct_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_c_feature_bag_1_1_triplet.xml
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_type_converter.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::TypeConverter "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::TypeConverter::Convert "
+";
+
+// File: class_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_type_converter_3_01bool_01_4.xml
+
+
+%feature("docstring") GENAPI_NAMESPACE::TypeConverter< bool > "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::TypeConverter< bool >::Convert "
 ";
 
 // File: struct_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e_1_1_u3_v___c_h_u_n_k___t_r_a_i_l_e_r.xml
@@ -2767,557 +3594,7 @@ C++ includes: EventAdapterU3V.h
 
 // File: namespace_g_e_n_a_p_i___n_a_m_e_s_p_a_c_e.xml
 
-%feature("docstring") GENAPI_NAMESPACE::GetRepresentation "
-
-Get recommended representation.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsCachable "
-
-Is the node value cachable.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsAccessModeCacheable "
-
-True if the AccessMode can be cached.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CastToIDestroy "
-
-makes sure the dynamic_cast operator is implemented in the DLL (due to a Linux
-bug)  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsWritable "
-
-Tests if writable.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsWritable "
-
-Checks if a node is writable.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsWritable "
-
-Checks if a node is writable.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsWritable "
-
-Checks if a node is Writable.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetIntValue "
-
-Get integer node value.  
-
-Parameters
-----------
-* `Verify` :  
-    Enables Range verification (default = false). The AccessMode is always
-    checked  
-* `IgnoreCache` :  
-    If true the value is read ignoring any caches (default = false)  
-
-Returns
--------
-The value read  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsVisible "
-
-Tests Visibility.  
-
-CAVE : this relys on the EVisibility enum's coding  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetSwapEndianess "
-
-Determines if the port adapter must perform an endianess swap.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::Deregister "
-
-Unregistering callback by handle.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsReadable "
-
-Tests if readable.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsReadable "
-
-Checks if a node is readable.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsReadable "
-
-Checks if a node is readable.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsReadable "
-
-Checks if a node is readable.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetIncMode "
-
-Get increment mode.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::Combine "
-
-Computes which access mode the two guards allow together.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::Combine "
-
-Computes which visibility the two guards allow together.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::Combine "
-
-Computes which CachingMode results from a combination.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsAvailable "
-
-Tests if available.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsAvailable "
-
-Checks if a node is available.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsAvailable "
-
-Checks if a node is available.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsAvailable "
-
-Checks if a node is Available.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetEventID "
-
-Get the EventId of the node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetSelectedFeatures "
-
-retrieve the group of selected features  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::make_NodeCallback "
-
-make a new callback object for C functions  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::make_NodeCallback "
-
-make a new callback object for member functions  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::EatComments "
-
-Helper function ignoring lines starting with comment character '#'.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetCurrentEntry "
-
-Get the current entry.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetDeviceName "
-
-Get a name of the device.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::ImposeMin "
-
-Restrict minimum value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::ImposeMin "
-
-Restrict minimum value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetDisplayName "
-
-Get a name string for display.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromStringInject "
-
-Loads an XML from a string with injection.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::Register "
-
-Register a C-function as a callback.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::Register "
-
-Register a C++-member function a callback.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::ImposeVisibility "
-
-Imposes a visibility to the natural visibility of the node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::MergeXMLFiles "
-
-Injects an XML file into a target file.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetInterfaceName "
-
-Returns the name of the main interface as string DEPRECATED, use
-IBase::GetPrincipalInterfaceType() instead  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetEntry "
-
-Get an entry node by its IntValue.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetEntry "
-
-returns the EnumEntry object belonging to the Value  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetCastAlias "
-
-Retrieves the a node which describes the same feature so that it can be casted.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetListOfValidValues "
-
-Get list of valid value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromString "
-
-Loads an XML from a string.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsDeprecated "
-
-True if the node should not be used any more.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetMaxLength "
-
-Retrieves the maximum length of the string in bytes.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromZIPFile "
-
-Loads an XML from a ZIP file.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetNodeMap "
-
-Retrieves the central node map.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::ImposeAccessMode "
-
-Imposes an access mode to the natural access mode of the node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetPollingTime "
-
-recommended polling time (for not cachable nodes)  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetAddress "
-
-Retrieves the Address of the register.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetNameSpace "
-
-Get name space.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::SetIntValue "
-
-Set integer node value.  
-
-Parameters
-----------
-* `Value` :  
-    The value to set  
-* `Verify` :  
-    Enables AccessMode and Range verification (default = true)  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::FromString "
-
-Set content of the node as string.  
-
-Parameters
-----------
-* `ValueStr` :  
-    The value to set  
-* `Verify` :  
-    Enables AccessMode and Range verification (default = true)  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::ToString "
-
-Get content of the node as string.  
-
-Parameters
-----------
-* `Verify` :  
-    Enables Range verification (default = false). The AccessMode is always
-    checked  
-* `IgnoreCache` :  
-    If true the value is read ignoring any caches (default = false)  
-
-Returns
--------
-The value read  
-";
-
 %feature("docstring") GENAPI_NAMESPACE::SET_GUID "
-";
-
-%feature("docstring") GENAPI_NAMESPACE::Write "
-
-Writes a chunk of bytes to the port.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsValueCacheValid "
-
-Checks if the value comes from cache or is requested from another node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetMax "
-
-Get maximum value allowed.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::ImposeMax "
-
-Restrict maximum value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::ImposeMax "
-
-Restrict maximum value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetPrincipalInterfaceType "
-
-Get the type of the main interface of a node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetDisplayNotation "
-
-Get the way the float should be converted to a string.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetUnit "
-
-Get the physical unit name.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetLength "
-
-Retrieves the Length of the register [Bytes].  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetInc "
-
-Get the constant increment if there is any.  
-
-Get increment.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetChildren "
-
-Get all nodes this node directly depends on.  
-
-Parameters
-----------
-* `Children` :  
-    List of children nodes  
-* `LinkType` :  
-    The link type  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetDisplayPrecision "
-
-Get the precision to be used when converting the float to a string.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetProperty "
-
-Retrieves a property plus an additional attribute by name.  
-
-If a property has multiple values/attribute they come with Tabs as delimiters  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsImplemented "
-
-Tests if implemented.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsImplemented "
-
-Checks if a node is implemented.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsImplemented "
-
-Checks if a node is implemented.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsImplemented "
-
-Checks if a node is Implemented.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetEntryByName "
-
-Get an entry node by name.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetDescription "
-
-Get a long description of the node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::CacheChunkData "
-
-Indicates if the chunk a adapter must hold a cached version of the chunk data.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::DeregisterCallback "
-
-De register change callback.  
-
-Destroys CNodeCallback object  
-
-Returns
--------
-true if the callback handle was valid  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetDocuURL "
-
-Gets a URL pointing to the documentation of that feature.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromFile "
-
-Loads an XML from a file.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::InvalidateNode "
-
-Indicates that the node's value may have changed.  
-
-Fires the callback on this and all dependent nodes  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::HasInc "
-
-True if the float has a constant increment.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::Get "
-
-Fills a buffer with the register's contents.  
-
-Parameters
-----------
-* `pBuffer` :  
-    The buffer receiving the data to read  
-* `Length` :  
-    The number of bytes to retrieve  
-* `Verify` :  
-    Enables Range verification (default = false). The AccessMode is always
-    checked  
-* `IgnoreCache` :  
-    If true the value is read ignoring any caches (default = false)  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsSelfClearing "
-
-Indicates if the corresponding EnumEntry is self clearing.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetCachingMode "
-
-Get Caching Mode.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsDone "
-
-Query whether the command is executed.  
-
-Parameters
-----------
-* `Verify` :  
-    Enables Range verification (default = false). The AccessMode is always
-    checked  
-
-Returns
--------
-True if the Execute command has finished; false otherwise  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetEntries "
-
-Get list of entry nodes.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::IsStreamable "
-
-True if the node is streamable.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetToolTip "
-
-Get a short description of the node.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromFileInject "
-
-Loads an XML from a file with injection.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetSymbolic "
-
-Get symbolic enum value.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromZIPData "
-
-Loads an XML from a ZIP data buffer.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetPropertyNames "
-
-Returns a list of the names all properties set during initialization.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::RegisterCallback "
-
-Register change callback.  
-
-Takes ownership of the CNodeCallback object  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::GenApiTerminate "
@@ -3327,50 +3604,27 @@ Frees static resources hold by GenApi.
 Frees all dynamically loaded DLLs held by the DLLManager  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::IsCacheable "
-
-Tests Cacheability.  
+%feature("docstring") GENAPI_NAMESPACE::openFile "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::PreprocessXMLFromFile "
-
-Loads an XML, checks it for correctness, pre-processes it, caches it, and
-optionally applies a style sheet, and optionally writes it to a file.  
+%feature("docstring") GENAPI_NAMESPACE::closeFile "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::StopRecording "
-
-stops recording  
+%feature("docstring") GENAPI_NAMESPACE::write "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::GetVisibility "
-
-Get the recommended visibility of the node.  
+%feature("docstring") GENAPI_NAMESPACE::read "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::GetSelectingFeatures "
-
-retrieve the group of features selecting this node  
+%feature("docstring") GENAPI_NAMESPACE::getBufSize "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::GetSupportedSchemaVersions "
-
-Gets a list of supported schema versions.  
-
-Each list entry is a string with the format \"<Major>.<Minor>\" were <Major> and
-<Minor> are integers Example: {\"1.1\", \"1.2\"} indicates that the schema v1.1
-and v1.2 are supported. The SubMinor version number is not given since it is for
-fully compatible bug fixes only  
+%feature("docstring") GENAPI_NAMESPACE::deleteFile "
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::GetNumericValue "
+%feature("docstring") GENAPI_NAMESPACE::~IBase "
 
-Get double number associated with the entry.  
-";
-
-%feature("docstring") GENAPI_NAMESPACE::GetMin "
-
-Get minimum value allowed.  
+Virtual destructor enforcing virtual destructor on all derived classes.  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::GetValue "
@@ -3390,26 +3644,276 @@ Returns
 The value read  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::GetAlias "
+%feature("docstring") GENAPI_NAMESPACE::CacheChunkData "
 
-Retrieves the a node which describes the same feature in a different way.  
+Indicates if the chunk a adapter must hold a cached version of the chunk data.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::PreprocessXMLFromZIPFile "
+%feature("docstring") GENAPI_NAMESPACE::IsDone "
 
-Loads a Zipped XML, checks it for correctness, pre-processes it, caches it, and
-optionally applies a style sheet, and optionally writes it to a file.  
+Query whether the command is executed.  
+
+Parameters
+----------
+* `Verify` :  
+    Enables Range verification (default = false). The AccessMode is always
+    checked  
+
+Returns
+-------
+True if the Execute command has finished; false otherwise  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::ExtractIndependentSubtree "
+%feature("docstring") GENAPI_NAMESPACE::GetVendorName "
 
-Extract independent subtree.  
+Get the vendor name.  
 ";
 
-%feature("docstring") GENAPI_NAMESPACE::IsFeature "
+%feature("docstring") GENAPI_NAMESPACE::GetToolTip "
 
-True if the node can be reached via category nodes from a category node named
-\"Root\".  
+Get tool tip.  
+
+Get a short description of the node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetStandardNameSpace "
+
+Get the standard name space.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetGenApiVersion "
+
+Get the version of the DLL's GenApi implementation.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetSchemaVersion "
+
+Get the schema version number.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetDeviceVersion "
+
+Get the version of the device description file.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetProductGuid "
+
+Get the Guid describing the product.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetVersionGuid "
+
+Get the Guid describing the product version.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetSymbolic "
+
+Get symbolic enum value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetNumericValue "
+
+Get double number associated with the entry.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::IsSelfClearing "
+
+Indicates if the corresponding EnumEntry is self clearing.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetEntries "
+
+Get list of entry nodes.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::SetIntValue "
+
+Set integer node value.  
+
+Parameters
+----------
+* `Value` :  
+    The value to set  
+* `Verify` :  
+    Enables AccessMode and Range verification (default = true)  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetIntValue "
+
+Get integer node value.  
+
+Parameters
+----------
+* `Verify` :  
+    Enables Range verification (default = false). The AccessMode is always
+    checked  
+* `IgnoreCache` :  
+    If true the value is read ignoring any caches (default = false)  
+
+Returns
+-------
+The value read  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetEntryByName "
+
+Get an entry node by name.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetEntry "
+
+Get an entry node by its IntValue.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetEntry "
+
+returns the EnumEntry object belonging to the Value  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetCurrentEntry "
+
+Get the current entry.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetMin "
+
+Get minimum value allowed.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetMax "
+
+Get maximum value allowed.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::HasInc "
+
+True if the float has a constant increment.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetIncMode "
+
+Get increment mode.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetInc "
+
+Get the constant increment if there is any.  
+
+Get increment.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetListOfValidValues "
+
+Get list of valid value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetRepresentation "
+
+Get recommended representation.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetUnit "
+
+Get the physical unit name.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetDisplayNotation "
+
+Get the way the float should be converted to a string.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetDisplayPrecision "
+
+Get the precision to be used when converting the float to a string.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ImposeMin "
+
+Restrict minimum value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ImposeMin "
+
+Restrict minimum value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ImposeMax "
+
+Restrict maximum value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ImposeMax "
+
+Restrict maximum value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetNameSpace "
+
+Get name space.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetVisibility "
+
+Get the recommended visibility of the node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::InvalidateNode "
+
+Indicates that the node's value may have changed.  
+
+Fires the callback on this and all dependent nodes  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::IsCachable "
+
+Is the node value cachable.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::IsAccessModeCacheable "
+
+True if the AccessMode can be cached.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetCachingMode "
+
+Get Caching Mode.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetPollingTime "
+
+recommended polling time (for not cachable nodes)  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetDescription "
+
+Get a long description of the node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetDisplayName "
+
+Get a name string for display.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetDeviceName "
+
+Get a name of the device.  
+
+Get device name.  
+
+The device name identifies a device instance, e.g. for debugging purposes. The
+default ist \"Device\".  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetChildren "
+
+Get all nodes this node directly depends on.  
+
+Parameters
+----------
+* `Children` :  
+    List of children nodes  
+* `LinkType` :  
+    The link type  
 ";
 
 %feature("docstring") GENAPI_NAMESPACE::GetParents "
@@ -3422,7 +3926,413 @@ Parameters
     List of parent nodes  
 ";
 
-// File: namespace_g_e_n_i_c_a_m___n_a_m_e_s_p_a_c_e.xml
+%feature("docstring") GENAPI_NAMESPACE::RegisterCallback "
+
+Register change callback.  
+
+Takes ownership of the CNodeCallback object  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::DeregisterCallback "
+
+De register change callback.  
+
+Destroys CNodeCallback object  
+
+Returns
+-------
+true if the callback handle was valid  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetNodeMap "
+
+Retrieves the central node map.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetEventID "
+
+Get the EventId of the node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::IsStreamable "
+
+True if the node is streamable.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetPropertyNames "
+
+Returns a list of the names all properties set during initialization.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetProperty "
+
+Retrieves a property plus an additional attribute by name.  
+
+If a property has multiple values/attribute they come with Tabs as delimiters  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ImposeAccessMode "
+
+Imposes an access mode to the natural access mode of the node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ImposeVisibility "
+
+Imposes a visibility to the natural visibility of the node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetAlias "
+
+Retrieves the a node which describes the same feature in a different way.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetCastAlias "
+
+Retrieves the a node which describes the same feature so that it can be casted.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetDocuURL "
+
+Gets a URL pointing to the documentation of that feature.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::IsDeprecated "
+
+True if the node should not be used any more.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetPrincipalInterfaceType "
+
+Get the type of the main interface of a node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::IsFeature "
+
+True if the node can be reached via category nodes from a category node named
+\"Root\".  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetNode "
+
+Retrieves the node from the central map by Name.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::InvalidateNodes "
+
+Invalidates all nodes.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Connect "
+
+Connects a port to a port node with given name.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Connect "
+
+Connects a port to the standard port \"Device\".  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Connect "
+
+Connects a port to a port node with given name.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Connect "
+
+Connects a port to the standard port \"Device\".  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Poll "
+
+Fires nodes which have a polling time.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetLock "
+
+Returns the lock which guards the node map.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetNumNodes "
+
+Get the number of nodes in the map.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ParseSwissKnifes "
+
+Parse all Swissknife equations.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::NewNodeWriteConcatenator "
+
+Create a new write concatenator object.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ConcatenatedWrite "
+
+Execute the transaction.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::SetSuppressCallbackMode "
+
+Set suppress callback mode.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromFile "
+
+Loads an XML from a file.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromFileInject "
+
+Loads an XML from a file with injection.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromString "
+
+Loads an XML from a string.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromStringInject "
+
+Loads an XML from a string with injection.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::PreprocessXMLFromFile "
+
+Loads an XML, checks it for correctness, pre-processes it, caches it, and
+optionally applies a style sheet, and optionally writes it to a file.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::MergeXMLFiles "
+
+Injects an XML file into a target file.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ExtractIndependentSubtree "
+
+Extract independent subtree.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetSupportedSchemaVersions "
+
+Gets a list of supported schema versions.  
+
+Each list entry is a string with the format \"<Major>.<Minor>\" were <Major> and
+<Minor> are integers Example: {\"1.1\", \"1.2\"} indicates that the schema v1.1
+and v1.2 are supported. The SubMinor version number is not given since it is for
+fully compatible bug fixes only  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromZIPFile "
+
+Loads an XML from a ZIP file.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::LoadXMLFromZIPData "
+
+Loads an XML from a ZIP data buffer.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::PreprocessXMLFromZIPFile "
+
+Loads a Zipped XML, checks it for correctness, pre-processes it, caches it, and
+optionally applies a style sheet, and optionally writes it to a file.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Write "
+
+Writes a chunk of bytes to the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Write "
+
+Writes a chunk of bytes to the port.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetSwapEndianess "
+
+Determines if the port adapter must perform an endianess swap.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Replay "
+
+Replays the write command to the given port interface.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::SetCookie "
+
+Sets a cookie in case the port implementation want to cache a command list.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetCookie "
+
+Gets the cookie a port implementation may have set for caching a command list.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::StopRecording "
+
+stops recording  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Get "
+
+Fills a buffer with the register's contents.  
+
+Parameters
+----------
+* `pBuffer` :  
+    The buffer receiving the data to read  
+* `Length` :  
+    The number of bytes to retrieve  
+* `Verify` :  
+    Enables Range verification (default = false). The AccessMode is always
+    checked  
+* `IgnoreCache` :  
+    If true the value is read ignoring any caches (default = false)  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetLength "
+
+Retrieves the Length of the register [Bytes].  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetAddress "
+
+Retrieves the Address of the register.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetSelectedFeatures "
+
+retrieve the group of selected features  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetSelectingFeatures "
+
+retrieve the group of features selecting this node  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::SetNext "
+
+Sets digit to next value.  
+
+Parameters
+----------
+* `Tick` :  
+    if false the counter does not tick (but realize it could have)  
+
+Returns
+-------
+true if the resulting value is valid  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Restore "
+
+Restores the selectors' values found at creation.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ToString "
+
+Returns a string representation of the digit.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::ToString "
+
+Get content of the node as string.  
+
+Parameters
+----------
+* `Verify` :  
+    Enables Range verification (default = false). The AccessMode is always
+    checked  
+* `IgnoreCache` :  
+    If true the value is read ignoring any caches (default = false)  
+
+Returns
+-------
+The value read  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetState "
+
+Get the state of the selector.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetSelectorList "
+
+Retrieves an ordered list of selectors.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::~ISelectorDigit "
+
+Virtual destructor enforcing virtual destructor on all derived classes.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::GetMaxLength "
+
+Retrieves the maximum length of the string in bytes.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::SetUserData "
+
+Stores user defined data without taking ownership. Returns the previously stored
+value.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::FromString "
+
+Set content of the node as string.  
+
+Parameters
+----------
+* `ValueStr` :  
+    The value to set  
+* `Verify` :  
+    Enables AccessMode and Range verification (default = true)  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::IsValueCacheValid "
+
+Checks if the value comes from cache or is requested from another node.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::Deregister "
+
+Unregistering callback by handle.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::CastToIDestroy "
+
+makes sure the dynamic_cast operator is implemented in the DLL (due to a Linux
+bug)  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::PersistFeature "
+
+Stores a feature.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::EatComments "
+
+Helper function ignoring lines starting with comment character '#'.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::TrimSpace "
+
+Helper function cutting off space characters.  
+";
+
+%feature("docstring") GENAPI_NAMESPACE::TrimSpace "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::remove "
+";
+
+%feature("docstring") GENAPI_NAMESPACE::SetNumEnums "
+
+sets the number of enum vallues  
+";
+
+// File: namespacestd.xml
 
 // File: _autovector_8h.xml
 
@@ -3430,15 +4340,21 @@ Parameters
 
 // File: _chunk_adapter_dcam_8h.xml
 
+// File: _chunk_adapter_gen_d_c_8h.xml
+
 // File: _chunk_adapter_generic_8h.xml
 
 // File: _chunk_adapter_g_e_v_8h.xml
 
 // File: _chunk_adapter_u3_v_8h.xml
 
+// File: _chunk_adapter_universal_8h.xml
+
 // File: _chunk_port_8h.xml
 
 // File: _compatibility_8h.xml
+
+// File: _concatenated_write_8h.xml
 
 // File: _container_8h.xml
 
@@ -3451,6 +4367,8 @@ Parameters
 // File: _event_adapter_8h.xml
 
 // File: _event_adapter1394_8h.xml
+
+// File: _event_adapter_c_l_8h.xml
 
 // File: _event_adapter_generic_8h.xml
 
@@ -3508,6 +4426,8 @@ Parameters
 
 // File: _i_port_recorder_8h.xml
 
+// File: _i_port_stacked_8h.xml
+
 // File: _i_register_8h.xml
 
 // File: _i_selector_8h.xml
@@ -3532,6 +4452,8 @@ Parameters
 
 // File: _port_impl_8h.xml
 
+// File: _port_stacked_impl_8h.xml
+
 // File: _port_write_list_8h.xml
 
 // File: _reference_8h.xml
@@ -3540,11 +4462,15 @@ Parameters
 
 // File: _selector_set_8h.xml
 
+// File: _selector_state_8h.xml
+
 // File: _struct_port_8h.xml
 
 // File: _synch_8h.xml
 
 // File: _types_8h.xml
+
+// File: _value_array_adapter_8h.xml
 
 // File: group___gen_api___public_interface.xml
 
@@ -3552,13 +4478,17 @@ Parameters
 
 // File: group___gen_api___public_impl.xml
 
-// File: dir_a9acf0e9773b052fcedd0b44a055946b.xml
+// File: dir_fda5dbd265c4e0b31f39462b7177e062.xml
 
-// File: dir_b2c3bdeda402f0da6e3083aff1b68a31.xml
+// File: dir_e6bb53534ac0e427887cf7a94c0c004e.xml
 
-// File: dir_bcc3991bf099375b15185dafcb7511b2.xml
+// File: dir_8a53cb3417c421d6e22675e810326db9.xml
 
-// File: dir_f8a07b22e547eb943772dc99a1be8120.xml
+// File: dir_b3eddb32ea80901dfc346d980c05df8c.xml
 
-// File: dir_5fc5c320b869e08468826ac0c3c212c5.xml
+// File: dir_4792e202dce0fa56dddef38746dee659.xml
+
+// File: dir_f1243e97fe9b0c5516b3fd6668bdc794.xml
+
+// File: dir_9f6818100ef0bcd1ba470133c65fb9cb.xml
 

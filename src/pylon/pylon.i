@@ -859,6 +859,7 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 // sources. The following macro ensures that SWIG again uses 'GENAPI_NAMESPACE'
 // in all the places where pylon uses 'GenApi'.
 #define GenApi GENAPI_NAMESPACE
+#define GenICam GENICAM_NAMESPACE
 %include "parameter_lookup.i"
 %include "Device.i"
 %include "PylonVersionInfo.i"
