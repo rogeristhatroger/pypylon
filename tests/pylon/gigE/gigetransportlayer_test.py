@@ -135,6 +135,41 @@ class GigETransportLayerTestSuite(PylonTestCase):
         ok = self.gige_tl.IssueActionCommandNoWait(123454321, 2, pylon.AllGroupMask, "255.255.255.255")
         self.assertIsInstance(ok, bool)
 
+    def test_issue_action_command_wait_returns_result_tuple(self):
+        """IssueActionCommandWait returns a (bool, tuple) pair with action-command results."""
+        ok, results = self.gige_tl.IssueActionCommandWait(
+            123454321, 2, pylon.AllGroupMask, "255.255.255.255", 100, 1
+        )
+        self.assertIsInstance(ok, bool)
+        self.assertIsInstance(results, tuple)
+
+    def test_issue_action_command_wait_result_entries_are_address_status_tuples(self):
+        """Each entry in IssueActionCommandWait results is a (str, int) tuple."""
+        ok, results = self.gige_tl.IssueActionCommandWait(
+            123454321, 2, pylon.AllGroupMask, "255.255.255.255", 100, 1
+        )
+        for entry in results:
+            self.assertIsInstance(entry, tuple)
+            self.assertEqual(len(entry), 2)
+            address, status = entry
+            self.assertIsInstance(address, str)
+            self.assertIsInstance(status, int)
+
+    def test_issue_action_command_wait_invalid_group_mask(self):
+        """IssueActionCommandWait raises InvalidArgumentException when GroupMask is 0."""
+        self.assertRaises(
+            genicam.InvalidArgumentException,
+            self.gige_tl.IssueActionCommandWait,
+            123454321, 2, 0, "255.255.255.255", 100, 1,
+        )
+
+    def test_action_command_issue_wait_returns_result_tuple(self):
+        """ActionCommand.IssueWait returns a (bool, tuple) pair with action-command results."""
+        action_command = self.gige_tl.ActionCommand(123454321, 2, pylon.AllGroupMask)
+        ok, results = action_command.IssueWait(100, 1)
+        self.assertIsInstance(ok, bool)
+        self.assertIsInstance(results, tuple)
+
     # ------------------------------------------------------------------
     # ScheduledActionCommand (Python helper class, SWIG extension)
     # ------------------------------------------------------------------
@@ -161,6 +196,43 @@ class GigETransportLayerTestSuite(PylonTestCase):
             123454321, 2, pylon.AllGroupMask, 0, "255.255.255.255"
         )
         self.assertIsInstance(ok, bool)
+
+    def test_issue_scheduled_action_command_wait_returns_result_tuple(self):
+        """IssueScheduledActionCommandWait returns a (bool, tuple) pair with results."""
+        ok, results = self.gige_tl.IssueScheduledActionCommandWait(
+            123454321, 2, pylon.AllGroupMask, 0, "255.255.255.255", 100, 1
+        )
+        self.assertIsInstance(ok, bool)
+        self.assertIsInstance(results, tuple)
+
+    def test_issue_scheduled_action_command_wait_result_entries_are_address_status_tuples(self):
+        """Each entry in IssueScheduledActionCommandWait results is a (str, int) tuple."""
+        ok, results = self.gige_tl.IssueScheduledActionCommandWait(
+            123454321, 2, pylon.AllGroupMask, 0, "255.255.255.255", 100, 1
+        )
+        for entry in results:
+            self.assertIsInstance(entry, tuple)
+            self.assertEqual(len(entry), 2)
+            address, status = entry
+            self.assertIsInstance(address, str)
+            self.assertIsInstance(status, int)
+
+    def test_issue_scheduled_action_command_wait_invalid_group_mask(self):
+        """IssueScheduledActionCommandWait raises InvalidArgumentException when GroupMask is 0."""
+        self.assertRaises(
+            genicam.InvalidArgumentException,
+            self.gige_tl.IssueScheduledActionCommandWait,
+            123454321, 2, 0, 0, "255.255.255.255", 100, 1,
+        )
+
+    def test_scheduled_action_command_issue_wait_returns_result_tuple(self):
+        """ScheduledActionCommand.IssueWait returns a (bool, tuple) pair with results."""
+        scheduled_action_command = self.gige_tl.ScheduledActionCommand(
+            123454321, 2, pylon.AllGroupMask, 0
+        )
+        ok, results = scheduled_action_command.IssueWait(100, 1)
+        self.assertIsInstance(ok, bool)
+        self.assertIsInstance(results, tuple)
 
     # ------------------------------------------------------------------
     # EGigEActionCommandStatus
