@@ -126,7 +126,6 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <pylondataprocessing/IOutputObserver.h>
 #include <pylondataprocessing/IParameterCollection.h>
 #include <pylondataprocessing/IUpdateObserver.h>
-#include <pylondataprocessing/ParameterNames.h>
 #include <pylondataprocessing/PylonDataProcessing.h>
 #include <pylondataprocessing/PylonDataProcessingVersion.h>
 #include <pylondataprocessing/Recipe.h>
@@ -134,6 +133,10 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <pylondataprocessing/Variant.h>
 #include <pylondataprocessing/VariantContainer.h>
 #include <pylondataprocessing/VariantDataType.h>
+#if PYLON_DATAPROCESSING_VERSION_MAJOR >= 5
+#include <pylondataprocessing/ImageParameter.h>
+#include <pylondataprocessing/RegionParameter.h>
+#endif
 #if PYLON_DATAPROCESSING_VERSION_MAJOR >= 2
 #include <pylondataprocessing/AcquisitionMode.h>
 #include <pylondataprocessing/VariantContainerType.h>
@@ -576,7 +579,13 @@ namespace Pylon
 %include "Variant.i"
 %include "Update.i"
 %include "QueueMode.i"
-%include "VariantContainer.i"
+#if PYLON_DATAPROCESSING_VERSION_MAJOR >= 5
+%include "ImageParameter.i"
+%include "RegionParameter.i"
+#endif
+// Keep CVariantContainer known to SWIG for signatures/typemaps (e.g. observers,
+// GenericOutputObserverResult), but do not expose VariantContainer as Python API.
+%import "VariantContainer.i"
 %include "OutputObserver.i"
 %include "GenericOutputObserver.i"
 %include "UpdateObserver.i"

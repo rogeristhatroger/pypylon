@@ -32,6 +32,10 @@ Version 26.x.x
       filter_list = [device_info, {'ModelName': 'Basler acA640-100gm'}]
       found_devices = pylon.TlFactory.GetInstance().EnumerateDevices(filter_list)
     - Breaking change: CreateTl() does not throw if the transport layer cannot be loaded, but instead returns None.
+    - Breaking change: Removed `pylondataprocessing.VariantContainer` from the public Python API.
+      Recipe/output container data is represented as standard Python dictionaries.
+      Internal SWIG type handling for `CVariantContainer` is kept for signatures and typemaps,
+      while `src/pylondataprocessing/VariantContainer.i` has been simplified to type-import metadata only.
 
 Version 26.5.0
     - Date 2026-05-26

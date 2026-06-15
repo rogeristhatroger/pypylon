@@ -1,57 +1,71 @@
+"""\
+This unit test checks the GenericOutputObserver bindings of pylondataprocessing.
+"""
 from pylondataprocessingtestcase import PylonDataProcessingTestCase
 from pypylon import pylondataprocessing
-from pypylon import genicam
 import unittest
 
+
 class GenericOutputObserverTestSuite(PylonDataProcessingTestCase):
+
+    # ------------------------------------------------------------------
+    # Construction
+    # ------------------------------------------------------------------
+
     def test_init(self):
-        testee1 = pylondataprocessing.GenericOutputObserverResult()
-        self.assertEqual(testee1.Update, pylondataprocessing.Update())
-        self.assertEqual(testee1.UserProvidedID, 0)
-        self.assertTrue(type(testee1.Container) is dict)
-        self.assertTrue(type(testee1.GetContainer()) is dict) #do not use
-        
-        testee2 = pylondataprocessing.GenericOutputObserver()
-        self.assertFalse(testee2.GetWaitObject().Wait(0))
-        self.assertEqual(testee2.GetNumResults(), 0)
-        self.assertTrue(type(testee2.RetrieveFullResult().Container) is dict)
-        self.assertTrue(type(testee2.RetrieveResult()) is dict)
-        self.assertEqual(len(testee2.RetrieveFullResult().Container), 0)
-        self.assertEqual(len(testee2.RetrieveResult()), 0)
-        testee2.Clear()
-        
+        """A fresh observer has no results and exposes its container as a dict."""
+        result = pylondataprocessing.GenericOutputObserverResult()
+        self.assertEqual(result.Update, pylondataprocessing.Update())
+        self.assertEqual(result.UserProvidedID, 0)
+        self.assertIs(type(result.Container), dict)
+        self.assertIs(type(result.GetContainer()), dict)  # do not use
+
+        observer = pylondataprocessing.GenericOutputObserver()
+        self.assertFalse(observer.GetWaitObject().Wait(0))
+        self.assertEqual(observer.GetNumResults(), 0)
+        self.assertIs(type(observer.RetrieveFullResult().Container), dict)
+        self.assertIs(type(observer.RetrieveResult()), dict)
+        self.assertEqual(len(observer.RetrieveFullResult().Container), 0)
+        self.assertEqual(len(observer.RetrieveResult()), 0)
+        observer.Clear()
+
+    # ------------------------------------------------------------------
+    # Pushing results
+    # ------------------------------------------------------------------
+
     def test_push(self):
-        inputData = {"Image" : pylondataprocessing.Variant(pylondataprocessing.VariantDataType_PylonImage)}
-        testee1 = pylondataprocessing.GenericOutputObserver()
+        """OutputDataPush queues results that can be retrieved and cleared."""
+        input_data = {"Image": pylondataprocessing.Variant(pylondataprocessing.VariantDataType_PylonImage)}
+        observer = pylondataprocessing.GenericOutputObserver()
         recipe = pylondataprocessing.Recipe()
         recipe.SetRecipeContext(17)
-        testee1.OutputDataPush(recipe, inputData, pylondataprocessing.Update(), 892);
-        self.assertTrue(testee1.GetWaitObject().Wait(0))
-        self.assertEqual(testee1.GetNumResults(), 1)
-        testee2 = testee1.RetrieveFullResult()
-        self.assertFalse(testee1.GetWaitObject().Wait(0))
-        self.assertEqual(testee1.GetNumResults(), 0)
-        self.assertTrue(type(testee2.Container) is dict)
-        self.assertEqual(len(testee2.Container), 1)
-        self.assertEqual(testee2.UserProvidedID, 892)
-        self.assertFalse(testee2.Update.IsValid())
-        self.assertEqual(testee2.RecipeContext, 17)
-        testee1.OutputDataPush(pylondataprocessing.Recipe(), inputData, pylondataprocessing.Update(), 892);
-        self.assertTrue(testee1.GetWaitObject().Wait(0))
-        self.assertEqual(testee1.GetNumResults(), 1)
-        testee3 = testee1.RetrieveResult()
-        self.assertFalse(testee1.GetWaitObject().Wait(0))
-        self.assertEqual(testee1.GetNumResults(), 0)
-        self.assertEqual(testee3, inputData)
-        testee1.OutputDataPush(pylondataprocessing.Recipe(), inputData, pylondataprocessing.Update(), 892);
-        self.assertTrue(testee1.GetWaitObject().Wait(0))
-        self.assertTrue(testee1.WaitObject.Wait(0))
-        self.assertEqual(testee1.GetNumResults(), 1)
-        self.assertEqual(testee1.NumResults, 1)
-        testee1.Clear()
-        self.assertFalse(testee1.GetWaitObject().Wait(0))
-        self.assertEqual(testee1.GetNumResults(), 0)
-        
+        observer.OutputDataPush(recipe, input_data, pylondataprocessing.Update(), 892)
+        self.assertTrue(observer.GetWaitObject().Wait(0))
+        self.assertEqual(observer.GetNumResults(), 1)
+        full_result = observer.RetrieveFullResult()
+        self.assertFalse(observer.GetWaitObject().Wait(0))
+        self.assertEqual(observer.GetNumResults(), 0)
+        self.assertIs(type(full_result.Container), dict)
+        self.assertEqual(len(full_result.Container), 1)
+        self.assertEqual(full_result.UserProvidedID, 892)
+        self.assertFalse(full_result.Update.IsValid())
+        self.assertEqual(full_result.RecipeContext, 17)
+        observer.OutputDataPush(pylondataprocessing.Recipe(), input_data, pylondataprocessing.Update(), 892)
+        self.assertTrue(observer.GetWaitObject().Wait(0))
+        self.assertEqual(observer.GetNumResults(), 1)
+        plain_result = observer.RetrieveResult()
+        self.assertFalse(observer.GetWaitObject().Wait(0))
+        self.assertEqual(observer.GetNumResults(), 0)
+        self.assertEqual(plain_result, input_data)
+        observer.OutputDataPush(pylondataprocessing.Recipe(), input_data, pylondataprocessing.Update(), 892)
+        self.assertTrue(observer.GetWaitObject().Wait(0))
+        self.assertTrue(observer.WaitObject.Wait(0))
+        self.assertEqual(observer.GetNumResults(), 1)
+        self.assertEqual(observer.NumResults, 1)
+        observer.Clear()
+        self.assertFalse(observer.GetWaitObject().Wait(0))
+        self.assertEqual(observer.GetNumResults(), 0)
+
+
 if __name__ == "__main__":
     unittest.main()
-    
