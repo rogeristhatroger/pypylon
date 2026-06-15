@@ -1,12 +1,21 @@
+"""\
+This unit test verifies that the legacy VariantContainer symbol is no longer exposed.
+"""
 from pylondataprocessingtestcase import PylonDataProcessingTestCase
 from pypylon import pylondataprocessing
 import unittest
 
-#note the variant container is converted to a python dictionary when using a Recipe 
-#TODO: solve SWIG problems and remove the VariantContainer
+
 class VariantContainerTestSuite(PylonDataProcessingTestCase):
-    def test_init(self):
-        testee = pylondataprocessing.VariantContainer()
+
+    # ------------------------------------------------------------------
+    # API removal
+    # ------------------------------------------------------------------
+
+    def test_variant_container_symbol_is_removed(self):
+        """VariantContainer is not part of the public Python API anymore."""
+        self.assertFalse(hasattr(pylondataprocessing, "VariantContainer"))
+
 
 if __name__ == "__main__":
     unittest.main()
