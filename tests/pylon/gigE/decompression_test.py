@@ -1,7 +1,7 @@
 """\
-This unit test checks BaslerCompressionBeyond lossless decompression for USB cameras.
+This unit test checks BaslerCompressionBeyond lossless decompression for GigE cameras.
 """
-from pylonusbtestcase import PylonTestCase
+from pylongigetestcase import PylonTestCase
 from pypylon import pylon
 import unittest
 

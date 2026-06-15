@@ -9,6 +9,16 @@ import unittest
 
 
 class ActionTriggerConfigurationTestSuite(PylonTestCase):
+
+    # ------------------------------------------------------------------
+    # Helper
+    # ------------------------------------------------------------------
+
+    def _require_action_commands(self, camera):
+        """Skip the calling test if the camera does not support Action Commands."""
+        if (not camera.ActionGroupKey.IsReadable()) or (not camera.ActionGroupMask.IsReadable()):
+            self.skipTest("Camera does not support Action Commands - skipping test.")
+
     # ------------------------------------------------------------------
     # Construction
     # ------------------------------------------------------------------
@@ -44,6 +54,7 @@ class ActionTriggerConfigurationTestSuite(PylonTestCase):
     def test_apply_configuration(self):
         """ApplyConfiguration sets ActionDeviceKey and ActionGroupKey on the node map."""
         with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            self._require_action_commands(camera)
             camera.AcquisitionMode.TrySetValue("SingleFrame")
             pylon.ActionTriggerConfiguration.ApplyConfiguration(camera.NodeMap, 1, 2)
             self.assertEqual(camera.ActionDeviceKey.GetValueOrDefault(1), 1)  #defined write-only by SFNC
@@ -55,7 +66,13 @@ class ActionTriggerConfigurationTestSuite(PylonTestCase):
         """OnOpened applies the configuration, setting ActionDeviceKey, ActionGroupKey and AcquisitionMode to Continuous."""
         with pylon.InstantCamera() as camera:
             camera.Attach(self.get_camera_traits(), pylon.FirstFound)
-            # The configuration implements OnOpened, so it is applied when opening the camera
+
+            # Open without ActionTriggerConfiguration first to check feature support.
+            camera.Open()
+            self._require_action_commands(camera)
+            camera.Close()
+
+            # The configuration implements OnOpened, so it is applied when opening the camera.
             camera.RegisterConfiguration(
                 pylon.ActionTriggerConfiguration(1, 2),
                 pylon.RegistrationMode_ReplaceAll,

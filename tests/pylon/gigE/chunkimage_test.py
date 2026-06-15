@@ -1,57 +1,58 @@
+"""\
+This unit test checks chunk image grabbing for GigE cameras,
+covering the grab-with-chunks workflow from the grab_chunk_image sample.
+"""
 from pylongigetestcase import PylonTestCase
 from pypylon import pylon
-from pypylon import genicam
 import unittest
 
 
+COUNT_OF_IMAGES_TO_GRAB = 5
+RETRIEVE_TIMEOUT_MS = 5000
+
+
 class ChunkImageTestSuite(PylonTestCase):
-    countOfImagesToGrab = 5
+
+    # ------------------------------------------------------------------
+    # Chunk image grabbing
+    # ------------------------------------------------------------------
 
     def test_grab_chunk_image(self):
+        """Grab images with chunk data and verify payload type, CRC, and timestamp."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
 
-        camera = self.create_first()
+            if not camera.ChunkModeActive.TrySetValue(True):
+                self.skipTest("Camera does not support chunk mode.")
 
-        # Open the camera.
-        camera.Open()
+            # Enable timestamp chunks.
+            camera.ChunkSelector.Value = "Timestamp"
+            camera.ChunkEnable.Value = True
 
-        camera.StaticChunkNodeMapPoolSize.Value = camera.MaxNumBuffer.Value
+            # Enable CRC checksum chunks.
+            camera.ChunkSelector.Value = "PayloadCRC16"
+            camera.ChunkEnable.Value = True
 
-        if genicam.IsWritable(camera.ChunkModeActive):
-            camera.ChunkModeActive.Value = True
-        else:
-            self.fail()
+            camera.StartGrabbingMax(COUNT_OF_IMAGES_TO_GRAB)
 
-        # Enable time stamp chunks.
-        camera.ChunkSelector.Value = "Timestamp"
-        camera.ChunkEnable.Value = True
+            while camera.IsGrabbing():
+                with camera.RetrieveResult(
+                    RETRIEVE_TIMEOUT_MS, pylon.TimeoutHandling_ThrowException
+                ) as grab_result:
+                    self.assertEqual(
+                        pylon.PayloadType_ChunkData,
+                        grab_result.PayloadType,
+                        "Expected chunk data payload type.",
+                    )
 
-        # Enable CRC checksum chunks.
-        camera.ChunkSelector.Value = "PayloadCRC16"
-        camera.ChunkEnable.Value = True
+                    self.assertTrue(grab_result.HasCRC(), "No CRC available.")
+                    self.assertTrue(grab_result.CheckCRC(), "CRC check failed.")
 
-        camera.StartGrabbingMax(self.countOfImagesToGrab)
+                    self.assertTrue(
+                        grab_result.ChunkTimestamp.IsReadable(),
+                        "ChunkTimestamp chunk is not readable.",
+                    )
 
-        while camera.IsGrabbing():
-
-            # Wait for an image and then retrieve it. A timeout of 5000 ms is used.
-            # RetrieveResult calls the image event handler's OnImageGrabbed method.
-            grabResult = camera.RetrieveResult(5000, pylon.TimeoutHandling_ThrowException)
-
-            # Check to see if a buffer containing chunk data has been received.
-            if pylon.PayloadType_ChunkData != grabResult.PayloadType:
-                self.fail()
-
-            # Since we have activated the CRC Checksum feature, we can check
-            # the integrity of the buffer first.
-            # Note: Enabling the CRC Checksum feature is not a prerequisite for using
-            # chunks. Chunks can also be handled when the CRC Checksum feature is deactivated.
-            if grabResult.HasCRC() and grabResult.CheckCRC() == False:
-                self.fail()
-
-            if not genicam.IsReadable(grabResult.ChunkTimestamp):
-                self.fail()
-
-        camera.ChunkModeActive.Value = False
+            camera.ChunkModeActive.Value = False
 
 
 if __name__ == "__main__":

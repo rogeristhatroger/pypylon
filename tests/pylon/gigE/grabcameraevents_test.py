@@ -1,13 +1,16 @@
 """\
-This unit test checks camera event handling for USB cameras.
+This unit test checks camera event handling for GigE cameras.
 
-USB cameras always use SFNC 2.x event node names:
+GigE cameras may use SFNC 1.x or SFNC 2.x event node names:
+- SFNC 1.x:
+  ExposureEndEventData, ExposureEndEventFrameID, ExposureEndEventTimestamp.
+- SFNC 2.x:
   EventExposureEndData, EventExposureEndFrameID, EventExposureEndTimestamp.
 
 GrabCameraEvents must be enabled before Open(), so these tests construct
 an empty InstantCamera, configure it, then attach and open the device.
 """
-from pylonusbtestcase import PylonTestCase
+from pylongigetestcase import PylonTestCase
 from pypylon import pylon
 import unittest
 
@@ -20,7 +23,11 @@ EXPOSURE_END_EVENT_ID = 100
 
 
 class ExposureEndEventRecorder(pylon.CameraEventHandler):
-    """Record Exposure End events for later assertion."""
+    """Record Exposure End events for later assertion.
+
+    Handles both SFNC 1.x (ExposureEndEventFrameID / ExposureEndEventTimestamp)
+    and SFNC 2.x (EventExposureEndFrameID / EventExposureEndTimestamp) node names.
+    """
 
     def __init__(self):
         super().__init__()
@@ -30,10 +37,16 @@ class ExposureEndEventRecorder(pylon.CameraEventHandler):
 
     def OnCameraEvent(self, camera, user_provided_id, parameter):
         if user_provided_id == EXPOSURE_END_EVENT_ID:
+            # SFNC 2.x node names
             if camera.EventExposureEndFrameID.IsReadable():
                 self.event_count += 1
                 self.frame_ids.append(camera.EventExposureEndFrameID.Value)
                 self.timestamps.append(camera.EventExposureEndTimestamp.Value)
+            # SFNC 1.x node names
+            elif camera.ExposureEndEventFrameID.IsReadable():
+                self.event_count += 1
+                self.frame_ids.append(camera.ExposureEndEventFrameID.Value)
+                self.timestamps.append(camera.ExposureEndEventTimestamp.Value)
 
 
 class GrabCameraEventsTestSuite(PylonTestCase):
@@ -57,15 +70,6 @@ class GrabCameraEventsTestSuite(PylonTestCase):
                 pylon.Cleanup_Delete,
             )
 
-            # USB cameras use SFNC 2.x: register for the parent data node.
-            camera.RegisterCameraEventHandler(
-                recorder,
-                "EventExposureEndData",
-                EXPOSURE_END_EVENT_ID,
-                pylon.RegistrationMode_ReplaceAll,
-                pylon.Cleanup_None,
-            )
-
             camera.Attach(self.get_camera_traits(), pylon.FirstFound)
             camera.Open()
 
@@ -74,7 +78,25 @@ class GrabCameraEventsTestSuite(PylonTestCase):
             if not camera.EventSelector.TrySetValue("ExposureEnd"):
                 self.skipTest("Camera does not support ExposureEnd events.")
 
-            camera.EventNotification.Value = "On"
+            # Register for the correct data node depending on SFNC version.
+            # SFNC 2.x uses "EventExposureEndData"; SFNC 1.x uses "ExposureEndEventData".
+            if camera.NodeMap.Contains("EventExposureEndData"):
+                event_data_node = "EventExposureEndData"
+            else:
+                event_data_node = "ExposureEndEventData"
+
+            camera.RegisterCameraEventHandler(
+                recorder,
+                event_data_node,
+                EXPOSURE_END_EVENT_ID,
+                pylon.RegistrationMode_ReplaceAll,
+                pylon.Cleanup_None,
+            )
+
+            # Enable event notification.
+            # Older GigE cameras use "GenICamEvent" instead of "On".
+            if not camera.EventNotification.TrySetValue("On"):
+                camera.EventNotification.Value = "GenICamEvent"
 
             camera.StartGrabbingMax(COUNT_OF_IMAGES_TO_GRAB)
             while camera.IsGrabbing():
