@@ -1,69 +1,80 @@
+"""\
+This unit test checks BaslerCompressionBeyond lossless decompression for USB cameras.
+"""
+from pylonusbtestcase import PylonTestCase
+from pypylon import pylon
 import unittest
 
 from numpy.testing import assert_array_equal
 
-from pylonusbtestcase import PylonTestCase
-from pypylon import pylon, genicam
 
+class DecompressionTestSuite(PylonTestCase):
 
-class GrabTestSuite(PylonTestCase):
-    def setUp(self):
-        super().setUp()
+    # ------------------------------------------------------------------
+    # Helper
+    # ------------------------------------------------------------------
 
-        self.camera = pylon.InstantCamera(
-            pylon.TlFactory.GetInstance().CreateFirstDevice()
-        )
-        self.camera.Open()
-        self.camera.ExposureTime.Value = self.camera.ExposureTime.Min
+    def _setup_compression(self, camera):
+        """Configure camera for lossless BaslerCompressionBeyond and return a reference array.
 
-        self.camera.PixelFormat.Value = "Mono8"
-        self.camera.TestPattern.Value = "Testimage1"
+        Grabs one uncompressed image as the reference, then switches the camera
+        into lossless compression mode.  Skips the calling test if the camera
+        does not support BaslerCompressionBeyond.
+        """
+        camera.ExposureTime.SetToMinimum()
+        camera.PixelFormat.TrySetValue("Mono8")
+        camera.TestPattern.TrySetValue("Testimage1")
 
-        self.camera.ImageCompressionMode.Value = "Off"
-        with self.camera.GrabOne(10000) as compressed_image:
-            self.reference_array = compressed_image.Array
+        camera.ImageCompressionMode.TrySetValue("Off")
+        with camera.GrabOne(10000) as reference_image:
+            reference_array = reference_image.Array.copy()
 
-        try:
-            self.camera.ImageCompressionMode.Value = "BaslerCompressionBeyond"
-        except (genicam.RuntimeException, genicam.InvalidArgumentException):
-            self.camera.Close()
-            self.skipTest("camera does not support baser compression beyond")
+        if not camera.ImageCompressionMode.TrySetValue("BaslerCompressionBeyond"):
+            self.skipTest("Camera does not support BaslerCompressionBeyond.")
 
-        self.camera.ImageCompressionRateOption.Value = "Lossless"
-        self.camera.BslImageCompressionRatio.Value = 100.0
+        camera.ImageCompressionRateOption.TrySetValue("Lossless")
+        camera.BslImageCompressionRatio.TrySetValue(100.0)
 
-    def tearDown(self):
-        self.camera.Close()
-        super().tearDown()
+        return reference_array
+
+    # ------------------------------------------------------------------
+    # Grab compressed (raw buffer)
+    # ------------------------------------------------------------------
 
     def test_grab_compressed(self):
-        decompressor = pylon.ImageDecompressor()
+        """Decompressing via raw payload buffer matches the uncompressed reference."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            reference_array = self._setup_compression(camera)
 
-        descriptor = self.camera.BslImageCompressionBCBDescriptor.GetAll()
-        decompressor.SetCompressionDescriptor(descriptor)
+            decompressor = pylon.ImageDecompressor()
+            descriptor = camera.BslImageCompressionBCBDescriptor.GetAll()
+            decompressor.SetCompressionDescriptor(descriptor)
 
-        with self.camera.GrabOne(10000) as compressed_image:
-            payload = compressed_image.GetBuffer()
-            decompressed_image = decompressor.DecompressImage(payload)
-            decompressed_array = decompressed_image.Array
+            with camera.GrabOne(10000) as compressed_image:
+                payload = compressed_image.GetBuffer()
+                decompressed_image = decompressor.DecompressImage(payload)
+                decompressed_array = decompressed_image.Array
 
-        assert_array_equal(self.reference_array, decompressed_array)
+            assert_array_equal(reference_array, decompressed_array)
 
-        self.camera.Close()
+    # ------------------------------------------------------------------
+    # Decompress image (GrabResultPtr)
+    # ------------------------------------------------------------------
 
     def test_decompress_image(self):
-        decompressor = pylon.ImageDecompressor()
+        """Decompressing via GrabResultPtr directly matches the uncompressed reference."""
+        with pylon.InstantCamera(self.get_camera_traits(), pylon.FirstFound) as camera:
+            reference_array = self._setup_compression(camera)
 
-        descriptor = self.camera.BslImageCompressionBCBDescriptor.GetAll()
-        decompressor.SetCompressionDescriptor(descriptor)
+            decompressor = pylon.ImageDecompressor()
+            descriptor = camera.BslImageCompressionBCBDescriptor.GetAll()
+            decompressor.SetCompressionDescriptor(descriptor)
 
-        with self.camera.GrabOne(10000) as compressed_image:
-            decompressed_image = decompressor.DecompressImage(compressed_image)
-            decompressed_array = decompressed_image.Array
+            with camera.GrabOne(10000) as compressed_image:
+                decompressed_image = decompressor.DecompressImage(compressed_image)
+                decompressed_array = decompressed_image.Array
 
-        assert_array_equal(self.reference_array, decompressed_array)
-
-        self.camera.Close()
+            assert_array_equal(reference_array, decompressed_array)
 
 
 if __name__ == "__main__":
