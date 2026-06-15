@@ -152,7 +152,8 @@ class Doxy2SWIG:
                         'collaborationgraph', 'reimplements',
                         'reimplementedby', 'derivedcompoundref',
                         'basecompoundref',
-                        'argsstring', 'definition', 'exceptions']
+                        'argsstring', 'definition', 'exceptions',
+                        'qualifiedname']
         #self.generics = []
 
     def generate(self):
@@ -192,9 +193,7 @@ class Doxy2SWIG:
         txt = txt.replace('"', r'\"')
         # ignore pure whitespace
         m = self.space_re.match(txt)
-        if m and len(m.group()) == len(txt):
-            pass
-        else:
+        if not (m and len(m.group()) == len(txt)):
             self.add_text(txt)
 
     def parse_Comment(self, node):
@@ -399,10 +398,16 @@ class Doxy2SWIG:
         as keys, and a list of corresponding memberdef nodes as values."""
         sig_dict = {}
         sig_prefix = ''
-        if kind in ('file', 'namespace'):
+        
+        if kind in ('file'):
+            # TODO: This is still not correct as files may have multiple innernamespace tags, but I don't know
+            # if any information is actually extracted from <compounddef kind="file"... tags?
             ns_node = node.getElementsByTagName('innernamespace')
-            if not ns_node and kind == 'namespace':
-                ns_node = node.getElementsByTagName('compoundname')
+            if ns_node:
+                sig_prefix = self.extract_text(ns_node[0]) + '::'
+        elif kind in ('namespace'):
+            # Namespace name is stored in compoundname tag.
+            ns_node = node.getElementsByTagName('compoundname')
             if ns_node:
                 sig_prefix = self.extract_text(ns_node[0]) + '::'
         elif kind in ('class', 'struct'):
