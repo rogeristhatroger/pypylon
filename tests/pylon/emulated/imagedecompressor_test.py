@@ -1130,5 +1130,24 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
         self.assertEqual(repr(info), expected)
 
 
+    # ------------------------------------------------------------------
+    # PylonImage.Array – numpy integration
+    # ------------------------------------------------------------------
+
+    def test_decompress_image_array_returns_numpy_array_with_correct_shape(self):
+        """image.Array returns a 2-D numpy array whose shape matches (Width, Height) of the decompressed image."""
+        try:
+            import numpy as np
+        except ImportError:
+            self.skipTest("numpy is not installed")
+
+        decompressor = self._make_configured_decompressor()
+        image = decompressor.DecompressImage(COMPRESSED_PAYLOAD_MONO8)
+
+        array = image.Array
+        self.assertIsInstance(array, np.ndarray)
+        self.assertEqual(array.shape, (image.Width, image.Height))
+
+
 if __name__ == "__main__":
     unittest.main()
