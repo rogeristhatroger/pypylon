@@ -2,12 +2,22 @@ Version 26.x.x
     - All changes try to keep backwards compatibility with previous pypylon versions,
       but some breaking changes are introduced in the API that are typically not used directly
       (see below).
-    - Added the pylon C++ SDK parameter API to pypylon, providing numerous convenience methods
-      for reading and writing, e.g., camera parameters.
-    - pylon node maps now return typed pylon parameter types instead of only GenICam types.
+    - genicam.INodeMap and genicam.CNodeMapRef have been extended by the method Contains(node_name) that
+      returns true if the node map contains a parameter with the given name.
+    - Added the pylon C++ SDK parameter API to pypylon (classes derived from Pylon::CParameter),
+      providing numerous convenience methods for reading and writing, e.g., camera parameters.
+    - pylon parameters support the Try-Pattern or the OrDefault pattern for all their properties, e.g.,
+      cam.Gain.TrySetValue(0.1).
+    - Node maps provided by pylon objects are now wrapped in a NodeMapWrapper that provides the following features:
+      - If a parameter is accessed that does not exist, a PlaceholderParameter is returned instead of throwing an exception.
+        This allows to use the Try-Pattern or OrDefault pattern for all parameters to achieve shorter and better readable code.
+        Note: this is breaking change for code that expected an exception to be thrown when accessing a non-existent parameter.
+      - If a placeholder parameter is accessed, a pylon.LogicalErrorException is thrown with a helpful error message
+        that includes the path of the parameter. Try-Pattern or the OrDefault pattern can be used and behave as if the
+        parameter is not readable and not writable.
+      - If a parameter is accessed that exists in a node map,
+        now return typed pylon parameter types extending GenICam types instead of only GenICam types.
     - pylon data processing Recipe and SmartInstantCamera also return pylon parameter types.
-    - Added lists of known parameters to pylon and pylon data processing node maps, matching
-      the C++ native parameter API and simplifying parameter access.
     - Added SFNC version constants to the pylon module.
     - DeviceInfo attributes are now accessible as Python properties (e.g. device_info.ModelName).
     - DeviceInfo now supports dictionary-style access (e.g. device_info['ModelName']).
@@ -19,10 +29,13 @@ Version 26.x.x
     - Updated numerous samples to use the new API and added new samples.
     - DisplayImage now uses OpenCV to display images on Linux and macOS when installed,
       making it work across all platforms.
+      Note: the message loop of the OpenCV window is only running when DisplayImage is called,
+      so the window will not be responsive until DisplayImage is called again or the message loop is run in another way,
+      e.g. by calling cv2.waitKey().
     - Updated the image format converter to use the new parameter API.
       Note: this is a breaking change for reading parameter properties from the converter,
       but not for setting them.
-    - Extended existing unit tests and added new ones to cover the updated API.
+    - Extended existing pylon and pylondataprocessing unit tests and added new ones to cover the whole API.
     - Added sample and test style guidelines in the context folder to unify code style
       across samples and tests.
     - Breaking change: Image format converter and instant camera _params classes have been
@@ -36,6 +49,18 @@ Version 26.x.x
       Recipe/output container data is represented as standard Python dictionaries.
       Internal SWIG type handling for `CVariantContainer` is kept for signatures and typemaps,
       while `src/pylondataprocessing/VariantContainer.i` has been simplified to type-import metadata only.
+    - Updated the documentation using the C++ API documentation as source using doxy2swig.
+    - Added the ImagePersistence API to pypylon, allowing to save and load images in various formats without
+      converting them into a pylon image first.
+    - The image format converter and image persistence APIs now support pylon image, pylon data component and
+      grab results as input.
+    - Added the ToParameter function to convert a GenICam node to a pylon parameter, e.g.:
+      pylon.ToParameter(node)
+    - Added the ConfigurationHelper class that provides helper methods to apply a configuration to a camera, e.g.,
+      pylon.ConfigurationHelper.DisableAllTriggers(cam.NodeMap).
+    - Added missing methods to the image decompressor class, e.g. GetCompressionDescriptor.
+    - WaitObject now supports waiting for multiple objects at the same time and returns the index of the object
+      that was signaled, e.g.: signaled, index = container.WaitForAny(SIGNAL_WAIT_TIMEOUT_MS, True)
 
 Version 26.5.0
     - Date 2026-05-26
