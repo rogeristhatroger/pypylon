@@ -1,6 +1,5 @@
-
-%rename(PylonImageBase) Pylon::CPylonImageBase;
 %nodefaultctor Pylon::CPylonImageBase;
-%nodefaultdtor Pylon::CPylonImageBase;
+%warnfilter(403) Pylon::CPylonImageBase;
+%rename(PylonImageBase) Pylon::CPylonImageBase;
 
 %include <pylon/PylonImageBase.h>;

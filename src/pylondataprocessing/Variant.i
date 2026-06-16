@@ -11,6 +11,8 @@
 %ignore CreateFromTypeName;
 %ignore CanCreateFromTypeName;
 %ignore CVariant(const StringList_t& valueList);
+%ignore Pylon::DataProcessing::CVariant::FromString(char const *);
+%ignore Pylon::DataProcessing::CVariant::SetError(char const *);
 
 %include <pylondataprocessing/Variant.h>;
 

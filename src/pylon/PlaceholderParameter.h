@@ -67,18 +67,6 @@ namespace Pylon
 
         /*!
         \brief Creates a CPlaceholderParameter for the given parameter path.
-        \param[in] path  The dotted parameter path (e.g. "Camera.ExposureTime")
-                         stored for diagnostics.
-        \error
-            Does not throw C++ exceptions.
-        */
-        explicit CPlaceholderParameter( const String_t& path )
-            : m_path( path )
-        {
-        }
-
-        /*!
-        \brief Creates a CPlaceholderParameter for the given parameter path.
         \param[in] pPath  The parameter path as a null-terminated string.
         \error
             Does not throw C++ exceptions.
@@ -148,7 +136,7 @@ namespace Pylon
         // Attach — always throws NOT_IMPLEMENTED
         // ------------------------------------------------------------------
 
-        virtual bool Attach( GenApi::INodeMap* /*pNodeMap*/, const char* /*pName*/ )
+        virtual bool Attach( GenApi::INodeMap* /*pNodeMap*/, const char* /*pName*/ ) override
         {
             throw LOGICAL_ERROR_EXCEPTION(
                 "CPlaceholderParameter '%s' cannot be attached. "
@@ -156,7 +144,7 @@ namespace Pylon
                 m_path.c_str() );
         }
 
-        virtual bool Attach( GenApi::INodeMap& /*nodeMap*/, const char* /*pName*/ )
+        virtual bool Attach( GenApi::INodeMap& /*nodeMap*/, const char* /*pName*/ ) override
         {
             throw LOGICAL_ERROR_EXCEPTION(
                 "CPlaceholderParameter '%s' cannot be attached. "
@@ -164,7 +152,7 @@ namespace Pylon
                 m_path.c_str() );
         }
 
-        virtual bool Attach( GenApi::INode* /*pNode*/ )
+        virtual bool Attach( GenApi::INode* /*pNode*/ ) override
         {
             throw LOGICAL_ERROR_EXCEPTION(
                 "CPlaceholderParameter '%s' cannot be attached. "
@@ -172,7 +160,7 @@ namespace Pylon
                 m_path.c_str() );
         }
 
-        virtual bool Attach( GenApi::IValue* /*pValue*/ )
+        virtual bool Attach( GenApi::IValue* /*pValue*/ ) override
         {
             throw LOGICAL_ERROR_EXCEPTION(
                 "CPlaceholderParameter '%s' cannot be attached. "

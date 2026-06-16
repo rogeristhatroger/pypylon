@@ -1,4 +1,5 @@
 %rename (EnumEntryParameter) Pylon::CEnumEntryParameter;
+%warnfilter(403) Pylon::IEnumEntryEx;
 #define GenICam GENICAM_NAMESPACE
 %rename(_IEnumEntryEx) Pylon::IEnumEntryEx;
 %ignore Pylon::CEnumEntryParameter::CEnumEntryParameter(GENAPI_NAMESPACE::INodeMap &,char const *);

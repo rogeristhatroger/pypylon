@@ -4,6 +4,7 @@
 %ignore CopyRegion(const void*,size_t,Pylon::DataProcessing::ERegionType,uint32_t,uint32_t,int32_t,int32_t,uint32_t,uint32_t);
 %ignore GetBuffer;
 %ignore GetBufferConst;
+%ignore CRegion(CRegion &&);
 %rename(GetBuffer) GetBuffer2;
 
 %include <pylondataprocessing/Region.h>;

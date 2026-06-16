@@ -132,6 +132,11 @@ const Pylon::DeviceInfoList_t&
     }
 }
 
+%typemap(typecheck, precedence=SWIG_TYPECHECK_INTEGER) Pylon::AccessModeSet
+{
+    $1 = PyLong_Check($input) ? 1 : 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 // EDeviceAccessiblityInfo output typemap
@@ -185,5 +190,7 @@ Pylon::EDeviceAccessiblityInfo* pAccessibilityInfo
 %rename(DeviceAccessMode_Event)     Pylon::Event;
 %rename(DeviceAccessMode_Exclusive) Pylon::Exclusive;
 
+%rename(set2) Pylon::AccessModeSet::set( size_t ); //warning removal
+%ignore Pylon::AccessModeSet;
 %include <pylon/DeviceAccessMode.h>;
 %include <pylon/DeviceFactory.h>;

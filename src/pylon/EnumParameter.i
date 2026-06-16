@@ -87,6 +87,7 @@
 %ignore Pylon::CEnumParameter::operator()();
 %ignore Pylon::CEnumParameter::operator*();
 %ignore Pylon::CEnumParameter::operator=( const GenICam::gcstring& valueStr );
+%ignore Pylon::CEnumParameter::GetSettableValues();
 
 %include "pylon_kwarg_normalize.i"
 PYLON_KWARG_NORMALIZE_BEGIN

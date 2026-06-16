@@ -109,7 +109,6 @@ class BuildSupport(object):
     SwigOptions = [
         "-c++",
         "-Wextra",
-        "-Wall",
         "-threads",
         #lots of debug output "-debug-tmsearch",
         ]
