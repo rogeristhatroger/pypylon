@@ -284,6 +284,24 @@ class ConfigurationEventHandlerTestSuite(PylonEmuTestCase):
             camera.DeregisterConfiguration(handler)
             self.assertEqual(len(call_log), 1)
 
+    # ------------------------------------------------------------------
+    # RegisterConfiguration with None (deregister all)
+    # ------------------------------------------------------------------
+
+    def test_register_configuration_none_cleanup_none(self):
+        """RegisterConfiguration(None, ..., Cleanup_None) deregisters all handlers without error."""
+        with pylon.InstantCamera() as camera:
+            camera.RegisterConfiguration(pylon.ConfigurationEventHandler(), pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_Delete)
+            # Passing None as handler deregisters all currently registered configuration handlers.
+            camera.RegisterConfiguration(None, pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_None)
+
+    def test_register_configuration_none_cleanup_delete(self):
+        """RegisterConfiguration(None, ..., Cleanup_Delete) deregisters all handlers without error."""
+        with pylon.InstantCamera() as camera:
+            camera.RegisterConfiguration(pylon.ConfigurationEventHandler(), pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_Delete)
+            # Passing None as handler deregisters all currently registered configuration handlers.
+            camera.RegisterConfiguration(None, pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_Delete)
+
 
 if __name__ == "__main__":
     unittest.main()

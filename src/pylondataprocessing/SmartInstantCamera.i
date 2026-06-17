@@ -40,7 +40,8 @@
 
 %pythonprepend Pylon::CInstantCamera::RegisterSmartResultEventHandler2 %{
     if cleanupProcedure == pypylon.pylon.Cleanup_Delete:
-        pSmartResultEventHandler.__disown__()
+        if pSmartResultEventHandler:
+            pSmartResultEventHandler.__disown__()
     elif cleanupProcedure == pypylon.pylon.Cleanup_None:
         # should we increment the pyhon refcount here??
         pass
