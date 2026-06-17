@@ -1,6 +1,7 @@
 %rename (PortParameter) Pylon::CPortParameter;
 #define GenICam GENICAM_NAMESPACE
 %rename(_IPortEx) Pylon::IPortEx;
+%ignore Pylon::CPortParameter::Attach(GENAPI_NAMESPACE::INodeMap &,char const *);
 %ignore Pylon::CPortParameter::CPortParameter(GENAPI_NAMESPACE::INodeMap &,char const *);
 
 // The raw C++ Read/Write signatures have void* as the FIRST argument:

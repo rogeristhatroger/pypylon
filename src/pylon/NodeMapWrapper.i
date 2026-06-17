@@ -1,3 +1,4 @@
+%warnfilter(403) Pylon::NodeMapWrapper;
 %ignore GetNode( const GENICAM_NAMESPACE::gcstring& Name );
 %rename(_GetNode) Pylon::NodeMapWrapper::GetNode2;
 

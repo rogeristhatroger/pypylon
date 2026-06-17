@@ -845,6 +845,8 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 
 // ignore assignment operator in all classes
 %ignore *::operator=;
+%ignore "operator const Pylon::IImage&";
+%ignore "operator const IImage&";
 
 %include <pylon/PylonVersionNumber.h>
 

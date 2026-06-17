@@ -8,6 +8,7 @@
 %ignore CStickyEventHandler;
 %ignore COutputObserver;
 %ignore SmartResultEventHandlerData;
+%warnfilter(315) CSmartInstantCameraT;
 
 %include <pylondataprocessing/SmartInstantCamera.h>
 

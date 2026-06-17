@@ -14,6 +14,7 @@
 
 %rename(PlaceholderParameter) Pylon::CPlaceholderParameter;
 %ignore Pylon::CPlaceholderParameter::operator=;
+%ignore Pylon::CPlaceholderParameter::Attach(GENAPI_NAMESPACE::INodeMap &,char const *);
 
 %include "PlaceholderParameter.h"
 
