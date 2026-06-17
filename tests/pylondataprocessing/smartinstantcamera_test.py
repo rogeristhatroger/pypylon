@@ -372,6 +372,38 @@ class SmartInstantCameraTestSuite(PylonDataProcessingTestCase):
             _cleanup_camera(camera)
 
     # ------------------------------------------------------------------
+    # RegisterSmartResultEventHandler with None (deregister all)
+    # ------------------------------------------------------------------
+
+    def test_register_smart_result_event_handler_none_cleanup_none(self):
+        """RegisterSmartResultEventHandler(None, ..., Cleanup_None) deregisters all handlers without error."""
+        camera = None
+        try:
+            this_dir = os.path.dirname(__file__)
+            recipe_filename = os.path.join(this_dir, 'smartinstantcamera_test.precipe')
+            camera = pylondataprocessing.SmartInstantCamera(
+                pylon.TlFactory.GetInstance().CreateFirstDevice(self.get_filter()), recipe_filename)
+            camera.RegisterSmartResultEventHandler(pylondataprocessing.SmartResultEventHandler(), pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_Delete)
+            # Passing None as handler deregisters all currently registered SmartResult event handlers.
+            camera.RegisterSmartResultEventHandler(None, pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_None)
+        finally:
+            _cleanup_camera(camera)
+
+    def test_register_smart_result_event_handler_none_cleanup_delete(self):
+        """RegisterSmartResultEventHandler(None, ..., Cleanup_Delete) deregisters all handlers without error."""
+        camera = None
+        try:
+            this_dir = os.path.dirname(__file__)
+            recipe_filename = os.path.join(this_dir, 'smartinstantcamera_test.precipe')
+            camera = pylondataprocessing.SmartInstantCamera(
+                pylon.TlFactory.GetInstance().CreateFirstDevice(self.get_filter()), recipe_filename)
+            camera.RegisterSmartResultEventHandler(pylondataprocessing.SmartResultEventHandler(), pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_Delete)
+            # Passing None as handler deregisters all currently registered SmartResult event handlers.
+            camera.RegisterSmartResultEventHandler(None, pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_Delete)
+        finally:
+            _cleanup_camera(camera)
+
+    # ------------------------------------------------------------------
     # Wait objects
     # ------------------------------------------------------------------
 

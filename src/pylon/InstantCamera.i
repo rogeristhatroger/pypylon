@@ -161,14 +161,16 @@ namespace Pylon {
 
 %pythonprepend Pylon::CInstantCamera::RegisterConfiguration %{
     if cleanupProcedure == Cleanup_Delete:
-        pConfigurator.__disown__()
+        if pConfigurator:
+            pConfigurator.__disown__()
     elif cleanupProcedure == Cleanup_None:
         # should we increment the pyhon refcount here??
         pass
 %}
 %pythonprepend Pylon::CInstantCamera::RegisterImageEventHandler %{
     if cleanupProcedure == Cleanup_Delete:
-        pImageEventHandler.__disown__()
+        if pImageEventHandler:
+            pImageEventHandler.__disown__()
     elif cleanupProcedure == Cleanup_None:
         # should we increment the pyhon refcount here??
         pass
@@ -176,7 +178,8 @@ namespace Pylon {
 %pythonprepend Pylon::CInstantCamera::RegisterCameraEventHandler %{
     assert(len(args) > 4)
     if args[4] == Cleanup_Delete:
-        args[0].__disown__()
+        if args[0]:
+            args[0].__disown__()
     elif args[4] == Cleanup_None:
         # should we increment the pyhon refcount here??
         pass

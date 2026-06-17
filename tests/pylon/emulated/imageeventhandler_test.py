@@ -151,6 +151,24 @@ class ImageEventHandlerTestSuite(PylonEmuTestCase):
             camera.DeregisterImageEventHandler(handler)
             self.assertEqual(len(call_log), 1)
 
+    # ------------------------------------------------------------------
+    # RegisterImageEventHandler with None (deregister all)
+    # ------------------------------------------------------------------
+
+    def test_register_image_event_handler_none_cleanup_none(self):
+        """RegisterImageEventHandler(None, ..., Cleanup_None) deregisters all handlers without error."""
+        with pylon.InstantCamera() as camera:
+            camera.RegisterImageEventHandler(pylon.ImageEventHandler(), pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_Delete)
+            # Passing None as handler deregisters all currently registered image event handlers.
+            camera.RegisterImageEventHandler(None, pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_None)
+
+    def test_register_image_event_handler_none_cleanup_delete(self):
+        """RegisterImageEventHandler(None, ..., Cleanup_Delete) deregisters all handlers without error."""
+        with pylon.InstantCamera() as camera:
+            camera.RegisterImageEventHandler(pylon.ImageEventHandler(), pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_Delete)
+            # Passing None as handler deregisters all currently registered image event handlers.
+            camera.RegisterImageEventHandler(None, pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_Delete)
+
 
 if __name__ == "__main__":
     unittest.main()
