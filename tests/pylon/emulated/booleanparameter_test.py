@@ -348,6 +348,12 @@ class BooleanParameterTestSuite(PylonParameterTestCase):
         with self.assertRaises(Exception):
             p_rw.FromString("Test")
 
+        p_rw.SetValue(True )
+        self.assertIs(True, p_rw.GetValue())
+
+        p_rw.SetValue(False)
+        self.assertIs(False, p_rw.GetValue())
+
     def test_boolean_parameter_from_string_ro_raises(self):
         """FromString on RO parameter raises; value unchanged."""
         p_ro = pylon.BooleanParameter(self.nodemap, "TestBoolRO")
@@ -360,6 +366,7 @@ class BooleanParameterTestSuite(PylonParameterTestCase):
         """FromString on WO parameter does not raise."""
         p_wo = pylon.BooleanParameter(self.nodemap, "TestBoolWO")
         p_wo.FromString("true")  # must not raise
+
 
     # ------------------------------------------------------------------
     # ToStringOrDefault / __str__
@@ -377,15 +384,15 @@ class BooleanParameterTestSuite(PylonParameterTestCase):
         self.assertEqual("default", p_wo.ToStringOrDefault("default"))
 
     def test_boolean_parameter_str(self):
-        """__str__ returns '0'/'1', '<not found>', or '<not readable>'."""
+        """__str__ returns 'False'/'True', '<not found>', or '<not readable>'."""
         self.assertEqual("<not found>",    str(pylon.BooleanParameter()))
         self.assertEqual("<not readable>", str(pylon.BooleanParameter(self.nodemap, "TestBoolWO")))
 
         p_rw = pylon.BooleanParameter(self.nodemap, "TestBoolRW")
         p_rw.SetValue(False)
-        self.assertEqual("0", str(p_rw))
+        self.assertEqual("False", str(p_rw))
         p_rw.SetValue(True)
-        self.assertEqual("1", str(p_rw))
+        self.assertEqual("True", str(p_rw))
 
     # ------------------------------------------------------------------
     # GetNode / IsValueCacheValid
@@ -419,6 +426,36 @@ class BooleanParameterTestSuite(PylonParameterTestCase):
         self.assertIsInstance(p, genicam.IValue)
         self.assertTrue(genicam.IsReadable(p))
         self.assertTrue(genicam.IsWritable(p))
+
+    def test_python_representation_to_boolean_parameter(self):
+        """BooleanParameter interoperates predictably with common Python value representations."""
+        p = pylon.BooleanParameter(self.nodemap, "TestBoolRW")
+
+        # --- Native bools (current happy path) ---
+        p.Value = True
+        self.assertIs(p.GetValue(), True)
+        self.assertIs(p.Value, True)
+
+        p.Value = False
+        self.assertIs(p.GetValue(), False)
+        self.assertIs(p.Value, False)
+
+        # --- Rejected numeric representations (contract: only bool accepted) ---
+        with self.assertRaises(Exception):
+            p.Value = 1
+        with self.assertRaises(Exception):
+            p.Value = 0
+
+        # --- String representations should not be silently accepted via Value assignment ---
+        # (String parsing belongs to FromString, tested elsewhere.)
+        for invalid in ("true", "false", "1", "0", " yes ", ""):
+            with self.assertRaises(Exception):
+                p.Value = invalid
+
+        # --- Non-boolean Python objects should raise ---
+        for invalid in (None, [], {}, object()):
+            with self.assertRaises(Exception):
+                p.Value = invalid
 
 
 if __name__ == "__main__":
