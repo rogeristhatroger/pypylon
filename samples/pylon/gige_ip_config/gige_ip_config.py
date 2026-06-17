@@ -3,7 +3,7 @@
 Configure the IP settings of a Basler GigE Vision camera.
 
 Usage:
-    utility_ip_config.py <MAC> <IP> [MASK] [GATEWAY]
+    gige_ip_config.py <MAC> <IP> [MASK] [GATEWAY]
 
     <MAC> is the MAC address without separators, e.g. 0030531596CF
     <IP> is one of the following:
@@ -45,7 +45,7 @@ def get_mode(device_info) -> str:
 
 
 def print_usage() -> None:
-    print("Usage: utility_ip_config.py <MAC> <IP> [MASK] [GATEWAY]")
+    print("Usage: gige_ip_config.py <MAC> <IP> [MASK] [GATEWAY]")
     print("       <MAC> is the MAC address without separators, e.g., 0030531596CF")
     print("       <IP> is one of the following:")
     print("            - AUTO to use Auto-IP (LLA).")

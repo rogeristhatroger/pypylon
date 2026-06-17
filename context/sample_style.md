@@ -274,3 +274,14 @@ The following additional rules are specific to samples:
       camera.Open()
       ...
   ```
+
+**`pylon module sample naming rules`:** Samples are named according to the following rules:
+- Use lower snake case (e.g. `grab.py`, not `Grab.py` or `grabImages.py`).
+- Use descriptive names that indicate the sample's purpose.
+- Prefix rules:
+  - `grab_` — samples that illustrate image grabbing.
+  - `parametrize_` — samples that illustrate camera parameter access and configuration.
+  - `utility_` — samples that use the optional pylon utility C++ library.
+  - `gige_` — samples that illustrate features specific to GigE cameras.
+  - No prefix — samples that do not fall into any of the above categories; name them according to their purpose.
+~~~~

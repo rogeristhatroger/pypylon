@@ -21,9 +21,9 @@ import os
 import sys
 import time
 
-# Make the shared samples/include/ helpers importable.
+# Make the shared samples/common/ helpers importable.
 _INCLUDE_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..", "include")
+    os.path.join(os.path.dirname(__file__), "..", "..", "common")
 )
 if _INCLUDE_DIR not in sys.path:
     sys.path.insert(0, _INCLUDE_DIR)
