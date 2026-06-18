@@ -8,6 +8,7 @@ from pypylon import pylon
 import os
 import tempfile
 import unittest
+import numpy as np
 
 class ImagePersistenceTestSuite(PylonEmuTestCase):
 
@@ -394,6 +395,97 @@ class ImagePersistenceTestSuite(PylonEmuTestCase):
             path2 = self._tmp_path(".tiff")
             pylon_image.Save(pylon.ImageFileFormat_Tiff, path2)
             self.assertTrue(os.path.isfile(path2))
+
+    # ------------------------------------------------------------------
+    # SaveArray — save a NumPy array directly
+    # ------------------------------------------------------------------
+
+    def test_save_array_is_callable_on_image_persistence(self):
+        """SaveArray is accessible as a static method on ImagePersistence."""
+        self.assertTrue(callable(pylon.ImagePersistence.SaveArray))
+
+    def test_save_array_mono8_creates_file(self):
+        """SaveArray writes a non-empty file for a Mono8 array."""
+        path = self._tmp_path(".png")
+        array = np.zeros((48, 64), dtype=np.uint8)
+        pylon.ImagePersistence.SaveArray(
+            pylon.ImageFileFormat_Png, path, array, pylon.PixelType_Mono8
+        )
+        self.assertTrue(os.path.isfile(path))
+        self.assertGreater(os.path.getsize(path), 0)
+
+    def test_save_array_rgb8_creates_file(self):
+        """SaveArray writes a non-empty file for a RGB8packed array."""
+        path = self._tmp_path(".png")
+        array = np.zeros((48, 64, 3), dtype=np.uint8)
+        pylon.ImagePersistence.SaveArray(
+            pylon.ImageFileFormat_Png, path, array, pylon.PixelType_RGB8packed
+        )
+        self.assertTrue(os.path.isfile(path))
+        self.assertGreater(os.path.getsize(path), 0)
+
+    def test_save_array_roundtrip_preserves_dimensions(self):
+        """SaveArray + Load roundtrip preserves width and height."""
+        width, height = 64, 48
+        path = self._tmp_path(".tiff")
+        array = np.zeros((height, width), dtype=np.uint8)
+        pylon.ImagePersistence.SaveArray(
+            pylon.ImageFileFormat_Tiff, path, array, pylon.PixelType_Mono8
+        )
+        with pylon.ImagePersistence.Load(path) as loaded:
+            self.assertEqual(loaded.Width, width)
+            self.assertEqual(loaded.Height, height)
+
+    def test_save_array_roundtrip_preserves_pixel_values(self):
+        """SaveArray + Load roundtrip preserves pixel values for a lossless format."""
+        width, height = 64, 48
+        array = np.arange(width * height, dtype=np.uint8).reshape(height, width)
+        path = self._tmp_path(".tiff")
+        pylon.ImagePersistence.SaveArray(
+            pylon.ImageFileFormat_Tiff, path, array, pylon.PixelType_Mono8
+        )
+        with pylon.ImagePersistence.Load(path) as loaded:
+            loaded_array = loaded.Array
+            np.testing.assert_array_equal(loaded_array, array)
+
+    def test_save_array_with_options(self):
+        """SaveArray forwards ImagePersistenceOptions to Save (JPEG quality)."""
+        width, height = 64, 48
+        array = np.random.randint(0, 256, (height, width), dtype=np.uint8)
+        path_low = self._tmp_path(".jpg")
+        path_high = self._tmp_path(".jpg")
+        options = pylon.ImagePersistenceOptions()
+        options.Quality = 0
+        pylon.ImagePersistence.SaveArray(
+            pylon.ImageFileFormat_Jpeg, path_low, array, pylon.PixelType_Mono8, options
+        )
+        options.Quality = 100
+        pylon.ImagePersistence.SaveArray(
+            pylon.ImageFileFormat_Jpeg, path_high, array, pylon.PixelType_Mono8, options
+        )
+        self.assertGreater(os.path.getsize(path_high), os.path.getsize(path_low))
+
+    def test_save_array_result_matches_save_via_pylon_image(self):
+        """SaveArray and Save(PylonImage) produce files of identical size for TIFF."""
+        width, height = 64, 48
+        array = np.arange(width * height, dtype=np.uint8).reshape(height, width)
+
+        # Via SaveArray
+        path_array = self._tmp_path(".tiff")
+        pylon.ImagePersistence.SaveArray(
+            pylon.ImageFileFormat_Tiff, path_array, array, pylon.PixelType_Mono8
+        )
+
+        # Via PylonImage.AttachArray + Save
+        path_image = self._tmp_path(".tiff")
+        image = pylon.PylonImage()
+        image.AttachArray(array, pylon.PixelType_Mono8)
+        pylon.ImagePersistence.Save(pylon.ImageFileFormat_Tiff, path_image, image)
+
+        self.assertEqual(
+            os.path.getsize(path_array),
+            os.path.getsize(path_image),
+        )
 
 
 if __name__ == "__main__":
