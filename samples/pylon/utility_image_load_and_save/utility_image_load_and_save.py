@@ -21,6 +21,7 @@ if _INCLUDE_DIR not in sys.path:
     sys.path.insert(0, _INCLUDE_DIR)
 
 from pypylon import pylon
+import numpy as np
 import sample_image_creator
 
 IMAGE_WIDTH = 640
@@ -96,6 +97,15 @@ try:
 
             # Save the image.
             pylon.ImagePersistence.Save(pylon.ImageFileFormat_Jpeg, f"{OUTPUT_STEM}_100.jpg", image_rgb8_packed, additional_options)
+
+            # SaveArray allows passing a NumPy array directly without creating a PylonImage first.
+            numpy_array = image_rgb8_packed.Array
+            pylon.ImagePersistence.SaveArray(
+                pylon.ImageFileFormat_Png, f"{OUTPUT_STEM}_from_array.png",
+                numpy_array, pylon.PixelType_RGB8packed
+            )
+            print(f"Saved NumPy array ({numpy_array.shape}, {numpy_array.dtype}) "
+                  f"to {OUTPUT_STEM}_from_array.png")
 
 
         # Saving grabbed images.
