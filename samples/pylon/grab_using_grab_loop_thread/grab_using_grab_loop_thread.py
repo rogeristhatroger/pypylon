@@ -5,7 +5,7 @@ Grab and process images using the InstantCamera grab loop thread.
 This sample illustrates how to grab and process images using the grab loop thread
 provided by the Instant Camera class.  
 When run interactively (TTY detected) the user can trigger the camera by 
-typing "t" and exit with "e". In non-interactive mode (CI, piped stdin, ``conda run``)
+typing "<enter>" and exit with "<ctrl-c>". In non-interactive mode (CI, piped stdin, ``conda run``)
 a fixed number of software triggers is issued automatically.
 
 Without hardware, configure Basler Camera Emulation so a virtual device is
@@ -44,7 +44,8 @@ class SampleImageEventHandler(pylon.ImageEventHandler):
             # pylon provides a data component wrapper to handle both cases uniformly.
             with grab_result.GetFirstImageDataComponent() as image_data_component:
                 print(f"SizeX: {image_data_component.Width}; SizeY: {image_data_component.Height}")
-                pylon.DisplayImage(1, image_data_component)
+                # This does not work as expected, because it is running in a seperate thread.
+                #pylon.DisplayImage(1, image_data_component)
         else:
             print("Error:", f"{grab_result.ErrorCode:#x}", grab_result.ErrorDescription)
         print()
