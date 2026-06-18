@@ -5,6 +5,7 @@ from pylonemutestcase import PylonEmuTestCase
 from pypylon import pylon, genicam
 import unittest
 import warnings
+import numpy as np
 
 
 IGNORED_NAMES_ON_PYLON = (
@@ -17,6 +18,7 @@ IGNORED_NAMES_ON_PYLON = (
 
 EXPECTED_IMAGE_FORMAT_CONVERTER_MEMBERS = (
     "Convert",
+    "ConvertToArray",
     "ImageHasDestinationFormat",
     "SetOutputPixelFormat",
     "GetOutputPixelFormat",
@@ -701,6 +703,171 @@ class ImageFormatConverterTestSuite(PylonEmuTestCase):
         self.assertEqual(converter.InconvertibleEdgeHandling.Value, pylon.InconvertibleEdgeHandling_Extend)
         converter.InconvertibleEdgeHandling = pylon.InconvertibleEdgeHandling_Clip
         self.assertEqual(converter.InconvertibleEdgeHandling.Value, pylon.InconvertibleEdgeHandling_Clip)
+
+    # ------------------------------------------------------------------
+    # ConvertToArray: zero-copy numpy array output
+    # ------------------------------------------------------------------
+
+    def test_convert_to_array_is_callable(self):
+        """ConvertToArray is callable on an ImageFormatConverter instance."""
+        converter = pylon.ImageFormatConverter()
+        self.assertTrue(callable(converter.ConvertToArray))
+
+    def test_convert_to_array_from_grab_result_returns_ndarray(self):
+        """ConvertToArray(grab_result) returns a numpy ndarray."""
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = pylon.PixelType_Mono8
+        grab_result = self._grab_one_mono8()
+        result = converter.ConvertToArray(grab_result)
+        self.assertIsInstance(result, np.ndarray)
+
+    def test_convert_to_array_shape_matches_output_pixel_format(self):
+        """ConvertToArray returns an array whose shape matches the converter output format."""
+        grab_result = self._grab_one_mono8()
+        width = grab_result.Width
+        height = grab_result.Height
+
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = pylon.PixelType_Mono8
+        result = converter.ConvertToArray(grab_result)
+        self.assertEqual(result.shape, (height, width))
+        self.assertEqual(result.dtype, np.uint8)
+
+    def test_convert_to_array_rgb_shape_has_channel_dimension(self):
+        """ConvertToArray with RGB8packed output yields an (H, W, 3) uint8 array."""
+        grab_result = self._grab_one_mono8()
+        width = grab_result.Width
+        height = grab_result.Height
+
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = pylon.PixelType_RGB8packed
+        result = converter.ConvertToArray(grab_result)
+        self.assertEqual(result.shape, (height, width, 3))
+        self.assertEqual(result.dtype, np.uint8)
+
+    def test_convert_to_array_pixel_values_match_convert_array(self):
+        """ConvertToArray produces the same pixel values as converter.Convert(src).Array."""
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = pylon.PixelType_Mono16
+        grab_result = self._grab_one_mono8()
+
+        expected = converter.Convert(grab_result).Array
+        result = converter.ConvertToArray(grab_result)
+        np.testing.assert_array_equal(result, expected)
+
+    def test_convert_to_array_raw_returns_flat_uint8(self):
+        """ConvertToArray(src, raw=True) returns a flat uint8 array of the converted bytes."""
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = pylon.PixelType_Mono16
+        grab_result = self._grab_one_mono8()
+
+        result = converter.ConvertToArray(grab_result, raw=True)
+        self.assertIsInstance(result, np.ndarray)
+        self.assertEqual(result.ndim, 1)
+        self.assertEqual(result.dtype, np.uint8)
+
+    def test_convert_to_array_raw_byte_length_matches_buffer_size(self):
+        """ConvertToArray(src, raw=True) length matches GetBufferSizeForConversion."""
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = pylon.PixelType_Mono16
+        grab_result = self._grab_one_mono8()
+
+        expected_size = converter.GetBufferSizeForConversion(
+            grab_result.PixelType, grab_result.Width, grab_result.Height
+        )
+        result = converter.ConvertToArray(grab_result, raw=True)
+        self.assertEqual(result.size, expected_size)
+
+    def test_convert_to_array_result_is_independent_ndarray(self):
+        """Each ConvertToArray call returns an independently-owned ndarray."""
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = pylon.PixelType_Mono16
+        grab_result = self._grab_one_mono8()
+
+        first = converter.ConvertToArray(grab_result)
+        second = converter.ConvertToArray(grab_result)
+        self.assertIsNot(first, second)
+        # Modifying one must not affect the other.
+        first.fill(0)
+        self.assertFalse(np.array_equal(first, second))
+
+    def test_convert_to_array_from_pylon_image(self):
+        """ConvertToArray accepts a PylonImage as source."""
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = pylon.PixelType_Mono16
+        grab_result = self._grab_one_mono8()
+        source_image = converter.Convert(grab_result)
+
+        converter2 = pylon.ImageFormatConverter()
+        converter2.OutputPixelFormat = pylon.PixelType_Mono8
+        result = converter2.ConvertToArray(source_image)
+        self.assertIsInstance(result, np.ndarray)
+        self.assertEqual(result.dtype, np.uint8)
+
+    def test_convert_to_array_from_pylon_data_component(self):
+        """ConvertToArray accepts a PylonDataComponent as source."""
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = pylon.PixelType_Mono16
+        grab_result = self._grab_one_mono8()
+        component = grab_result.GetFirstImageDataComponent()
+        try:
+            result = converter.ConvertToArray(component)
+            self.assertIsInstance(result, np.ndarray)
+            self.assertEqual(result.shape, (grab_result.Height, grab_result.Width))
+        finally:
+            component.Release()
+
+    # ------------------------------------------------------------------
+    # ConvertToArray: packed output format
+    # ------------------------------------------------------------------
+
+    def _first_supported_packed_output(self):
+        """Return the first packed EPixelType accepted by the SDK as output, or None."""
+        packed_candidates = (
+            pylon.PixelType_Mono10packed,
+            pylon.PixelType_Mono12packed,
+        )
+        for pt in packed_candidates:
+            converter = pylon.ImageFormatConverter()
+            if converter.IsSupportedOutputFormat(pt):
+                return pt
+        return None
+
+    def test_convert_to_array_raises_for_packed_output_when_not_raw(self):
+        """ConvertToArray raises ValueError for a packed OutputPixelFormat when raw=False."""
+        packed_pt = self._first_supported_packed_output()
+        if packed_pt is None:
+            self.skipTest("No packed output format accepted by this SDK build")
+        grab_result = self._grab_one_mono8()
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = packed_pt
+        with self.assertRaises(ValueError):
+            converter.ConvertToArray(grab_result, raw=False)
+
+    def test_convert_to_array_packed_error_message_mentions_packed(self):
+        """The ValueError for a packed OutputPixelFormat with raw=False mentions 'acked'."""
+        packed_pt = self._first_supported_packed_output()
+        if packed_pt is None:
+            self.skipTest("No packed output format accepted by this SDK build")
+        grab_result = self._grab_one_mono8()
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = packed_pt
+        with self.assertRaises(ValueError) as ctx:
+            converter.ConvertToArray(grab_result, raw=False)
+        self.assertIn("acked", str(ctx.exception))
+
+    def test_convert_to_array_packed_output_succeeds_when_raw_true(self):
+        """ConvertToArray with raw=True returns a flat uint8 array even for packed OutputPixelFormat."""
+        packed_pt = self._first_supported_packed_output()
+        if packed_pt is None:
+            self.skipTest("No packed output format accepted by this SDK build")
+        grab_result = self._grab_one_mono8()
+        converter = pylon.ImageFormatConverter()
+        converter.OutputPixelFormat = packed_pt
+        result = converter.ConvertToArray(grab_result, raw=True)
+        self.assertIsInstance(result, np.ndarray)
+        self.assertEqual(result.ndim, 1)
+        self.assertEqual(result.dtype, np.uint8)
 
 
 if __name__ == "__main__":

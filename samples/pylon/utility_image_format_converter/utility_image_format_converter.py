@@ -3,6 +3,11 @@
 Demonstrate ImageFormatConverter: build a synthetic RGB image, convert to Mono16, then GrabOne
 with optional Mono8 conversion. The in-memory image is a simple NumPy gradient attached as RGB8.
 
+Two conversion approaches are shown:
+  * converter.Convert(src)        – returns a PylonImage; .Array copies the buffer.
+  * converter.ConvertToArray(src) – writes directly into a pre-allocated NumPy array,
+                                    avoiding the extra copy.
+
 Without hardware, configure Basler Camera Emulation so a virtual device is
 visible to pylon.FirstFound (or CreateFirstDevice):
 https://docs.baslerweb.com/camera-emulation
@@ -52,7 +57,14 @@ try:
 
     # Convert returns the destination PylonImage.
     target_image = converter.Convert(image_rgb8_packed)
-    _print_first_six_bytes(target_image, "Converted image.")
+    _print_first_six_bytes(target_image, "Converted image (via Convert).")
+
+    # ConvertToArray writes directly into a pre-allocated NumPy array,
+    # avoiding the extra buffer copy that occurs with Convert(src).Array.
+    mono16_array = converter.ConvertToArray(image_rgb8_packed)
+    print()
+    print(f"ConvertToArray result: shape={mono16_array.shape}, dtype={mono16_array.dtype}")
+    print(f"First three pixel values: {mono16_array[0, :3]}")
 
     # --- Second converter: GrabOne, then ImageHasDestinationFormat / optional Convert.
     with pylon.InstantCamera(pylon.FirstFound) as camera:
