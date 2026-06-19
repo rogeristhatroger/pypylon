@@ -368,6 +368,62 @@ class BooleanParameterTestSuite(PylonParameterTestCase):
         p_wo.FromString("true")  # must not raise
 
 
+    def test_boolean_parameter_from_string_case_insensitive(self):
+        """FromString is case-insensitive for all recognised aliases."""
+        p_rw = pylon.BooleanParameter(self.nodemap, "TestBoolRW")
+
+        for truthy in ("TRUE", "True"):
+            p_rw.FromString(truthy)
+            self.assertIs(True, p_rw.GetValue(), msg=f"Expected True for '{truthy}'")
+
+        for falsy in ("FALSE", "False"):
+            p_rw.FromString(falsy)
+            self.assertIs(False, p_rw.GetValue(), msg=f"Expected False for '{falsy}'")
+
+    def test_boolean_parameter_from_string_whitespace_stripped(self):
+        """FromString strips leading/trailing whitespace before matching."""
+        p_rw = pylon.BooleanParameter(self.nodemap, "TestBoolRW")
+
+        for truthy in ("  true  ", "True  "):
+            p_rw.FromString(truthy)
+            self.assertIs(True, p_rw.GetValue(), msg=f"Expected True for {truthy!r}")
+
+        for falsy in ("  false  ", "  False"):
+            p_rw.FromString(falsy)
+            self.assertIs(False, p_rw.GetValue(), msg=f"Expected False for {falsy!r}")
+
+    def test_boolean_parameter_from_string_with_verify_false(self):
+        """FromString accepts an explicit Verify=False second argument."""
+        p_rw = pylon.BooleanParameter(self.nodemap, "TestBoolRW")
+
+        p_rw.FromString("true", False)
+        self.assertIs(True, p_rw.GetValue())
+
+        p_rw.FromString("false", False)
+        self.assertIs(False, p_rw.GetValue())
+
+
+    def test_boolean_parameter_from_string_unattached_raises(self):
+        """FromString on an unattached BooleanParameter raises."""
+        p = pylon.BooleanParameter()
+        self.assertFalse(p.IsValid())
+        with self.assertRaises(Exception):
+            p.FromString("true")
+
+    def test_boolean_parameter_from_string_normalization_not_applied_to_non_boolean(self):
+        """The boolean alias normalization in FromString must not affect
+        non-boolean parameters (e.g. IntegerParameter)."""
+        p_int = pylon.IntegerParameter(self.nodemap, "TestInt2")
+        self.assertTrue(p_int.IsValid())
+
+        # "1" must be forwarded as-is to the C++ integer layer and succeed
+        p_int.FromString("1")
+        self.assertEqual(1, p_int.GetValue())
+
+        # "true" / "on" are not valid integer strings and must raise
+        with self.assertRaises(Exception):
+            p_int.FromString("true")
+
     # ------------------------------------------------------------------
     # ToStringOrDefault / __str__
     # ------------------------------------------------------------------
