@@ -5,17 +5,12 @@
 </picture>
 
 <br>
-The official python wrapper for the Basler pylon Software Suite.
+pypylon is the official Python language binding for the Basler pylon C++ APIs. It enables Python applications to control and acquire images from Basler machine vision products, e.g. cameras.
 
 > **Note:** This README was updated for pypylon 26.6.
 > The code samples now use the pylon parameter API and context-manager style.
 
 Background information about usage of pypylon, programming samples and jupyter notebooks can also be found at [pypylon-samples](https://github.com/basler/pypylon-samples) *(may not always reflect the latest pypylon API/style)*.
-
-**Please Note:**
-This project is offered with limited technical support by Basler AG.
-You are welcome to post any questions or issues on [GitHub](https://github.com/basler/pypylon).
-For additional technical assistance, please reach out to our official [Support](https://www.baslerweb.com/en/support/contact) team.
 
 [![Build Status](https://github.com/basler/pypylon/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/basler/pypylon/actions/workflows/main.yml)
 
@@ -206,3 +201,7 @@ pytest tests/....
 # Known Issues
  * For USB 3.0 cameras to work on Linux, you need to install appropriate udev rules.
    The easiest way to get them is to install the official [pylon](http://www.baslerweb.com/pylon) package.
+
+# Support
+You are welcome to post any questions or issues on [GitHub](https://github.com/basler/pypylon).
+For additional technical support for business customers, please reach out to our official [Support](https://www.baslerweb.com/en/support/contact) team.

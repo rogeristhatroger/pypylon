@@ -1304,7 +1304,7 @@ if __name__ == "__main__":
         version=version,
         author="Basler AG",
         author_email="oss@baslerweb.com",
-        description="The python wrapper for the Basler pylon Software Suite.",
+        description="The official Python language binding for the Basler pylon C++ APIs.",
         long_description=long_description,
         long_description_content_type='text/markdown',
         url="https://github.com/basler/pypylon",
