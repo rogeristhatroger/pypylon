@@ -42,9 +42,6 @@ namespace Pylon {
 
 %extend Pylon::CInstantCamera {
 
-
-
-
     PROP_GET(QueuedBufferCount)
     PROP_GETSET(CameraContext)
     PROP_GET(DeviceInfo)
@@ -107,6 +104,10 @@ namespace Pylon {
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.DestroyDevice() #automatically closes the camera and releases the device
+        # unregister all configurations to avoid lifetime issues with event handlers that may be registered by the user.
+        self.RegisterConfiguration(None, _pylon.RegistrationMode_ReplaceAll, _pylon.Cleanup_None)
+        self.RegisterImageEventHandler(None, _pylon.RegistrationMode_ReplaceAll, _pylon.Cleanup_None)
+        self.RegisterCameraEventHandler(None, "Dummy", 0, _pylon.RegistrationMode_ReplaceAll, _pylon.Cleanup_None)
         return False
 %}
 }
