@@ -5,16 +5,17 @@
 </picture>
 
 <br>
-pypylon is the official Python language binding for the Basler pylon C++ APIs. It enables Python applications to control and acquire images from Basler machine vision products, e.g. cameras.
+pypylon is the official Python language binding for the Basler pylon C++ APIs. It enables Python applications to control and acquire images from Basler machine vision products, e.g. cameras. Furthermore, the pylon Data Processing API allows you to perform image processing tasks.
 
 > **Note:** This README was updated for pypylon 26.6.
-> The code samples now use the pylon parameter API and context-manager style.
+> pypylon 26.6 introduces breaking changes. While most existing code is expected to remain functional, check the [changelog](https://github.com/basler/pypylon/blob/master/changelog.txt) for a full list of affected areas.
 
 Background information about usage of pypylon, programming samples and jupyter notebooks can also be found at [pypylon-samples](https://github.com/basler/pypylon-samples) *(may not always reflect the latest pypylon API/style)*.
 
 [![Build Status](https://github.com/basler/pypylon/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/basler/pypylon/actions/workflows/main.yml)
 
 # Getting Started
+> **Coming soon:** A detailed pypylon Programmer's Guide will be available [here](https://github.com/basler/pypylon/blob/master/docs/programmers_guide).
 
  * Install [pylon](https://www.baslerweb.com/pylon)
    This is strongly recommended but not mandatory. See [known issues](#known-issues) for further details.
@@ -26,27 +27,30 @@ Background information about usage of pypylon, programming samples and jupyter n
 from pypylon import pylon
 
 # Create an InstantCamera object with the camera device found first.
-# The with statement opens the camera and closes it automatically.
+# The with statement creates, opens the camera and destroys it automatically.
 with pylon.InstantCamera(pylon.FirstFound) as camera:
     print("Using device:", camera.DeviceInfo.ModelName)
 
     # Demonstrate some feature access using the pylon parameter API.
-    new_width = camera.Width.Value - camera.Width.Inc
-    if new_width >= camera.Width.Min:
-        camera.Width.Value = new_width
+    camera.Width.TrySetToMaximum()
 
-    number_of_images_to_grab = 100
-    camera.StartGrabbingMax(number_of_images_to_grab)
+    # Start the grabbing of 100 images.
+    camera.StartGrabbingMax(100)
 
     while camera.IsGrabbing():
         # The grab result is released automatically at the end of the with block.
-        with camera.RetrieveResult(5000, pylon.TimeoutHandling_ThrowException) as grab_result:
+        with camera.RetrieveResult(
+            5000, pylon.TimeoutHandling_ThrowException
+        ) as grab_result:
             if grab_result.GrabSucceeded():
-                # Access the image data.
-                print("SizeX:", grab_result.Width)
-                print("SizeY:", grab_result.Height)
-                img = grab_result.Array
-                print("Gray value of first pixel:", img[0, 0])
+                # Some camera models use a GenICam Generic Data Container (GenDC) format.
+                # For single grabbed images, a data component is emulated automatically.
+                with grab_result.GetFirstImageDataComponent() as image_data_component:
+                        # Access the image data.
+                        img = image_data_component.Array
+                        print(f"SizeX: {image_data_component.Width};"
+                              f"SizeY: {image_data_component.Height}; "
+                              f"Gray value of first pixel: {img[0, 0]}")
 ```
 
 ## Getting Started with pylon Data Processing
