@@ -2,7 +2,19 @@
 
 %ignore CPylonDataComponentImpl;
 %ignore operator IImage&;
-%ignore GetData() const;
+// CPylonDataComponent declares two overloads of GetData in the pylon C++ SDK:
+//     const void* GetData() const;
+//     void*       GetData();
+// Both must be hidden so that the custom %extend implementation below (which
+// returns a Python bytearray) is used instead of the raw void* pointer.
+// We cannot use '%ignore GetData();' to hide the non-const overload, because
+// that directive has the same signature as the %extend'ed method and would
+// suppress it as well, leaving PylonDataComponent without any GetData method.
+// Therefore we ignore every base-class GetData overload by name and expose the
+// custom implementation (named 'GetDataAsBytes') under the name 'GetData' via
+// %rename.
+%ignore Pylon::CPylonDataComponent::GetData;
+%rename(GetData) Pylon::CPylonDataComponent::GetDataAsBytes;
 
 
 %include <pylon/PylonDataComponent.h>;
@@ -42,10 +54,10 @@
     // the GIL being held. Therefore we have to tell SWIG not to release the GIL
     // when calling them (%nothread).
 
-    %nothread GetData;
+    %nothread GetDataAsBytes;
     %nothread GetMemoryView;
 
-    PyObject * GetData()
+    PyObject * GetDataAsBytes()
     {
         void * buf = const_cast<void*>($self->GetData());
         size_t length = $self->GetDataSize();

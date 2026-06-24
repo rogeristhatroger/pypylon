@@ -223,12 +223,14 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
         self.assertIsInstance(pylon.CompressionMode_Off, int)
         self.assertIsInstance(pylon.CompressionMode_BaslerLossless, int)
         self.assertIsInstance(pylon.CompressionMode_BaslerFixRatio, int)
+        self.assertIsInstance(pylon.CompressionMode_JPEGFixQuality, int)
 
     def test_compression_mode_values_match_header_declaration(self):
         """Every CompressionMode_* constant has the integer value documented in pylon/ImageDecompressor.h."""
         self.assertEqual(pylon.CompressionMode_Off, 0)
         self.assertEqual(pylon.CompressionMode_BaslerLossless, 1)
         self.assertEqual(pylon.CompressionMode_BaslerFixRatio, 2)
+        self.assertEqual(pylon.CompressionMode_JPEGFixQuality, 3)
 
     def test_compression_mode_runtime_surface_matches_expected(self):
         """The set of pylon.CompressionMode_* attributes at runtime equals the exhaustive expected set."""
@@ -237,6 +239,7 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
             "CompressionMode_Off",
             "CompressionMode_BaslerLossless",
             "CompressionMode_BaslerFixRatio",
+            "CompressionMode_JPEGFixQuality",
         ))
         self.assertFalse(expected - runtime, "missing: %s" % sorted(expected - runtime))
         self.assertFalse(runtime - expected, "unexpected: %s" % sorted(runtime - expected))
@@ -260,8 +263,9 @@ class ImageDecompressorTestSuite(PylonEmuTestCase):
                 pylon.CompressionMode_Off,
                 pylon.CompressionMode_BaslerLossless,
                 pylon.CompressionMode_BaslerFixRatio,
+                pylon.CompressionMode_JPEGFixQuality,
             }),
-            3,
+            4,
         )
 
     # ------------------------------------------------------------------
