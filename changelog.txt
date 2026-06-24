@@ -12,9 +12,10 @@ Version 26.x.x
       - If a parameter is accessed that does not exist, a PlaceholderParameter is returned instead of throwing an exception.
         This allows to use the Try-Pattern or OrDefault pattern for all parameters to achieve shorter and better readable code.
         Note: this is breaking change for code that expected an exception to be thrown when accessing a non-existent parameter.
-      - If a placeholder parameter is accessed, a pylon.LogicalErrorException is thrown with a helpful error message
-        that includes the path of the parameter. Try-Pattern or the OrDefault pattern can be used and behave as if the
-        parameter is not readable and not writable.
+      - Try-Pattern or the OrDefault pattern can be used and behave as if the parameter is not readable and not writable.
+      - If a placeholder parameter is accessed (discouraged), a pylon.LogicalErrorException is thrown with a helpful error message
+        that includes the path of the parameter. All method of the Parameter base class throw AccessExceptions instead because
+        this is more consistent with all other available parameter types.
       - If a parameter is accessed that exists in a node map,
         now return typed pylon parameter types extending GenICam types instead of only GenICam types.
     - pylon data processing Recipe and SmartInstantCamera also return pylon parameter types.
@@ -22,7 +23,11 @@ Version 26.x.x
     - DeviceInfo attributes are now accessible as Python properties (e.g. device_info.ModelName).
     - DeviceInfo now supports dictionary-style access (e.g. device_info['ModelName']).
     - InstantCamera now supports the context manager protocol: use it in a with statement to
-      have the camera opened and closed automatically.
+      have the camera created, opened and destroyed automatically. Additionally, all event handlers are automatically
+      deregistered when the camera is destroyed to prevent dangling references to the camera object.
+    - Recipe now supports the context manager protocol: use it in a with statement to
+      have the recipe created and unloaded automatically. Additionally, all event handlers are automatically
+      deregistered when the recipe is destroyed to prevent dangling references to the recipe object.
     - InstantCameraArray now supports the context manager protocol as well.
     - InstantCamera can now be used without explicitly calling TlFactory, simplifying
       single-camera use cases.

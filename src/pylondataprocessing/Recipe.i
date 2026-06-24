@@ -49,6 +49,9 @@
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.Unload()
+        # Output observers and update observers are automatically unregistered when the recipe is unloaded,
+        # so we don't need to explicitly unregister them here.
+        self.UnregisterEventObserver()
         return False
 %}
 
