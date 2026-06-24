@@ -1,4 +1,7 @@
-Version 26.x.x
+Version 26.6rc1
+    - Date 2026-06-24
+    - Updated to pylon Software Suite 26.6.2 on all platforms, which includes
+      pylon C++ SDK 12.2.0 and pylon Data Processing C++ SDK 5.0.0.
     - All changes try to keep backwards compatibility with previous pypylon versions,
       but some breaking changes are introduced in the API that are typically not used directly
       (see below).

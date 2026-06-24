@@ -17,12 +17,12 @@ from pathlib import Path
 from logging import info, warning, error
 # The pylon version this source tree was designed for, by platform
 ReferencePylonVersion = {
-    "Windows": "12.0.0",
+    "Windows": "12.2.0",
     # ATTENTION: This version is the pylon core version reported by pylon-config,
     # which is not equal to the version on the outer tar.gz
-    "Linux": "12.0.0",
+    "Linux": "12.2.0",
     "Linux_armv7l": "6.2.0",
-    "Darwin": "12.0.0"
+    "Darwin": "12.2.0"
 }
 
 ################################################################################
@@ -298,15 +298,21 @@ class BuildSupport(object):
                 universal_newlines=True
                 )
             git_version = git_version.strip()
+            m_tagged_dev = re.match(
+                r"^(\d+(?:\.\d+){1,3}\.dev\d+)(?:-dirty)?$",
+                git_version
+                )
+            if m_tagged_dev:
+                return m_tagged_dev.group(1)
             m_rel = re.match(
-                r"^\d+(?:\.\d+){2,3}(?:(?:a|b|rc)\d*)?$",
+                r"^\d+(?:\.\d+){1,3}(?:(?:a|b|rc)\d*)?$",
                 git_version
                 )
             #this will match  something like 1.0.0-14-g123456 and
             # 1.0.0-14-g123456-dirty and 1.0.0-dirty
             rx_git_ver = re.compile(
                 r"""
-                ^(\d+(?:\.\d+){2,3}
+                ^(\d+(?:\.\d+){1,3}
                 (?:(?:a|b|rc)\d*)?)
                 (?:(?:\+[a-zA-Z0-9](?:[a-zA-Z0-9\.]*[a-zA-Z0-9]?))?)
                 (?:-(\d+)-g[0-9a-f]+)?
