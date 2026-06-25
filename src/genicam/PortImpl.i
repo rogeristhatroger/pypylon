@@ -91,7 +91,7 @@ namespace GENAPI_NAMESPACE
     %rename(Write) CPyPortImpl::PyWrite;
     %rename(CPortImpl) CPyPortImpl;
     
-	
+    
     //*************************************************************
     // CPortImpl class
     //*************************************************************

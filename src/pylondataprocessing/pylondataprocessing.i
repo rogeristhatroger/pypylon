@@ -46,7 +46,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // allow debug builds of genicam wrapper against release build of python
 # ifdef _DEBUG
-#	ifdef _MSC_VER
+#    ifdef _MSC_VER
 // Include these low level headers before undefing _DEBUG. Otherwise when doing
 // a debug build against a release build of python the compiler will end up
 // including these low level headers without DEBUG enabled, causing it to try
@@ -116,12 +116,16 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GenApi/EventAdapterGeneric.h>
 #include <GenApi/EventAdapterGEV.h>
 #include "genicam/PyPortImpl.h"
+#include "pylon/NodeMapWrapper.h"
+#include "pylon/EnumEntryParameter.h"
+#include "pylon/CategoryParameter.h"
+#include "pylon/PortParameter.h"
+#include "pylon/PlaceholderParameter.h"
 
 #include <pylondataprocessing/BuildersRecipe.h>
 #include <pylondataprocessing/IOutputObserver.h>
 #include <pylondataprocessing/IParameterCollection.h>
 #include <pylondataprocessing/IUpdateObserver.h>
-#include <pylondataprocessing/ParameterNames.h>
 #include <pylondataprocessing/PylonDataProcessing.h>
 #include <pylondataprocessing/PylonDataProcessingVersion.h>
 #include <pylondataprocessing/Recipe.h>
@@ -129,6 +133,10 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <pylondataprocessing/Variant.h>
 #include <pylondataprocessing/VariantContainer.h>
 #include <pylondataprocessing/VariantDataType.h>
+#if PYLON_DATAPROCESSING_VERSION_MAJOR >= 5
+#include <pylondataprocessing/ImageParameter.h>
+#include <pylondataprocessing/RegionParameter.h>
+#endif
 #if PYLON_DATAPROCESSING_VERSION_MAJOR >= 2
 #include <pylondataprocessing/AcquisitionMode.h>
 #include <pylondataprocessing/VariantContainerType.h>
@@ -278,7 +286,21 @@ def needs_numpy(func):
 ///////////////////////////////////
 //// fetch pylon definitions ////
 ///////////////////////////////////
+
+// %import only brings in type information, not typemaps or feature directives.
+// However, %nodefaultdtor on CPylonImageBase (from PylonImageBase.i) IS
+// imported and suppresses the destructor for CPylonImage in this module too.
+// CVariant::ToImage() returns CPylonImage by value, so SWIG heap-allocates the
+// result with SWIG_POINTER_OWN. Without a destructor registered, Python's GC
+// leaks the object and emits:
+//   "swig/python detected a memory leak of type 'Pylon::CPylonImage *',
+//    no destructor found."
+// Re-enable the destructor here, before the import, so SWIG generates the
+// delete wrapper for CPylonImage in this module.
+%defaultdtor Pylon::CPylonImage;
+
 %import "../pylon/pylon.i"
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -366,86 +388,6 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 // Make sure the above typemap is no applied on const references
 %typemap(argout, noblock=1) const StringList_t & {}
 
-////////////////////////////////////////////////////////////////////////////////
-
-// the INode* factory
-%typemap(out) GENAPI_NAMESPACE::INode* GENAPI_INODE_RETURN
-%{
-    // Need a new scope here, so this block can be skipped
-    // by a 'goto' or 'SWIG_fail'.
-    {
-        swig_type_info *outtype = 0;
-        void * outptr = 0;
-        if (0 == $1)
-        {
-            GENICAM_NAMESPACE::LogicalErrorException except(
-                "Node not existing",
-                __FILE__,
-                __LINE__
-                );
-            TranslateGenicamException(&except);
-            SWIG_fail;
-        }
-        else
-        {
-            switch ($1->GetPrincipalInterfaceType())
-            {
-                case GENAPI_NAMESPACE::intfIValue :
-                    outtype = $descriptor(GENAPI_NAMESPACE::IValue*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::IValue*>($1);
-                    break;
-                case GENAPI_NAMESPACE::intfIInteger :
-                    outtype = $descriptor(GENAPI_NAMESPACE::IInteger*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::IInteger*>($1);
-                    break;
-                case GENAPI_NAMESPACE::intfIBoolean :
-                    outtype = $descriptor(GENAPI_NAMESPACE::IBoolean*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::IBoolean*>($1);
-                    break;
-                case GENAPI_NAMESPACE::intfICommand :
-                    outtype = $descriptor(GENAPI_NAMESPACE::ICommand*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::ICommand*>($1);
-                    break;
-                case GENAPI_NAMESPACE::intfIFloat :
-                    outtype = $descriptor(GENAPI_NAMESPACE::IFloat*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::IFloat*>($1);
-                    break;
-                case GENAPI_NAMESPACE::intfIString :
-                    outtype = $descriptor(GENAPI_NAMESPACE::IString*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::IString*>($1);
-                    break;
-                case GENAPI_NAMESPACE::intfIRegister :
-                    outtype = $descriptor(GENAPI_NAMESPACE::IRegister*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::IRegister*>($1);
-                    break;
-                case GENAPI_NAMESPACE::intfICategory :
-                    outtype = $descriptor(GENAPI_NAMESPACE::ICategory*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::ICategory*>($1);
-                    break;
-                case GENAPI_NAMESPACE::intfIEnumeration :
-                    outtype = $descriptor(GENAPI_NAMESPACE::IEnumeration*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::IEnumeration*>($1);
-                    break;
-                case GENAPI_NAMESPACE::intfIEnumEntry :
-                    outtype = $descriptor(GENAPI_NAMESPACE::IEnumEntry*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::IEnumEntry*>($1);
-                    break;
-                case GENAPI_NAMESPACE::intfIPort :
-                    outtype = $descriptor(GENAPI_NAMESPACE::IPort*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::IPort*>($1);
-                    break;
-                case GENAPI_NAMESPACE::intfIBase :
-                    outtype = $descriptor(GENAPI_NAMESPACE::IBase*);
-                    outptr  = dynamic_cast<GENAPI_NAMESPACE::IBase*>($1);
-                    break;
-            };
-        }
-        $result = SWIG_NewPointerObj(outptr, outtype, $owner);
-    }
-%}
-
-%apply GENAPI_NAMESPACE::INode* GENAPI_INODE_RETURN { GENAPI_NAMESPACE::INode* Pylon::DataProcessing::CRecipe::GetParameter };
-%apply GENAPI_NAMESPACE::INode* GENAPI_INODE_RETURN { GENAPI_NAMESPACE::INode* Pylon::DataProcessing::CSmartInstantCameraT< Pylon::CInstantCamera, Pylon::DataProcessing::SSmartInstantCameraResultT<Pylon::CGrabResultPtr> >::GetParameter };
 ////////////////////////////////////////////////////////////////////////////////
 
 // Check typemap to make the TriggerUpdate overloads working with python dictionaries
@@ -555,63 +497,6 @@ Pylon::DataProcessing::CVariantContainer value
 #define APIIMPORT
 #define APIEXPORT
 
-// for properties that have a standard genicam type like IInteger or IBoolean
-%define GENICAM_PROP(name)
-    %rename(_##name) name;
-
-    %pythoncode
-    %{
-        def _Get_## name(self):
-           return self._ ## name
-        def _Set_ ## name(self, value):
-           self._ ## name.SetValue(value)
-        name = property(_Get_ ## name, _Set_ ## name )
-    %}
-%enddef
-
-// for properties whose type is derived IEnumeration
-%define GENICAM_ENUM_PROP(name)
-    %rename(_##name) name;
-
-    GENAPI_NAMESPACE::IEnumeration& _GetEnum_##name()
-    {
-        return static_cast<GENAPI_NAMESPACE::IEnumeration&>($self->##name);
-    }
-
-    %pythoncode
-    %{
-        def _Get_##name(self):
-           return self._GetEnum_##name()
-        def _Set_ ## name(self, value):
-           if isinstance(value, int):
-            self._GetEnum_##name().SetIntValue(value)
-           else:
-            self._GetEnum_##name().SetValue(value)
-        name = property(_Get_ ## name, _Set_ ## name )
-    %}
-
-%enddef
-
-// for properties with one of those extended types like IIntegerEx or IBooleanEx
-%define GENICAM_EX_PROP(name, type)
-    %ignore name;
-
-    type& _GetBaseType_##name()
-    {
-        return static_cast<type&>($self->name);
-    }
-
-    %pythoncode
-    %{
-        def _Get_##name(self):
-           return self._GetBaseType_##name()
-        def _Set_##name(self, value):
-           self._GetBaseType_##name().SetValue(value)
-        name = property(_Get_##name, _Set_##name )
-    %}
-
-%enddef
-
 // ignore assignment operator in all classes
 %ignore *::operator=;
 
@@ -629,6 +514,29 @@ Pylon::DataProcessing::CVariantContainer value
     %}
 
 %enddef
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// GetParameter return typemap: same dispatch as NodeMapWrapper::GetNode.
+//
+// When the parameter does not exist (null INode*), a CPlaceholderParameter
+// is returned whose path is set to the requested fullname (arg1).
+// PYLON_NODE_TO_PARAMETER is imported from pylon.i via %import and uses
+// $descriptor() — valid here because this is a %typemap body.
+//
+%typemap(out) GENAPI_NAMESPACE::INode* Pylon::DataProcessing::CRecipe::GetParameter,
+              GENAPI_NAMESPACE::INode* Pylon::DataProcessing::CSmartInstantCameraT< Pylon::CInstantCamera, Pylon::DataProcessing::SSmartInstantCameraResultT<Pylon::CGrabResultPtr> >::GetParameter
+{
+    if (0 == $1)
+    {
+        Pylon::CPlaceholderParameter *p = new Pylon::CPlaceholderParameter(arg2 ? *arg2 : GENICAM_NAMESPACE::gcstring());
+        $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CPlaceholderParameter*), SWIG_POINTER_OWN);
+    }
+    else
+    {
+        PYLON_NODE_TO_PARAMETER($1, $result)
+    }
+}
 
 // The entire functionality of GenApi is placed in a namespace. The actual name
 // of this namespace is formed by a macro called 'GENAPI_NAMESPACE'. But there
@@ -671,7 +579,13 @@ namespace Pylon
 %include "Variant.i"
 %include "Update.i"
 %include "QueueMode.i"
-%include "VariantContainer.i"
+#if PYLON_DATAPROCESSING_VERSION_MAJOR >= 5
+%include "ImageParameter.i"
+%include "RegionParameter.i"
+#endif
+// Keep CVariantContainer known to SWIG for signatures/typemaps (e.g. observers,
+// GenericOutputObserverResult), but do not expose VariantContainer as Python API.
+%import "VariantContainer.i"
 %include "OutputObserver.i"
 %include "GenericOutputObserver.i"
 %include "UpdateObserver.i"
@@ -699,6 +613,8 @@ ADD_PROP_GET(Region, BoundingBoxHeight)
 ADD_PROP_GET(Variant, DataType)
 ADD_PROP_GET(Variant, NumSubValues)
 ADD_PROP_GET(Variant, NumArrayValues)
+ADD_PROP_GET(Variant, ErrorDescription)
+ADD_PROP_GET(Variant, ContainerType)
 ADD_PROP_GET(Update, NumPrecedingUpdates)
 ADD_PROP_GET(Recipe, RecipeContext)
 ADD_PROP_GET(GenericOutputObserver, NumResults)

@@ -40,7 +40,7 @@ namespace GENAPI_NAMESPACE
     {
     public:
         //! Constructor
-		CPyPortImpl(): CPortImpl()
+        CPyPortImpl(): CPortImpl()
         {
         }
 
@@ -69,14 +69,14 @@ namespace GENAPI_NAMESPACE
 
 
         //! Reads a chunk of bytes from the port
-	virtual void Read(void *pBuffer, int64_t Address, int64_t Length){
-			PyRead(Address, pBuffer,Length);
-		}
+    virtual void Read(void *pBuffer, int64_t Address, int64_t Length){
+            PyRead(Address, pBuffer,Length);
+        }
 
         //! Writes a chunk of bytes to the port
-	virtual void Write(const void *pBuffer, int64_t Address, int64_t Length){
-			PyWrite(Address, pBuffer,Length);
-		}
+    virtual void Write(const void *pBuffer, int64_t Address, int64_t Length){
+            PyWrite(Address, pBuffer,Length);
+        }
 
     };
 }

@@ -17,14 +17,31 @@ from pathlib import Path
 from logging import info, warning, error
 # The pylon version this source tree was designed for, by platform
 ReferencePylonVersion = {
-    "Windows": "12.0.0",
+    "Windows": "12.2.0",
     # ATTENTION: This version is the pylon core version reported by pylon-config,
     # which is not equal to the version on the outer tar.gz
-    "Linux": "12.0.0",
+    "Linux": "12.2.0",
     "Linux_armv7l": "6.2.0",
-    "Darwin": "12.0.0"
+    "Darwin": "12.2.0"
 }
 
+################################################################################
+def copy_package_assets():
+    src_dir = os.path.join(".", "docs", "images")
+    dst_dir = os.path.join(".", "pypylon", "docs", "images")
+
+    if not os.path.isdir(src_dir):
+        return
+
+    os.makedirs(dst_dir, exist_ok=True)
+
+    for path in glob.glob(os.path.join(src_dir, "*.svg")):
+        print(f"Copy asset {path} => {dst_dir}")
+        shutil.copy(path, dst_dir)
+
+    src_file = os.path.join(".", "README.md")
+    dst_file = os.path.join(".", "pypylon", "README.md")
+    shutil.copy(src_file, dst_file)
 ################################################################################
 
 def prepare_for_limited_api(min_ver_str):
@@ -92,7 +109,6 @@ class BuildSupport(object):
     SwigOptions = [
         "-c++",
         "-Wextra",
-        "-Wall",
         "-threads",
         #lots of debug output "-debug-tmsearch",
         ]
@@ -282,15 +298,21 @@ class BuildSupport(object):
                 universal_newlines=True
                 )
             git_version = git_version.strip()
+            m_tagged_dev = re.match(
+                r"^(\d+(?:\.\d+){1,3}\.dev\d+)(?:-dirty)?$",
+                git_version
+                )
+            if m_tagged_dev:
+                return m_tagged_dev.group(1)
             m_rel = re.match(
-                r"^\d+(?:\.\d+){2,3}(?:(?:a|b|rc)\d*)?$",
+                r"^\d+(?:\.\d+){1,3}(?:(?:a|b|rc)\d*)?$",
                 git_version
                 )
             #this will match  something like 1.0.0-14-g123456 and
             # 1.0.0-14-g123456-dirty and 1.0.0-dirty
             rx_git_ver = re.compile(
                 r"""
-                ^(\d+(?:\.\d+){2,3}
+                ^(\d+(?:\.\d+){1,3}
                 (?:(?:a|b|rc)\d*)?)
                 (?:(?:\+[a-zA-Z0-9](?:[a-zA-Z0-9\.]*[a-zA-Z0-9]?))?)
                 (?:-(\d+)-g[0-9a-f]+)?
@@ -376,7 +398,7 @@ class BuildSupport(object):
 
     def get_package_data_files(self):
         # patterns for files in self.PackageDir
-        data_files = ["*.dll", "*.zip", "*.so", "*.so.*", "*.sig"]
+        data_files = ["*.dll", "*.zip", "*.so", "*.so.*", "*.sig", "*.md"]
 
         # also add all files of any sub-directories recursively
         pdir = self.PackageDir
@@ -1022,7 +1044,7 @@ class BuildSupportMacOS(BuildSupport):
         except FileNotFoundError:
             msg = (
                 "Couldn't find pylon. Please install pylon in %s or tell us " +
-                "the framwork search path of the pylon.framework using the PYLON_FRAMEWORK_LOCATION environment " +
+                "the framework search path of the pylon.framework using the PYLON_FRAMEWORK_LOCATION environment " +
                 "variable"
                 )
             error(msg, self.FrameworkPath)
@@ -1226,6 +1248,7 @@ if __name__ == "__main__":
         # into the package directory, that need to be distributed and were not
         # placed there by 'call_swig'.
         bs.copy_runtime()
+        copy_package_assets()
         print('\n')
 
     else:
@@ -1287,7 +1310,7 @@ if __name__ == "__main__":
         version=version,
         author="Basler AG",
         author_email="oss@baslerweb.com",
-        description="The python wrapper for the Basler pylon Camera Software Suite.",
+        description="The official Python language binding for the Basler pylon C++ APIs.",
         long_description=long_description,
         long_description_content_type='text/markdown',
         url="https://github.com/basler/pypylon",

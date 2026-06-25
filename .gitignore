@@ -1,5 +1,5 @@
 # Ignore SWIG generates
-generated/
+generated*/
 
 # Ignore build/dist tree
 /build*
@@ -42,8 +42,15 @@ wheelhouse
 # macOS
 .DS_Store
 
-# Ignore pylon installer
-pylon*/
-
 # Local development files
 conan_package/
+/.venv/
+
+
+# Local Cursor rules (do not commit; use Cursor Settings > Rules for AI for machine-specific rules)
+.cursorrules
+.cursor/rules/
+/.pytest_cache/
+/NodeMap.pfs
+/uv.lock
+/include

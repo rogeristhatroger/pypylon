@@ -1,10 +1,14 @@
 %rename(PylonImage) Pylon::CPylonImage;
+// CPylonImageBase uses %nodefaultdtor which would suppress the destructor for
+// all subclasses including CPylonImage. Explicitly re-enable the destructor so
+// that SWIG registers a 'delete' wrapper and Python can free heap-allocated
+// CPylonImage* objects handed over with SWIG_POINTER_OWN (e.g. from
+// DecompressImage and the IReusableImage& argout typemap), instead of
+// triggering: "swig/python detected a memory leak of type
+// 'Pylon::CPylonImage *', no destructor found."
+%defaultdtor Pylon::CPylonImage;
 %feature("shadow", "0") Pylon::CPylonImage::AttachMemoryView;
-
-%pythoncode %{
-    from contextlib import contextmanager
-    import sys
-%} 
+%feature("shadow", "0") Pylon::CPylonImage::AttachBytesObject;
 
 %extend Pylon::CPylonImage{
 
@@ -89,60 +93,12 @@
           self._memory_view_buffer = memoryViewBuffer # Hold buffer copy to reference to prevent garbage collection
         self._memory_view = memoryView  # Hold the reference to prevent garbage collection
 
-    @needs_numpy
-    def GetImageFormat(self, pt = None):
-        if pt is None:
-            pt = self.GetPixelType()
-        if IsPacked(pt):
-            raise ValueError("Packed Formats are not supported with numpy interface")
-        if pt in ( PixelType_Mono8, PixelType_BayerGR8, PixelType_BayerRG8, PixelType_BayerGB8, PixelType_BayerBG8, PixelType_Confidence8, PixelType_Coord3D_C8 ):
-            shape = (self.GetHeight(), self.GetWidth())
-            format = "B"
-            dtype = _pylon_numpy.uint8
-        elif pt in ( PixelType_Mono10, PixelType_BayerGR10, PixelType_BayerRG10, PixelType_BayerGB10, PixelType_BayerBG10 ):
-            shape = (self.GetHeight(), self.GetWidth())
-            format = "H"
-            dtype = _pylon_numpy.uint16
-        elif pt in ( PixelType_Mono12, PixelType_BayerGR12, PixelType_BayerRG12, PixelType_BayerGB12, PixelType_BayerBG12 ):
-            shape = (self.GetHeight(), self.GetWidth())
-            format = "H"
-            dtype = _pylon_numpy.uint16
-        elif pt in ( PixelType_Mono16, PixelType_BayerGR16, PixelType_BayerRG16, PixelType_BayerGB16, PixelType_BayerBG16, PixelType_Confidence16, PixelType_Coord3D_C16 ):
-            shape = (self.GetHeight(), self.GetWidth())
-            format = "H"
-            dtype = _pylon_numpy.uint16
-        elif pt in ( PixelType_RGB8packed, PixelType_BGR8packed ):
-            shape = (self.GetHeight(), self.GetWidth(), 3)
-            dtype = _pylon_numpy.uint8
-            format = "B"
-        elif pt in ( PixelType_RGB12packed, PixelType_BGR12packed, PixelType_RGB10packed, PixelType_BGR10packed ):
-            shape = (self.GetHeight(), self.GetWidth(), 3)
-            format = "H"
-            dtype = _pylon_numpy.uint16            
-        elif pt in ( PixelType_YUV422_YUYV_Packed, PixelType_YUV422packed ):
-            shape = (self.GetHeight(), self.GetWidth(), 2)
-            dtype = _pylon_numpy.uint8
-            format = "B"
-        elif pt in ( PixelType_Coord3D_ABC32f, ):
-            shape = (self.GetHeight(), self.GetWidth(), 3)
-            dtype = _pylon_numpy.float32
-            format = "f"
-        elif pt in ( PixelType_Data32f, ):
-            shape = (self.GetHeight(), self.GetWidth(), 1)
-            dtype = _pylon_numpy.float32
-            format = "f"
-        elif pt in ( PixelType_BiColorRGBG8, PixelType_BiColorBGRG8 ):
-            shape = (self.GetHeight(), self.GetWidth() * 2)
-            format = "B"
-            dtype = _pylon_numpy.uint8
-        elif pt in ( PixelType_BiColorRGBG10, PixelType_BiColorBGRG10, PixelType_BiColorRGBG12, PixelType_BiColorBGRG12 ):
-            shape = (self.GetHeight(), self.GetWidth() * 2)
-            format = "H"
-            dtype = _pylon_numpy.uint16
-        else:
-            raise ValueError("Pixel format currently not supported")
+    def AttachBytesObject(self, object, pixelType, width, height, paddingX):
+        if not isinstance(object, bytes):
+            raise RuntimeError("Expected a bytes-compatible object")
+        return _pylon.PylonImage_AttachBytesObject(self, object, pixelType, width, height, paddingX)
 
-        return (shape, dtype, format)
+    GetImageFormat = needs_numpy(_image_get_image_format)
 
     def __enter__(self):
         return self
@@ -159,23 +115,8 @@
 
     @needs_numpy
     def GetArray(self, raw = False):
-
-        # Raw case => Simple byte wrapping of buffer
-        if raw:
-            shape, dtype, format = ( self.GetPayloadSize() ), _pylon_numpy.uint8, "B"
-            buf = self.GetBuffer()
-            return _pylon_numpy.ndarray(shape, dtype = dtype, buffer=buf)
-
-        pt = self.GetPixelType()
-        if IsPacked(pt):
-            buf, new_pt = self._Unpack10or12BitPacked()
-            shape, dtype, format = self.GetImageFormat(new_pt)
-        else:
-            shape, dtype, format = self.GetImageFormat(pt)
-            buf = self.GetBuffer()
-
-        # Now we will copy the data into an array:
-        return _pylon_numpy.ndarray(shape, dtype = dtype, buffer=buf)
+        # CPylonImage exposes GetImageSize(), not GetPayloadSize().
+        return _image_get_array(self, raw, self.GetBuffer, self.GetImageSize)
 
     @contextmanager
     @needs_numpy
@@ -184,32 +125,7 @@
         Get a numpy array for the image buffer as zero copy reference to the underlying buffer.
         Note: The context manager variable MUST be released before leaving the scope.
         '''
-
-        # For packed formats, we cannot zero-copy, so use GetArray
-        pt = self.GetPixelType()
-        if IsPacked(pt):
-            yield self.GetArray()
-            return
-
-        mv = self.GetMemoryView()
-        if not raw:
-            shape, dtype, format = self.GetImageFormat()
-            mv = mv.cast(format, shape)
-
-        ar = _pylon_numpy.asarray(mv)
-
-        # trace external references to array
-        initial_refcount = sys.getrefcount(ar)
-
-        # yield the array to the context code
-        yield ar
-
-        # detect if more refs than the one from the yield are held
-        if sys.getrefcount(ar) > initial_refcount + 1:
-            raise RuntimeError("Please remove any references to the array before leaving context manager scope!!!")
-
-        # release the memory view
-        mv.release()
+        yield from _image_array_zero_copy_gen(self, self.GetMemoryView, raw)
 %}
 
 }
@@ -219,5 +135,21 @@
 %ignore GetBuffer;
 // Ignore original 'AttachUserBuffer' overloads.
 %ignore AttachUserBuffer;
+%ignore Pylon::CPylonImage::CopyImage(void*, size_t, EPixelType, uint32_t, uint32_t, size_t, EImageOrientation);
+%ignore Pylon::CPylonImage::AttachGrabResultBufferWithUserHints(const CGrabResultPtr&, EPixelType, uint32_t, uint32_t, size_t, EImageOrientation);
+%ignore Pylon::CPylonImage::AttachUserBuffer(void*, size_t, EPixelType, uint32_t, uint32_t, size_t, EImageOrientation, CPylonImageUserBufferEventHandler*);
+%ignore Pylon::CPylonImage::GetPixelData;
 
 %include <pylon/PylonImage.h>;
+
+
+ADD_PROP_GET(PylonImage, AllocatedBufferSize)
+ADD_PROP_GET(PylonImage, Array)
+ADD_PROP_GET(PylonImage, Buffer)
+ADD_PROP_GET(PylonImage, Height)
+ADD_PROP_GET(PylonImage, ImageFormat)
+ADD_PROP_GET(PylonImage, ImageSize)
+ADD_PROP_GET(PylonImage, Orientation)
+ADD_PROP_GET(PylonImage, PaddingX)
+ADD_PROP_GET(PylonImage, PixelType)
+ADD_PROP_GET(PylonImage, Width)

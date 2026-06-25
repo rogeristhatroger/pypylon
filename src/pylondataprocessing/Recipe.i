@@ -43,29 +43,40 @@
 %include <pylondataprocessing/Recipe.h>;
 
 %extend Pylon::DataProcessing::CRecipe {
+%pythoncode %{
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.Unload()
+        # Output observers and update observers are automatically unregistered when the recipe is unloaded,
+        # so we don't need to explicitly unregister them here.
+        self.UnregisterEventObserver()
+        return False
+%}
 
     void GetOutputNames2(StringList_t& result) const
     {
         $self->GetOutputNames(result);
     }
-    
+
     void GetAllParameterNames(StringList_t& result)
     {
         result = $self->GetParameters().GetAllParameterNames();
     }
-    
+
     bool ContainsParameter(const Pylon::String_t& fullname)
     {
         bool result = $self->GetParameters().Contains(fullname);
         return result;
     }
 
-    GenApi::INode* GetParameter(const Pylon::String_t& fullname)
+    GENAPI_NAMESPACE::INode* GetParameter(const Pylon::String_t& fullname)
     {
-        GenApi::INode* pNode = $self->GetParameters().Get(fullname).GetNode();
-        return pNode;
+        Pylon::CParameter parameter = $self->GetParameters().Get(fullname);
+        return parameter.IsValid() ? parameter.GetNode() : nullptr;
     }
-    
+
     void RegisterOutputObserver2(const StringList_t& outputFullNames, IOutputObserver* pObserver, ERegistrationMode mode, intptr_t userProvidedId = 0)
     {
         $self->RegisterOutputObserver(outputFullNames, pObserver, mode, userProvidedId);
@@ -89,3 +100,5 @@
         return result;
     }
 }
+
+

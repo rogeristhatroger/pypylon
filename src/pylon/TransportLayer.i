@@ -73,6 +73,15 @@
     delete $1;
 }
 
+%typemap(out) GENAPI_NAMESPACE::INodeMap* Pylon::ITransportLayer::GetNodeMap
+%{
+    $result = SWIG_NewPointerObj(
+        new Pylon::NodeMapWrapper($1, Pylon::NodeMapType_TransportLayer),
+        $descriptor(Pylon::NodeMapWrapper*),
+        SWIG_POINTER_OWN
+    );
+%}
+
 %include <pylon/TransportLayer.h>;
 
 %typemap(in) (Pylon::InterfaceInfoList_t& list, bool addToList);

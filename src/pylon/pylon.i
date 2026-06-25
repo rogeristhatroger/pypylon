@@ -46,7 +46,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // allow debug builds of genicam wrapper against release build of python
 # ifdef _DEBUG
-#	ifdef _MSC_VER
+#    ifdef _MSC_VER
 // Include these low level headers before undefing _DEBUG. Otherwise when doing
 // a debug build against a release build of python the compiler will end up
 // including these low level headers without DEBUG enabled, causing it to try
@@ -118,6 +118,12 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <GenApi/EventAdapterGeneric.h>
 #include <GenApi/EventAdapterGEV.h>
 #include "genicam/PyPortImpl.h"
+#include <GenApi/IDeviceInfo.h>
+#include "pylon/NodeMapWrapper.h"
+#include "pylon/EnumEntryParameter.h"
+#include "pylon/CategoryParameter.h"
+#include "pylon/PortParameter.h"
+#include "pylon/PlaceholderParameter.h"
 
 #ifdef _MSC_VER  // MSVC
 #  pragma warning(pop)
@@ -156,126 +162,6 @@ void TranslateGenicamException(const GenericException* e)
             );
     }
 }
-
-//  For copy deployment of pylon DLLs:
-//
-//  Version 5.0.5 of Pylon started to use LoadLibraryEx in order to load its
-//  DLLs. Calling LoadLibraryEx with the full path of the DLL and setting the
-//  flag LOAD_WITH_ALTERED_SEARCH_PATH adds the path of that DLL to the DLL
-//  search path, while its dependant DLLs are searched. That ensured that all
-//  Pylon DLLs that are stored in the pypylon package folder could be loaded.
-//  That also meant that nothing had to be done here, to make pypylon work.
-//
-//  Unfortunately with version 5.0.11 Pylon changed the way how the GigE and
-//  USB TLs DLLs loaded gxapi and uxapi. The mechanism was changed to 'delay
-//  loading'. This requires that the delay loaded DLLs are found in one of
-//  the standard DLL search paths. While this is going to be fixed in a future
-//  Pylon release, we now have to play tricks again like we had to do, before
-//  Pylon 5.0.5 was released.
-//
-//  Our trick is still this:
-//  The only thing we can do about the DLL search path here is changing the
-//  'PATH' environment variable (using 'SetDllDirectory' or 'AddDllDirectory'
-//  would not be appropriate). In order not to disturb the way pythons 'os'
-//  module handles 'os.environ', we do not want to make a permanent change.
-//
-//  So what we do is this:
-//   - Append the location of this DLL to the PATH.
-//   - Request that the TL DLLs (including gxapi and uxapi) are loaded NOW.
-//   - Restore the previous PATH.
-//
-//  We implement this workaround for Pylon versions < 5.0.5, == 5.0.11,
-//  == 5.0.12, == 5.1.0 and == 5.1.1. Version 5.2.0 has a fix that makes this
-// workaround superfluous.
-
-#ifdef WIN32
-#define NEED_PYLON_DLL_WORKAROUND 1
-#include <Shlwapi.h>    // for PathRemoveFileSpec()
-#pragma comment(lib, "Shlwapi")
-#pragma comment(lib, "user32.lib")
-#else
-#define NEED_PYLON_DLL_WORKAROUND 0
-#endif
-
-#if NEED_PYLON_DLL_WORKAROUND
-static void FixPylonDllLoadingIfNecessary()
-{
-    // Pylon::PylonInitialize must have been called before calling this
-    // function!
-
-    unsigned int major, minor, subminor, build;
-    Pylon::GetPylonVersion(&major, &minor, &subminor, &build);
-    if (major != 5)
-    {
-        return;
-    }
-    bool necessary = (
-        (minor == 0 && (subminor < 5 || subminor == 11 || subminor == 12)) ||
-        (minor == 1 && (subminor == 0 || subminor == 1))
-        );
-    if (!necessary)
-    {
-        return;
-    }
-
-    // Get HMODULE of this function
-    HMODULE hmod = NULL;
-    GetModuleHandleExW(
-        GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
-        GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-        reinterpret_cast<PWSTR>(FixPylonDllLoadingIfNecessary),
-        &hmod
-        );
-
-    // get module file name and remove file spec
-    const DWORD ENV_MAX = UNICODE_STRING_MAX_CHARS;
-    // ENV_MAX is so large that it should not be allocated on the stack
-    PWSTR new_PATH = new WCHAR[ENV_MAX];
-    GetModuleFileNameW(hmod, new_PATH, ENV_MAX);
-    PathRemoveFileSpecW(new_PATH);
-
-    // append previous PATH
-    PWSTR p_Previous_PATH = new_PATH + lstrlenW(new_PATH);
-    *p_Previous_PATH++ = L';';
-    const DWORD rem = ENV_MAX - static_cast<DWORD>(p_Previous_PATH - new_PATH);
-    GetEnvironmentVariableW(L"PATH", p_Previous_PATH, rem);
-
-    // set new PATH
-    SetEnvironmentVariableW(L"PATH", new_PATH);
-
-    // Try to load TLs
-    try
-    {
-        Pylon::CTlFactory& tlf = Pylon::CTlFactory::GetInstance();
-        Pylon::TlInfoList_t tli;
-
-        tlf.EnumerateTls(tli);
-        for (unsigned int i = 0; i < tli.size(); i++)
-        {
-            try
-            {
-                ITransportLayer *pTL = tlf.CreateTl(tli[i]);
-                tlf.ReleaseTl(pTL);
-            }
-            catch (Pylon::GenericException&)
-            {
-                // Ignore TL loading failure and keep on trying other TLs.
-            }
-        }
-    }
-    catch (Pylon::GenericException&)
-    {
-        // Ignore failure of enumerating TLs and carry on loading this
-        // module. The user will notice later if he doesn´t find any cameras.
-    }
-
-    // restore p_Previous_PATH
-    SetEnvironmentVariableW(L"PATH", p_Previous_PATH);
-
-    delete[] new_PATH;
-}
-#endif
-
 %}
 
 %init %{
@@ -285,10 +171,6 @@ static void FixPylonDllLoadingIfNecessary()
     // register PylonTerminate on interpreter shutdown
     auto pylon_terminate = [](){ Pylon::PylonTerminate(true);};
     Py_AtExit( pylon_terminate );
-
-#if NEED_PYLON_DLL_WORKAROUND
-    FixPylonDllLoadingIfNecessary();
-#endif
 
     // Need to import TranslateGenicamException from _genicam in order to be
     // able to translate C++ Genicam exceptions to the correct Python exceptions.
@@ -380,6 +262,316 @@ def needs_numpy(func):
 
 ////////////////////////////////////////////////////////////////////////////////
 //
+// Helper macro: dispatch one INode* to the matching Pylon::C*Parameter type.
+// Used by the NodeMapWrapper::GetNode typemap above and by the NodeList_t /
+// FeatureList_t argout overrides below.
+//
+// Arguments:
+//   node_ptr  - a local INode* variable (must not be null)
+//   out_item  - the PyObject* that receives the new reference
+//
+%define PYLON_NODE_TO_PARAMETER(node_ptr, out_item)
+    switch ((node_ptr)->GetPrincipalInterfaceType())
+    {
+        // ------------------------------------------------------------------
+        // Standard value-bearing node types
+        // ------------------------------------------------------------------
+        case GENAPI_NAMESPACE::intfIInteger:
+        {
+            Pylon::CIntegerParameter *p = new Pylon::CIntegerParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CIntegerParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfIBoolean:
+        {
+            Pylon::CBooleanParameter *p = new Pylon::CBooleanParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CBooleanParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfICommand:
+        {
+            Pylon::CCommandParameter *p = new Pylon::CCommandParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CCommandParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfIFloat:
+        {
+            Pylon::CFloatParameter *p = new Pylon::CFloatParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CFloatParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfIString:
+        {
+            Pylon::CStringParameter *p = new Pylon::CStringParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CStringParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfIRegister:
+        {
+            Pylon::CArrayParameter *p = new Pylon::CArrayParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CArrayParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfIEnumeration:
+        {
+            Pylon::CEnumParameter *p = new Pylon::CEnumParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CEnumParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        // ------------------------------------------------------------------
+        // Special-purpose node types (structural / non-value nodes)
+        // ------------------------------------------------------------------
+        case GENAPI_NAMESPACE::intfIEnumEntry:
+        {
+            Pylon::CEnumEntryParameter *p = new Pylon::CEnumEntryParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CEnumEntryParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfICategory:
+        {
+            Pylon::CCategoryParameter *p = new Pylon::CCategoryParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CCategoryParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        case GENAPI_NAMESPACE::intfIPort:
+        {
+            Pylon::CPortParameter *p = new Pylon::CPortParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CPortParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        // ------------------------------------------------------------------
+        // intfIValue: should have been caught by a specific case above;
+        // wrap as a base CParameter as a last resort.
+        // ------------------------------------------------------------------
+        case GENAPI_NAMESPACE::intfIValue:
+        {
+            Pylon::CParameter *p = new Pylon::CParameter(node_ptr);
+            out_item = SWIG_NewPointerObj(p, $descriptor(Pylon::CParameter*), SWIG_POINTER_OWN);
+            break;
+        }
+        default:
+        {
+            // Could be intfIBase or a newly added GenApi interface type.
+            // There is no node with principal interface intfIBase only.
+            // It is not expected to enter this branch in normal operation.
+            throw DYNAMICCAST_EXCEPTION(
+                "Unknown node type with principal interface %d",
+                (node_ptr)->GetPrincipalInterfaceType());
+        }
+    }
+%enddef
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Override the genicam INode* factory typemap so that GetNode() (and the other
+// nodemap lookup methods) return Pylon::C*Parameter objects instead of raw
+// genicam interface types when called from the pylon module.
+//
+// Standard node interface types and their Pylon wrappers:
+//   intfIInteger     -> Pylon::CIntegerParameter
+//   intfIBoolean     -> Pylon::CBooleanParameter
+//   intfICommand     -> Pylon::CCommandParameter
+//   intfIFloat       -> Pylon::CFloatParameter
+//   intfIString      -> Pylon::CStringParameter
+//   intfIRegister    -> Pylon::CArrayParameter
+//   intfIEnumeration -> Pylon::CEnumParameter
+//
+// Special-purpose node interface types:
+//   intfIEnumEntry   -> Pylon::CEnumEntryParameter (should not be needed, use EnumParameter instead)
+//   intfICategory    -> Pylon::CCategoryParameter (needed only for displaying parameter trees)
+//   intfIPort        -> Pylon::CPortParameter (non-value)
+//
+%typemap(out) GENAPI_NAMESPACE::INode* Pylon::NodeMapWrapper::GetNode2,
+              GENAPI_NAMESPACE::INode* Pylon::NodeMapWrapper::GetNode
+{
+    {
+        if (0 == $1)
+        {
+            // Node not found: create a PlaceholderParameter whose path is
+            // "NodeMapTypeString/requestedNodeName" for diagnostic purposes.
+            // arg1 is the first declared parameter of GetNode / GetNode2 (const char* pName).
+            GENICAM_NAMESPACE::gcstring path =
+                (arg1 ? arg1->GetNodeMapTypeString() : GENICAM_NAMESPACE::gcstring()) +
+                GENICAM_NAMESPACE::gcstring("/") +
+                (arg2 ? *arg2 : GENICAM_NAMESPACE::gcstring());
+            Pylon::CPlaceholderParameter *p = new Pylon::CPlaceholderParameter(path);
+            $result = SWIG_NewPointerObj(p, $descriptor(Pylon::CPlaceholderParameter*), SWIG_POINTER_OWN);
+        }
+        else
+        {
+            PYLON_NODE_TO_PARAMETER($1, $result)
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Override NodeList_t argout: GetNodes() returns a tuple of Pylon::C*Parameter.
+//
+%typemap(argout) GENAPI_NAMESPACE::NodeList_t & {
+    PyObject *o = PyTuple_New($1->size());
+    for (unsigned int i = 0; i < $1->size(); i++) {
+        PyObject *o_item = 0;
+        GENAPI_NAMESPACE::INode *n = (*$1)[i];
+        PYLON_NODE_TO_PARAMETER(n, o_item)
+        PyTuple_SetItem(o, i, o_item);
+    }
+    $result = SWIG_AppendOutput($result, o);
+    delete $1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Override FeatureList_t argout: GetFeatures() returns a tuple of Pylon::C*Parameter.
+// Elements are IValue* so we dynamic_cast to INode* first.
+//
+%typemap(argout) GENAPI_NAMESPACE::FeatureList_t & {
+    PyObject *o = PyTuple_New($1->size());
+    for (unsigned int i = 0; i < $1->size(); i++) {
+        PyObject *o_item = 0;
+        GENAPI_NAMESPACE::INode *n = dynamic_cast<GENAPI_NAMESPACE::INode*>((*$1)[i]);
+        PYLON_NODE_TO_PARAMETER(n, o_item)
+        PyTuple_SetItem(o, i, o_item);
+    }
+    $result = SWIG_AppendOutput($result, o);
+    delete $1;
+}
+
+%typemap(in, numinputs=0) GENAPI_NAMESPACE::NodeList_t & {
+    $1 = new GENAPI_NAMESPACE::NodeList_t();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Expose NodeMapWrapper to SWIG so that $descriptor(Pylon::NodeMapWrapper*)
+// resolves correctly and the method-qualified typemap for GetNode fires.
+%include "NodeMapWrapper.i"
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Wrap every returned INodeMap* in an NodeMapWrapper so that subsequent
+// typemaps (GetNode, GetNodes, GetFeatures) map INode* to Pylon::C*Parameter.
+//
+// The wrapper is heap-allocated and owned by Python (SWIG_POINTER_OWN).
+//
+%typemap(out) GENAPI_NAMESPACE::INodeMap*,
+              GENAPI_NAMESPACE::INodeMap&
+%{
+    $result = SWIG_NewPointerObj(
+        new Pylon::NodeMapWrapper($1, NodeMapType_Unknown),
+        $descriptor(Pylon::NodeMapWrapper*),
+        SWIG_POINTER_OWN
+    );
+%}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Python helper: ToParameter(val)
+//
+// Accepts any genicam interface object (IInteger, IBoolean, ICommand, IFloat,
+// IString, IRegister, IEnumeration, INode, IValue) and wraps it in the
+// corresponding Pylon::C*Parameter.  Any object that is not a recognised
+// genicam type is returned unchanged, so callers can pass any value safely.
+//
+%pythoncode %{
+def ToParameter(val):
+    """Convert any supported value to the most specific Pylon *Parameter type available.
+
+    The conversion rules are applied in the following order:
+
+    1. None / null
+           -> PlaceholderParameter()  (permanently-invalid sentinel, empty path)
+
+    2. Already a Pylon Parameter instance
+           If the parameter wraps a node whose interface type can be mapped to a
+           more specific subclass, that subclass is returned.  If the input is
+           already the most specific type, or no more specific type exists, the
+           input object is returned unchanged.
+
+    3. genicam.IBase (IPort, …) or genicam.IValue (IInteger, IBoolean, ICommand,
+                       IFloat, IString, IRegister, IEnumeration, IEnumEntry, …)
+           The underlying INode is retrieved and dispatch continues as below.
+
+    4. genicam.INode
+           Dispatched via GetPrincipalInterfaceType():
+               intfIInteger     -> IntegerParameter
+               intfIBoolean     -> BooleanParameter
+               intfICommand     -> CommandParameter
+               intfIFloat       -> FloatParameter
+               intfIString      -> StringParameter
+               intfIRegister    -> ArrayParameter
+               intfIEnumeration -> EnumParameter
+               intfIEnumEntry   -> EnumEntryParameter
+               intfICategory    -> CategoryParameter
+               intfIPort        -> PortParameter
+               any other type   -> Parameter  (base, wraps the node)
+
+    5. Any other value
+           -> PlaceholderParameter()  (permanently-invalid sentinel, empty path)
+    """
+    from pypylon import genicam as _genicam
+
+    # ------------------------------------------------------------------ #
+    # Helper: map an INode* to the most specific Parameter subclass.      #
+    # Returns None when no specific mapping exists.                        #
+    # ------------------------------------------------------------------ #
+    def _node_to_specific(node):
+        t = node.GetPrincipalInterfaceType()
+        if t == _genicam.intfIInteger:
+            return IntegerParameter(node)
+        elif t == _genicam.intfIBoolean:
+            return BooleanParameter(node)
+        elif t == _genicam.intfICommand:
+            return CommandParameter(node)
+        elif t == _genicam.intfIFloat:
+            return FloatParameter(node)
+        elif t == _genicam.intfIString:
+            return StringParameter(node)
+        elif t == _genicam.intfIRegister:
+            return ArrayParameter(node)
+        elif t == _genicam.intfIEnumeration:
+            return EnumParameter(node)
+        elif t == _genicam.intfIEnumEntry:
+            return EnumEntryParameter(node)
+        elif t == _genicam.intfICategory:
+            return CategoryParameter(node)
+        elif t == _genicam.intfIPort:
+            return PortParameter(node)
+        return None  # no more-specific type available
+
+    # 1. None -> permanently-invalid placeholder
+    if val is None:
+        return PlaceholderParameter()
+
+    # 2. Already a Pylon Parameter – try to specialise, keep if already specific
+    if isinstance(val, Parameter):
+        # Only the base Parameter class can potentially be specialised;
+        # subclasses are already as specific as we can get.
+        if type(val) is Parameter:
+            node = val.GetNode() if val.IsValid() else None
+            if node is not None:
+                specific = _node_to_specific(node)
+                if specific is not None:
+                    return specific
+        return val
+
+    # 3. genicam.IValue – unwrap to INode first
+    if isinstance(val, _genicam.IValue):
+        val = val.GetNode()
+
+    # 4. genicam.INode – dispatch on interface type
+    if isinstance(val, _genicam.INode):
+        specific = _node_to_specific(val)
+        return specific if specific is not None else Parameter(val)
+    if isinstance(val, _genicam.IPort):
+        return PortParameter(val)
+
+    # 5. Unrecognised type -> permanently-invalid placeholder
+    return PlaceholderParameter()
+%}
+
+////////////////////////////////////////////////////////////////////////////////
+//
 // bool typecheck: Whenever a Python argument is used in a typecheck (resolving
 // overloaded functions), we want to enforce that the user has to supply a
 // 'real' Python bool object. Otherwise almost any other Python type would
@@ -419,14 +611,14 @@ def needs_numpy(func):
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// ImageConverter output
+// ImageConverter and ImagePersistence output
 //
 
-%typemap(in,numinputs=0, noblock=1) Pylon::IReusableImage& {
+%typemap(in,numinputs=0, noblock=1) Pylon::IReusableImage&, IReusableImage& {
   $1 = new Pylon::CPylonImage();
 }
 
-%typemap(argout, noblock=1) Pylon::IReusableImage& {
+%typemap(argout, noblock=1) Pylon::IReusableImage&, IReusableImage& {
   Py_DECREF($result);
   $result = SWIG_NewPointerObj(
     SWIG_as_voidptr($1),
@@ -436,8 +628,58 @@ def needs_numpy(func):
 }
 
 // '%typemap(freearg)' must be empty!
-%typemap(freearg, noblock=1) Pylon::IReusableImage& {}
+%typemap(freearg, noblock=1) Pylon::IReusableImage&, IReusableImage& {}
 
+////////////////////////////////////////////////////////////////////////////////
+//
+// ImageConverter and ImagePersistence input, maps the IImage cast operators of pylon C++
+//
+
+%typemap(in) const Pylon::IImage &, const IImage & {
+    // Reject None early: SWIG_ConvertPtr accepts None as a null pointer, which
+    // would result in a null reference and a SEGFAULT inside the C++ call.
+    if ($input == Py_None) {
+        SWIG_exception_fail(SWIG_TypeError,
+                            "None is not a valid IImage, CGrabResultPtr or CPylonDataComponent");
+    }
+
+    // Case 1: already an IImage*
+    if (SWIG_IsOK(SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_Pylon__IImage, 0)) && $1) {
+    $1 = (IImage*)$1;
+    }
+
+    // Case 2: CGrabResultPtr -> extract IImage
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_Pylon__CGrabResultPtr, 0)) && $1) {
+    Pylon::CGrabResultPtr* grabPtr = (Pylon::CGrabResultPtr*)$1;
+    if (!(*grabPtr)) {
+        SWIG_exception_fail(SWIG_ValueError, "Invalid CGrabResultPtr");
+    }
+    $1 = &(grabPtr->operator Pylon::IImage&());
+    }
+
+    // Case 3: Pylon::CPylonDataComponent -> extract IImage
+    else if (SWIG_IsOK(SWIG_ConvertPtr($input, (void**)&$1, SWIGTYPE_p_Pylon__CPylonDataComponent, 0)) && $1) {
+    $1 = const_cast<Pylon::IImage*>(&(((Pylon::CPylonDataComponent*)$1)->operator const Pylon::IImage&()));
+    }
+
+    else {
+    SWIG_exception_fail(SWIG_TypeError,
+                "Expected IImage, CGrabResultPtr or CPylonDataComponent");
+    }
+}
+
+%typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER) const Pylon::IImage &, const IImage & {
+  // SWIG_ConvertPtr accepts None (Python null) as a null pointer and returns
+  // SWIG_OK.  We must reject that explicitly with the '&& ptr' guards so that
+  // None does not accidentally match this overload and reach the 'in' typemap
+  // where a null IImage reference would SEGFAULT.
+  Pylon::IImage *ptr = nullptr;
+  $1 =
+      (SWIG_IsOK(SWIG_ConvertPtr($input, (void **)(&ptr), SWIGTYPE_p_Pylon__IImage, 0)) && ptr)
+      || (SWIG_IsOK(SWIG_ConvertPtr($input, (void **)(&ptr), SWIGTYPE_p_Pylon__CGrabResultPtr, 0)) && ptr)
+      || (SWIG_IsOK(SWIG_ConvertPtr($input, (void **)(&ptr), SWIGTYPE_p_Pylon__CPylonDataComponent, 0)) && ptr)
+      ;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -581,8 +823,30 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 
 %enddef
 
+////////////////////////////////////////////////////////////////////////////////
+//
+// GetStride output parameter typemap
+//
+// GetStride(size_t& strideBytes) uses a C++ output-reference parameter.
+// Hide it from Python (numinputs=0) and append the value to the return tuple
+// so that the Python call is:
+//
+//   ok, stride = obj.GetStride()
+//
+// The typemap matches on the parameter name "strideBytes" which is used
+// consistently across CGrabResultData, CPylonImage, and CPylonDataComponent.
+//
+%typemap(in, numinputs=0) size_t& strideBytes (size_t temp = 0) {
+    $1 = &temp;
+}
+%typemap(argout) size_t& strideBytes {
+    %append_output(PyLong_FromSize_t(*$1));
+}
+
 // ignore assignment operator in all classes
 %ignore *::operator=;
+%ignore "operator const Pylon::IImage&";
+%ignore "operator const IImage&";
 
 %include <pylon/PylonVersionNumber.h>
 
@@ -597,20 +861,21 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 // sources. The following macro ensures that SWIG again uses 'GENAPI_NAMESPACE'
 // in all the places where pylon uses 'GenApi'.
 #define GenApi GENAPI_NAMESPACE
-
+#define GenICam GENICAM_NAMESPACE
+%include "parameter_lookup.i"
+%include "Device.i"
 %include "PylonVersionInfo.i"
 %include "TypeMappings.i"
 %include "Container.i"
 %include "PixelType.i"
+%include "ImageMixin.i"
 %include "PayloadType.i"
 %include "Info.i"
 %include "DeviceInfo.i"
 %include "InterfaceInfo.i"
 %include "TlInfo.i"
 %include "DeviceFactory.i"
-#if PYLON_VERSION_MAJOR >= 6
 %include "Interface.i"
-#endif
 %include "TransportLayer.i"
 %include "GigETransportLayer.i"
 %include "TlFactory.i"
@@ -618,7 +883,6 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "GrabResultPtr.i"
 %include "WaitObject.i"
 %include "WaitObjects.i"
-%include "InstantCameraParams.i"
 %include "InstantCamera.i"
 %include "InstantCameraArray.i"
 %include "ImageEventHandler.i"
@@ -628,74 +892,32 @@ const Pylon::StringList_t & (Pylon::StringList_t str_list)
 %include "AcquireContinuousConfiguration.i"
 %include "AcquireSingleFrameConfiguration.i"
 %include "ActionTriggerConfiguration.i"
+%include "ImagePersistence.i"
 %include "Image.i"
 %include "ReusableImage.i"
 %include "PylonImageBase.i"
 %include "PylonImage.i"
-%include "_ImageFormatConverterParams.i"
 %include "ImageFormatConverter.i"
-#ifdef HAVE_PYLON_GUI
+%include "Parameter.i"
+%include "IntegerParameter.i"
+%include "CommandParameter.i"
+%include "StringParameter.i"
+%include "FloatParameter.i"
+%include "BooleanParameter.i"
+%include "EnumParameter.i"
+%include "EnumEntryParameter.i"
+%include "CategoryParameter.i"
+%include "PortParameter.i"
+%include "PlaceholderParameter.i"
+%include "ArrayParameter.i"
 %include "PylonGUI.i"
-#endif
 %include "FeaturePersistence.i"
-#if (PYLON_VERSION_MAJOR == 6 && PYLON_VERSION_MINOR >= 1) || PYLON_VERSION_MAJOR > 6
 %include "ImageDecompressor.i"
-#endif
-#if (PYLON_VERSION_MAJOR == 6 && PYLON_VERSION_MINOR >= 2) || PYLON_VERSION_MAJOR > 6
 %include "PylonDataComponent.i"
 %include "PylonDataContainer.i"
-ADD_PROP_GET(PylonDataContainer, DataComponentCount)
-ADD_PROP_GET(PylonDataComponent, ComponentType)
-ADD_PROP_GET(PylonDataComponent, PixelType)
-ADD_PROP_GET(PylonDataComponent, Width)
-ADD_PROP_GET(PylonDataComponent, Height)
-ADD_PROP_GET(PylonDataComponent, OffsetX)
-ADD_PROP_GET(PylonDataComponent, OffsetY)
-ADD_PROP_GET(PylonDataComponent, PaddingX)
-ADD_PROP_GET(PylonDataComponent, Data)
-ADD_PROP_GET(PylonDataComponent, DataSize)
-ADD_PROP_GET(PylonDataComponent, TimeStamp)
-ADD_PROP_GET(PylonDataComponent, Array)
-ADD_PROP_GET(PylonDataComponent, ImageFormat)
-#endif
-
-ADD_PROP_GET(GrabResult, ErrorDescription)
-ADD_PROP_GET(GrabResult, ErrorCode)
-ADD_PROP_GET(GrabResult, PayloadType)
-ADD_PROP_GET(GrabResult, PixelType)
-ADD_PROP_GET(GrabResult, Width)
-ADD_PROP_GET(GrabResult, Height)
-ADD_PROP_GET(GrabResult, OffsetX)
-ADD_PROP_GET(GrabResult, OffsetY)
-ADD_PROP_GET(GrabResult, PaddingX)
-ADD_PROP_GET(GrabResult, PaddingY)
-ADD_PROP_GET(GrabResult, Buffer)
-ADD_PROP_GET(GrabResult, Array)
-ADD_PROP_GET(GrabResult, PayloadSize)
-ADD_PROP_GET(GrabResult, BlockID)
-ADD_PROP_GET(GrabResult, TimeStamp)
-ADD_PROP_GET(GrabResult, ImageSize)
-ADD_PROP_GET(GrabResult, ID)
-ADD_PROP_GET(GrabResult, ImageNumber)
-ADD_PROP_GET(GrabResult, NumberOfSkippedImages)
-ADD_PROP_GET(GrabResult, ChunkDataNodeMap)
-ADD_PROP_GET(GrabResult, DataComponentCount)
-ADD_PROP_GET(GrabResult, DataContainer)
-
-ADD_PROP_GET(PylonImage, AllocatedBufferSize)
-ADD_PROP_GET(PylonImage, Aoi)
-ADD_PROP_GET(PylonImage, Array)
-ADD_PROP_GET(PylonImage, Buffer)
-ADD_PROP_GET(PylonImage, Height)
-ADD_PROP_GET(PylonImage, ImageFormat)
-ADD_PROP_GET(PylonImage, ImageSize)
-ADD_PROP_GET(PylonImage, Orientation)
-ADD_PROP_GET(PylonImage, PaddingX)
-ADD_PROP_GET(PylonImage, PixelData)
-ADD_PROP_GET(PylonImage, PixelType)
-ADD_PROP_GET(PylonImage, Plane)
-ADD_PROP_GET(PylonImage, Stride)
-ADD_PROP_GET(PylonImage, Width)
+%include "DeviceClass.i"
+%include "SfncVersion.i"
+%include "ConfigurationHelper.i"
 
 %apply unsigned int *OUTPUT {
     unsigned int* major,
@@ -710,4 +932,5 @@ void GetPylonVersion(
     unsigned int* subminor,
     unsigned int* build
     );
+
 const char* GetPylonVersionString();

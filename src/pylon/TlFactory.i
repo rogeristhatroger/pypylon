@@ -1,10 +1,55 @@
-
 %ignore CSimpleMutex;
 %ignore TlMap;
 %ignore ImplicitTlRefs;
 
 %nodefaultctor Pylon::CTlFactory;
 %rename(TlFactory) Pylon::CTlFactory;
+
+%extend Pylon::CTlFactory
+{
+%pythoncode %{
+    class TransportLayerContext:
+        """Context manager for a transport layer created by TlFactory.
+
+        Ensures ReleaseTl() is called when the context is exited, even if
+        an exception occurs.
+
+        Usage::
+
+            with TlFactory.GetInstance().TransportLayer("BaslerGigE") as tl:
+                devices = tl.EnumerateDevices()
+
+            # or with a CTlInfo object:
+            tls = TlFactory.GetInstance().EnumerateTls()
+            with TlFactory.GetInstance().TransportLayer(tls[0]) as tl:
+                devices = tl.EnumerateDevices()
+        """
+        def __init__(self, factory, tl_info):
+            self._factory = factory
+            self._tl_info = tl_info
+            self._tl = None
+
+        def __enter__(self):
+            self._tl = self._factory.CreateTl(self._tl_info)
+            return self._tl
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            if self._tl is not None:
+                self._factory.ReleaseTl(self._tl)
+                self._tl = None
+            return False
+
+    def TransportLayer(self, tl_info):
+        """Return a context manager that creates and releases a transport layer.
+
+        :param tl_info: A :class:`TlInfo` object or a device-class string
+                        (e.g. ``"BaslerGigE"``).
+        :returns: A context manager whose ``__enter__`` returns the
+                  :class:`TransportLayer` object.
+        """
+        return self.TransportLayerContext(self, tl_info)
+%}
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -66,8 +111,9 @@
 %{
     if (0 == $1)
     {
-        PyErr_SetString(PyExc_ValueError, "invalid TL specification");
-        SWIG_fail;
+        // CreateTl returns null when no matching TL is found – expose as None.
+        $result = Py_None;
+        Py_INCREF(Py_None);
     }
     else
     {

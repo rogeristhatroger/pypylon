@@ -583,7 +583,7 @@ namespace GENICAM_NAMESPACE {
 
 
 %typemap(in, numinputs=0) GENAPI_NAMESPACE::FeatureList_t & {
-    $1 = new FeatureList_t();
+    $1 = new GENAPI_NAMESPACE::FeatureList_t();
 }
 
 %typemap(argout) GENAPI_NAMESPACE::FeatureList_t & {

@@ -8,6 +8,7 @@
 %ignore CStickyEventHandler;
 %ignore COutputObserver;
 %ignore SmartResultEventHandlerData;
+%warnfilter(315) CSmartInstantCameraT;
 
 %include <pylondataprocessing/SmartInstantCamera.h>
 
@@ -39,7 +40,8 @@
 
 %pythonprepend Pylon::CInstantCamera::RegisterSmartResultEventHandler2 %{
     if cleanupProcedure == pypylon.pylon.Cleanup_Delete:
-        pSmartResultEventHandler.__disown__()
+        if pSmartResultEventHandler:
+            pSmartResultEventHandler.__disown__()
     elif cleanupProcedure == pypylon.pylon.Cleanup_None:
         # should we increment the pyhon refcount here??
         pass
@@ -73,10 +75,10 @@
       return result;
     }
 
-    GenApi::INode* GetParameter(const Pylon::String_t& fullname)
+    GENAPI_NAMESPACE::INode* GetParameter(const Pylon::String_t& fullname)
     {
-      GenApi::INode* pNode = $self->GetParameters().Get(fullname).GetNode();
-      return pNode;
+        Pylon::CParameter parameter = $self->GetParameters().Get(fullname);
+        return parameter.IsValid() ? parameter.GetNode() : nullptr;
     }
 };
 

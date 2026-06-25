@@ -1,0 +1,1 @@
+%include <pylon/DeviceClass.h>;
