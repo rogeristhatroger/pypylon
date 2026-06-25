@@ -28,7 +28,7 @@ This unit test checks all of the mapped pypylon API introduced by src/pylon/Devi
 
 ## Base Structure
 
-Tests are grouped in a class that inherits from a test case classe, e.g. `PylonParameterTestCase`
+Tests are grouped in a class that inherits from a test case class, e.g. `PylonParameterTestCase`
 (which itself extends `unittest.TestCase`). `setUp` and `tearDown` are
 handled by the base class; override them only when additional setup is
 needed (e.g. connecting a test port).
@@ -93,18 +93,13 @@ explicit checks of the public names a user is expected to read and use.
   are part of the public contract or make the example clearer.
 
 - **Prefer representative examples over inventories.** Cover a few meaningful
-  cases instead of rebuilding the full enum definition in Python. When enum
-  values are consumed by helpers, prefer small usage examples such as
-  `GetPixelColorFilter(pylon.PixelType_BayerRG8)`. For broad bindings with
-  multiple helper families, include at least one representative example per
-  meaningful family. If a helper family has a distinct public error case or a
-  tricky legacy/public distinction, include one representative example of that
-  too. For important families, prefer a contrasting pair that shows the
-  boundary of the behavior, such as planar vs. packed, Bayer vs. mono, or
-  legacy helper naming vs. actual packed behavior. Include one or two
-  specialized/outlier formats when they represent a distinct family. For
-  important families that are easy to misunderstand, prefer a small contrast
-  set of 2-4 tightly related assertions rather than a single point example.
+  cases instead of rebuilding the full enum in Python. When enum values feed
+  helpers, prefer small usage examples such as
+  `GetPixelColorFilter(pylon.PixelType_BayerRG8)`, and include at least one per
+  helper family. Where a boundary is easy to misread (planar vs. packed, Bayer
+  vs. mono, legacy naming vs. actual behavior), use a small contrast set of 2-4
+  related assertions rather than a single example, and add any distinct
+  error or legacy/public case.
 
 - **Keep representative cases visible.** For a small fixed example set, prefer
   explicit assertions to loops, even when each case needs a simple availability

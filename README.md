@@ -189,6 +189,8 @@ If pylon SDK is not installed in a default location you have to specify the loca
 
 Pull requests to pypylon are very welcome. To help you getting started with pypylon improvements, here are some hints:
 
+If you use an AI coding assistant, see [AGENTS.md](AGENTS.md) for the repository map, build/test commands, and coding-style references.
+
 ## Starting Development
 ```console
 python setup.py develop
@@ -198,9 +200,13 @@ After changing pypylon, execute `python setup.py build` and test...
 
 ## Running Unit Tests
 > NOTE: The unit tests try to import `pypylon....`, so they run against the *installed* version of pypylon.
+
+Run the hardware-free (Camera Emulation) suites the same way CI does:
 ```console
-pytest tests/....
+pip install pytest numpy
+pytest tests/genicam tests/pylon/emulated tests/pylondataprocessing
 ```
+The `tests/pylon/usb` and `tests/pylon/gigE` suites require real cameras.
 
 # Known Issues
  * For USB 3.0 cameras to work on Linux, you need to install appropriate udev rules.
