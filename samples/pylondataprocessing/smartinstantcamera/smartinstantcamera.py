@@ -38,6 +38,8 @@ try:
     this_dir = os.path.dirname(__file__)
     recipe_file = os.path.join(this_dir, "smartcamera.precipe")
 
+    # SmartInstantCamera takes a concrete IPylonDevice; unlike InstantCamera it
+    # has no pylon.FirstFound overload, so the device is created explicitly here.
     with pylondataprocessing.SmartInstantCamera(
         pylon.TlFactory.GetInstance().CreateFirstDevice(), recipe_file
     ) as camera:

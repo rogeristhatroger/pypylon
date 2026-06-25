@@ -63,7 +63,7 @@ try:
         # Load the tiff image directly via the ImagePersistence interface.
         with pylon.ImagePersistence.Load(f"{OUTPUT_STEM}.tiff") as image_rgb16_packed_from_tiff:
             print("The pixel type of the image is",
-                  "" if image_rgb16_packed_from_tiff.GetPixelType() == pylon.PixelType_RGB16packed else "not",
+                  "" if image_rgb16_packed_from_tiff.PixelType == pylon.PixelType_RGB16packed else "not",
                   "RGB16packed.")
 
 
@@ -75,7 +75,7 @@ try:
             # The format of the loaded image from the bmp file is BGR8packed instead of the original RGB16packed format because
             # it had to be converted for saving it in the bmp format.
             print("The pixel type of the image is",
-                  "" if image_bgr8_packed_from_bmp.GetPixelType() == pylon.PixelType_RGB8packed else "not",
+                  "" if image_bgr8_packed_from_bmp.PixelType == pylon.PixelType_RGB8packed else "not",
                   "RGB8packed.")
 
 
@@ -121,7 +121,7 @@ try:
             if grab_result:
                 pylon.ImagePersistence.Save(pylon.ImageFileFormat_Png, "GrabbedImage.png", grab_result)
 
-except BaseException as e:
+except Exception as e:
     print("An exception occurred:", e)
     import traceback
     traceback.print_exc()

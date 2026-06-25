@@ -48,8 +48,8 @@ try:
             device_key = recipe.GetParameter("MyCamera/@vTool/DevicePropertyKey")
             device_value = recipe.GetParameter("MyCamera/@vTool/DevicePropertyValue")
             for i in range(device_property_selector.Min, device_property_selector.Max + 1):
-                device_property_selector.SetValue(i)
-                print(f"  {device_key.GetValue()}={device_value.GetValue()}")
+                device_property_selector.Value = i
+                print(f"  {device_key.Value}={device_value.Value}")
         else:
             print("The first camera device found is used.")
 
@@ -132,7 +132,7 @@ try:
                 # while grabbing is active.
                 if (i + 1) % 10 == 0:
                     test_image_1 = not test_image_1
-                    test_image_selector.SetValue(
+                    test_image_selector.Value = (
                         "Testimage1" if test_image_1 else "Testimage2"
                     )
             else:

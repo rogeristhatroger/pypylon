@@ -86,7 +86,7 @@ try:
         # Change the output format of the image format converter.
         recipe.GetParameter(
             "MyConverter/@vTool/OutputPixelFormat"
-        ).SetValue("BGR8Packed")
+        ).Value = "BGR8Packed"
 
         # Now, we can run the recipe as usual.
         recipe.Start()

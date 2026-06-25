@@ -87,7 +87,7 @@ def create_mandelbrot_fractal(pixel_type, width, height):
     pylon_image.AttachArray(image, pylon.PixelType_RGB8packed)
 
     # Convert if needed
-    if pylon_image.GetPixelType() != pixel_type:
+    if pylon_image.PixelType != pixel_type:
         converter = pylon.ImageFormatConverter()
         converter.OutputPixelFormat = pixel_type
         converter.OutputBitAlignment = pylon.OutputBitAlignment_MsbAligned

@@ -57,7 +57,7 @@ def configure_auto_function_roi_sfnc1(camera):
     if not camera.AutoFunctionAOISelector.IsWritable():
         return
 
-    camera.AutoFunctionAOISelector.SetValue("AOI1")
+    camera.AutoFunctionAOISelector.Value = "AOI1"
     camera.AutoFunctionAOIUsageIntensity.TrySetValue(True)
     camera.AutoFunctionAOIUsageWhiteBalance.TrySetValue(True)
     camera.AutoFunctionAOIOffsetX.SetToMinimum()
@@ -71,7 +71,7 @@ def configure_auto_function_roi_sfnc2(camera):
     if not camera.AutoFunctionROISelector.IsWritable():
         return
 
-    camera.AutoFunctionROISelector.SetValue("ROI1")
+    camera.AutoFunctionROISelector.Value = "ROI1"
     camera.AutoFunctionROIUseBrightness.TrySetValue(True)
     camera.AutoFunctionROIUseWhiteBalance.TrySetValue(True)
     camera.AutoFunctionROIOffsetX.SetToMinimum()
