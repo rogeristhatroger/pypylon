@@ -104,15 +104,15 @@ try:
             # with the settings from user set 1.
             if camera.UserSetDefault.IsWritable():
                 # Cameras based on SFNC 2.0 or later, e.g., USB cameras
-                camera.UserSetDefault.SetValue("UserSet1")
+                camera.UserSetDefault.Value = "UserSet1"
 
                 # Restore the default user set selector.
-                camera.UserSetDefault.SetValue(old_default_value)
+                camera.UserSetDefault.Value = old_default_value
             elif camera.UserSetDefaultSelector.IsWritable():
-                camera.UserSetDefaultSelector.SetValue("UserSet1")
+                camera.UserSetDefaultSelector.Value = "UserSet1"
 
                 # Restore the default user set selector.
-                camera.UserSetDefaultSelector.SetValue(old_default_value)
+                camera.UserSetDefaultSelector.Value = old_default_value
             else:
                 print("Default user-set selector nodes are not exposed in this environment.")
 

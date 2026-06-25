@@ -211,12 +211,12 @@ try:
 
         if not camera.EventNotification.TrySetValue("On"):
             # scout-f, scout-g, and aviator GigE cameras use a different value.
-            camera.EventNotification.SetValue("GenICamEvent")
+            camera.EventNotification.Value = "GenICamEvent"
 
         # Enable event notification for the EventOverrun event, if available.
         if camera.EventSelector.TrySetValue("EventOverrun"):
             if not camera.EventNotification.TrySetValue("On"):
-                camera.EventNotification.SetValue("GenICamEvent")
+                camera.EventNotification.Value = "GenICamEvent"
 
         # Start the grabbing of COUNT_OF_IMAGES_TO_GRAB images.
         camera.StartGrabbingMax(COUNT_OF_IMAGES_TO_GRAB)

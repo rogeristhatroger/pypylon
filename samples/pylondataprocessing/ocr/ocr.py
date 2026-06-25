@@ -42,7 +42,7 @@ try:
         images_path = os.path.join(samples_dir, "images", "ocr")
         recipe.GetParameter(
             "ImageLoading/@vTool/SourcePath"
-        ).SetValue(images_path)
+        ).Value = images_path
 
         # This is where the output goes.
         recipe.RegisterAllOutputsObserver(
@@ -98,7 +98,7 @@ try:
                       " OCR detection.\n")
                 recipe.GetParameter(
                     "OcrBasic/@vTool/CharacterSet"
-                ).SetValue("All")
+                ).Value = "All"
                 use_character_set_all = True
 
 except Exception as e:

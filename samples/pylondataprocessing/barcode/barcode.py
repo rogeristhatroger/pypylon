@@ -39,7 +39,7 @@ try:
         images_path = os.path.join(samples_dir, "images", "barcode")
         recipe.GetParameter(
             "MyCamera/@CameraDevice/ImageFilename"
-        ).SetValue(images_path)
+        ).Value = images_path
 
         # This is where the output goes.
         recipe.RegisterAllOutputsObserver(

@@ -67,6 +67,7 @@ def collect_node_map(node_map):
     Every node map has a virtual 'Root' category that is the single entry
     point for the whole parameter tree.
     """
+    
     return collect_category(node_map.GetNode("Root"))
 
 # ---------------------------------------------------------------------------

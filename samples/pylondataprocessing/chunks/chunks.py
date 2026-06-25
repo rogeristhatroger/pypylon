@@ -49,10 +49,10 @@ try:
             recipe.GetParameter("MyCamera/@vTool/EventPinAdd").Execute()
             recipe.GetParameter(
                 "MyCamera/@vTool/EventPinSelector"
-            ).SetValue(event_index)
+            ).Value = event_index
             recipe.GetParameter(
                 "MyCamera/@vTool/EventPinConfiguration"
-            ).SetValue(config)
+            ).Value = config
             print(f"Configured event output '{config}'")
 
         # Enable output of Timestamp, Exposure Time, and Line Status All chunks.
@@ -69,10 +69,10 @@ try:
             recipe.GetParameter("MyCamera/@vTool/ChunkPinAdd").Execute()
             recipe.GetParameter(
                 "MyCamera/@vTool/ChunkPinSelector"
-            ).SetValue(chunk_index)
+            ).Value = chunk_index
             recipe.GetParameter(
                 "MyCamera/@vTool/ChunkPinConfiguration"
-            ).SetValue(config)
+            ).Value = config
             print(f"Configured chunk output '{config}'")
 
         # Allocate the required resources. This includes the camera device.
@@ -99,7 +99,7 @@ try:
 
         recipe.GetParameter(
             "MyCamera/@CameraDevice/ChunkModeActive"
-        ).SetValue(True)
+        ).Value = True
 
         chunk_enable = recipe.GetParameter(
             "MyCamera/@CameraDevice/ChunkEnable"
@@ -107,8 +107,8 @@ try:
         print(chunk_selector.GetSettableValues())
         if chunk_selector.IsReadable():
             for name in chunk_selector.GetSettableValues():
-                chunk_selector.SetValue(name)
-                chunk_enable.SetValue(True)
+                chunk_selector.Value = name
+                chunk_enable.Value = True
                 print(f"Enable chunk '{name}'")
 
         # Turn Exposure End event notification on.

@@ -35,7 +35,7 @@ HEIGHT = 480
 
 def print_image_info(label, image):
     """Print a summary of PylonImage properties."""
-    pixel_type = image.GetPixelType()
+    pixel_type = image.PixelType
     try:
         # Use GetMemoryView() to obtain the real internal buffer data.
         mv = image.GetMemoryView()
