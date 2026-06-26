@@ -128,7 +128,7 @@ A robust system usually combines multiple strategies.
 Use this when the camera is still running, but individual frames may fail.
 
 ```Python
-with camera.RetrieveResult(2000) as result:
+with camera.RetrieveResult(2000) as grab_result:
     if grab_result.GrabSucceeded():
         process(grab_result.Array)
     else:
@@ -154,7 +154,7 @@ try:
     with camera.RetrieveResult(
         2000,
         pylon.TimeoutHandling_ThrowException
-    ) as result:
+    ) as grab_result:
         if grab_result.GrabSucceeded():
             process(grab_result.Array)
 
