@@ -11,19 +11,16 @@ Capture a single image and process it.
 ```Python
 from pypylon import pylon
 
-def process(img):
-    print(img.shape)
-
-factory = pylon.TlFactory.GetInstance()
+def process(image):
+    print(image.shape)
 
 with pylon.InstantCamera(pylon.FirstFound) as camera:
-    camera.Open()
     camera.StartGrabbingMax(1)
 
-    with camera.RetrieveResult(5000) as result:
-        if result.GrabSucceeded():
-            img = result.Array.copy()
-            process(img)
+    with camera.RetrieveResult(5000) as grab_result:
+        if grab_result.GrabSucceeded():
+            image = grab_result.Array
+            process(image)
 ```
 
 ---
@@ -36,9 +33,9 @@ Process images continuously.
 camera.StartGrabbing(pylon.GrabStrategy_LatestImageOnly)
 
 while camera.IsGrabbing():
-    with camera.RetrieveResult(5000) as result:
-        if result.GrabSucceeded():
-            process(result.Array.copy())
+    with camera.RetrieveResult(5000) as grab_result:
+        if grab_result.GrabSucceeded():
+            process(grab_result.Array)
 ```
 
 ---
@@ -48,7 +45,7 @@ while camera.IsGrabbing():
 ```Python
 import cv2
 
-cv2.imwrite("image.png", img)
+pylon.ImagePersistence.Save(pylon.ImageFileFormat_Png, "image.png", grab_result)
 ```
 
 ---
@@ -56,7 +53,7 @@ cv2.imwrite("image.png", img)
 ## Software Trigger
 
 ```Python
-camera.TriggerMode.Value = "On"
+pylon.SoftwareTriggerConfiguration.ApplyConfiguration(camera.NodeMap)
 camera.ExecuteSoftwareTrigger()
 ```
 
@@ -65,6 +62,8 @@ camera.ExecuteSoftwareTrigger()
 ## Hardware Trigger Setup
 
 ```Python
+pylon.ConfigurationHelper.DisableAllTriggers(camera.NodeMap)
+camera.TriggerSelector.Value = "FrameStart"
 camera.TriggerMode.Value = "On"
 camera.TriggerSource.Value = "Line1"
 ```
@@ -83,16 +82,41 @@ camera.Gain.Value = 5
 
 ---
 
-## Set ROI
+## Set ROI - Region Of Interest
 
+In some cases it makes sense to limit the full resolution of the sensor to a smaller subregion, e.g. for higher framerate. This subregion is called the "Region Of Interest". It is cropped from the full resolution by the camera. This reduces the amount of data to be transmitted and computed and thus results in a higher framerate of the overal system.
+The four most important parameters of the ROI are the Width, Height, OffsetX and OffsetY.
+Width + OffsetX can not exceed MaxWidth and Height + OffsetY can not exceed MaxHeight.
+
+```PlainText
+OffsetX + Width ≤ MaxWidth
+Height + OffsetY ≤ MaxHeight
+```
+
+Get the top left corner from a camera.
 ```Python
 camera.StopGrabbing()
 
 camera.Width.Value = 640
 camera.Height.Value = 480
+camera.OffsetX.Value = 0
+camera.OffsetY.Value = 0
 
 camera.StartGrabbing()
 ```
+
+Get the center region from a camera.
+```Python
+camera.StopGrabbing()
+
+camera.Width.Value = 640
+camera.Height.Value = 480
+camera.OffsetX.Value = (camera.MaxWidth - camera.Width) / 2
+camera.OffsetY.Value = (camera.MaxHeight - camera.Height) / 2
+
+camera.StartGrabbing()
+```
+
 
 ---
 
@@ -100,19 +124,22 @@ camera.StartGrabbing()
 
 ```Python
 converter = pylon.ImageFormatConverter()
-converter.OutputPixelFormat = pylon.PixelType_BGR8packed
+converter.OutputPixelFormat.Value = pylon.PixelType_BGR8packed
 
-img = converter.Convert(result).GetArray()
+image = converter.Convert(grab_result).GetArray()
 ```
 
 ---
 
 ## Display Image with OpenCV
 
+Note: pylon provides the pylonDisplay image function alternatively~~~~.
+
+
 ```Python
 import cv2
 
-cv2.imshow("Image", img)
+cv2.imshow("Image", image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 ```
@@ -128,9 +155,9 @@ try:
     with camera.RetrieveResult(
         1000,
         pylon.TimeoutHandling_ThrowException
-    ) as result:
-        if result.GrabSucceeded():
-            process(result.Array.copy())
+    ) as grab_result:
+        if grab_result.GrabSucceeded():
+            process(grab_result.Array)
 
 except Exception as e:
     log_error(e)
@@ -153,9 +180,9 @@ camera_count = len(devices)
 
 with pylon.InstantCameraArray(camera_count) as cameras:
     # Attach devices
-    for i, cam in enumerate(cameras):
-        cam.Attach(factory.CreateDevice(devices[i]))
-        print("Using device:", cam.DeviceInfo.ModelName)
+    for i, camera in enumerate(cameras):
+        camera.Attach(factory.CreateDevice(devices[i]))
+        print("Using device:", camera.DeviceInfo.ModelName)
 
     # Start acquisition
     cameras.StartGrabbing()
@@ -169,16 +196,16 @@ with pylon.InstantCameraArray(camera_count) as cameras:
             if grab_result.GrabSucceeded():
 
                 # Identify source camera
-                cam_idx = grab_result.GetCameraContext()
-                cam_name = cameras[cam_idx].DeviceInfo.ModelName
+                camera_index = grab_result.GetCameraContext()
+                camera_name = cameras[camera_index].DeviceInfo.ModelName
 
                 # Access image data (GenDC-safe)
-                img = grab_result.Array
+                image = grab_result.Array
 
                 print(
-                    f"Camera {cam_idx}: {cam_name}"
+                    f"Camera {camera_index}: {camera_name}"
                     f" SizeX: {grab_result.Width} SizeY: {grab_result.Height} "
-                    f" First pixel: {img[0, 0]}"
+                    f" First pixel: {image[0, 0]}"
                 )
 
             else:
@@ -193,20 +220,20 @@ with pylon.InstantCameraArray(camera_count) as cameras:
 import threading
 import queue
 
-q = queue.Queue()
+image_queue = queue.Queue()
 
 def grab_loop():
     while camera.IsGrabbing():
-        with camera.RetrieveResult(5000) as result:
-            if result.GrabSucceeded():
-                q.put(result.Array.copy())
+        with camera.RetrieveResult(5000) as grab_result:
+            if grab_result.GrabSucceeded():
+                image_queue.put(grab_result.Array)
 
 
 def process_loop():
     while True:
-        img = q.get()
-        process(img)
-        q.task_done()
+        image = image_queue.get()
+        process(image)
+        image_queue.task_done()
 ```
 
 ---
@@ -236,7 +263,7 @@ import cv2
 fourcc = cv2.VideoWriter_fourcc(*"XVID")
 out = cv2.VideoWriter("output.avi", fourcc, 30, (640, 480))
 
-out.write(img)
+out.write(image)
 ```
 
 ---
@@ -246,7 +273,7 @@ out.write(img)
 ```Python
 import numpy as np
 
-roi = img[100:200, 200:300]
+roi = image[100:200, 200:300]
 mean = np.mean(roi)
 
 if mean > 100:

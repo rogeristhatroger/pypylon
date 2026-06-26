@@ -64,10 +64,9 @@ The **trigger** lets the camera start an **exposure** that is than **read out** 
 A **software trigger** lets you start an **exposure** via a software call instead of an external hardware event. This might me interessting when the source is not a hardware event but a state change of the computing system. This might not be as precise as a hardware trigger but well enough for the problem and easier than connecting an output from the computing system to the camera or cameras.
 
 ```python
+camera.TriggerSelector.Value = "FrameStart"
 camera.TriggerMode.Value = "On"
 camera.TriggerSource .Value = "Software"
-camera.TriggerSelector.Value = "FrameStart"
-
 camera.ExecuteSoftwareTrigger()
 ```
 
@@ -85,6 +84,8 @@ def process(image):
     print("Center pixel:", center_pixel)
 
 with pylon.InstantCamera(pylon.FirstFound) as camera:
+
+    # Open is nessesary before accessing the parameters.
     camera.Open()
 
     # Enable trigger mode
@@ -94,21 +95,18 @@ with pylon.InstantCamera(pylon.FirstFound) as camera:
 
     camera.StartGrabbing(pylon.GrabStrategy_OneByOne)
 
-    try:
-        while camera.IsGrabbing():
-            camera.ExecuteSoftwareTrigger()
+    while camera.IsGrabbing():
+        camera.ExecuteSoftwareTrigger()
 
-            with camera.RetrieveResult(2000) as result:
-                if result.GrabSucceeded():
-                    img = result.Array.copy()
-                    process(img)
-                else:
-                    print("Grab failed:", result.ErrorDescription)
+        with camera.RetrieveResult(2000) as grab_result:
+            if grab_result.GrabSucceeded():
+                image = grab_result.Array
+                process(image)
+            else:
+                print("Grab failed:", grab_result.ErrorDescription)
 
-            time.sleep(1.0)
+        time.sleep(1.0)
 
-    finally:
-        camera.StopGrabbing()
 ```
 
 ---
@@ -131,11 +129,13 @@ The following example uses the input "Line1" on the first camera found to start 
 from pypylon import pylon
 
 def process(image):
-    h, w = image.shape[:2]
-    center_pixel = image[h // 2, w // 2]
+    height, width = image.shape[:2]
+    center_pixel = image[height // 2, width // 2]
     print("Center pixel:", center_pixel)
 
 with pylon.InstantCamera(pylon.FirstFound) as camera:
+
+    # Open is nessesary before accessing the parameters.
     camera.Open()
 
     # Configure hardware trigger
@@ -146,15 +146,11 @@ with pylon.InstantCamera(pylon.FirstFound) as camera:
 
     camera.StartGrabbing(pylon.GrabStrategy_OneByOne)
 
-    try:
-        while camera.IsGrabbing():
-            with camera.RetrieveResult(5000) as result:
-                if result.GrabSucceeded():
-                    img = result.Array.copy()
-                    process(img)
-                else:
-                    print("Grab failed:", result.ErrorDescription)
-
-    finally:
-        camera.StopGrabbing()
+    while camera.IsGrabbing():
+        with camera.RetrieveResult(5000) as grab_result:
+            if grab_result.GrabSucceeded():
+                image = grab_result.Array
+                process(image)
+            else:
+                print("Grab failed:", grab_result.ErrorDescription)
 ```

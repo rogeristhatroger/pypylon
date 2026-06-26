@@ -37,7 +37,7 @@ During exposure, the sensor collects photons and converts them into an electrica
 
 ```Python
 camera.ExposureAuto.Value = "Off"
-camera.ExposureTime.Value = 3000  # value in microseconds
+camera.ExposureTime.Value = 3000  # value, usually in microseconds
 ```
 
 - `ExposureAuto = Off` ensures manual control
@@ -60,7 +60,9 @@ Choosing the correct exposure is a fundamental step in building a reliable visio
 
 ```Python
 camera.ExposureAuto.Value = "Off"
-camera.ExposureTime.Value = 3000  # value is in microseconds; check Increment and ValueRange for valid precision
+camera.ExposureTime.Value = 3000  # value is in microseconds; check ValueRange for valid values
+#alternatively:
+camera.ExposureTimeAbs.SetValue(3000, pylon.FloatValueCorrection_ClipToRange)
 ```
 
 ## Gain

@@ -2,7 +2,7 @@
 
 ## What is pypylon?
 
-pypylon is the official Python wrapper for the Basler pylon Camera Software Suite. It enables Python applications to control and acquire images from Basler industrial cameras using the GenICam standard.
+pypylon is the official Python language binding for the Basler pylon C++ APIs. It enables Python applications to control and acquire images from Basler machine vision products, e.g. cameras.
 
 ## Use Cases
 
@@ -11,6 +11,7 @@ pypylon is the official Python wrapper for the Basler pylon Camera Software Suit
 - Scientific imaging
 - Quality inspection
 - AI pipelines
+- and many more...
 
 ## Software Stack
 
@@ -19,11 +20,11 @@ Python Application
      ↓
 pypylon (Python API)
      ↓
-pylon SDK (C++)
+pylon SDKs (C++)
      ↓
-GenTL Transport Layer
+GenTL and pylon Transport Layer
      ↓
-Camera Hardware
+Camera and Grabber Hardware
 ```
 
 Understanding this layered architecture helps debug issues (driver, transport, or application level).

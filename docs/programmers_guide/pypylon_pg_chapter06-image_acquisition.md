@@ -4,13 +4,12 @@
 
 ```Python
 with pylon.InstantCamera(pylon.FirstFound) as camera:
-    camera.Open()
     camera.StartGrabbing(pylon.GrabStrategy_LatestImageOnly)
 
     while camera.IsGrabbing():
-        with camera.RetrieveResult(5000) as result:
-            if result.GrabSucceeded():
-                img = result.Array.copy()
+        with camera.RetrieveResult(5000) as grab_result:
+            if grab_result.GrabSucceeded():
+                image = grab_result.Array
 ```
 
 ---

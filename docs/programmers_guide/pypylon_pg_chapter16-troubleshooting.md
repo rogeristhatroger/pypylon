@@ -60,8 +60,8 @@ camera.TriggerMode.Value = "Off"
 ### Symptoms
 
 ```Python
-if not result.GrabSucceeded():
-    print(result.ErrorDescription)
+if not grab_result.GrabSucceeded():
+    print(grab_result.ErrorDescription)
 ```
 
 ### Typical Causes

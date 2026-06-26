@@ -26,21 +26,6 @@ Slow processing leads to backlog and dropped frames.
 
 ---
 
-## Image Lifetime (CRITICAL)
-
-```Python
-with camera.RetrieveResult(...) as result:
-    img = result.Array  # temporary
-```
-
-Correct:
-
-```Python
-img = result.Array.copy()
-```
-
----
-
 ## GenICam Nodes
 
 ### What is a GenICam Node?
@@ -60,13 +45,13 @@ Each node behaves like a strongly-typed parameter and exposes:
 In pypylon, nodes are accessed as attributes of the camera object and provide methods like:
 
 ```Python
-camera.ExposureTime   # read exposure time in microseconds
+exposure_time = camera.ExposureTime   # read exposure time in microseconds
 camera.ExposureTime.Value = 3000  # value is in microseconds; check Increment and ValueRange for valid precision
 ```
 
 ### Common Node Types
 
-- Float: ExposureTime (continuous values)
+- Float: ExposureTime (continuous values, continuous-like values that map to discrete hardware settings)
 - Integer: Width (discrete values)
 - Enum: TriggerMode (predefined string values)
 - Bool: AcquisitionFrameRateEnable (true/false)
@@ -74,6 +59,16 @@ camera.ExposureTime.Value = 3000  # value is in microseconds; check Increment an
 
 Understanding nodes is essential because *all camera configuration in pypylon is performed through them*.
 
+### pylon Parameters
+
+pylon parameters wrap GenICam nodes and provide an extended consistent interface for reading and writing values. They also handle type conversion, range checking, and access mode handling.
+
+If a node is not found the `pylon.PlaceholderParameter` is returned, which allows your code to handle missing nodes gracefully. This is often a scenario in setups where different camera models or firmware versions may have different available features.
+
+```Python
+var = camera.NotThere.GetValueOrDefault(1)
+camera.NotThere.TrySetValue(3000)
+```
 ---
 
 ## State Constraints

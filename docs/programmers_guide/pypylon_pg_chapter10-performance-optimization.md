@@ -110,7 +110,7 @@ App reads: F1 → F2 → F3 → F4
 Buffers act as a temporary reservoir between camera and application.
 
 ```Python
-camera.MaxNumBuffer = 20
+camera.MaxNumBuffer.Value = 20
 ```
 
 Increasing buffers:

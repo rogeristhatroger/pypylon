@@ -50,12 +50,12 @@ Different error types require different handling strategies.
 A grab error means that a grab result was returned, but the image itself is not valid.
 
 ```Python
-with camera.RetrieveResult(2000) as result:
-    if result.GrabSucceeded():
-        image = result.Array.copy()
+with camera.RetrieveResult(2000) as grab_result:
+    if grab_result.GrabSucceeded():
+        image = grab_result.Array
     else:
-        print(result.ErrorCode)
-        print(result.ErrorDescription)
+        print(grab_result.ErrorCode)
+        print(grab_result.ErrorDescription)
 ```
 
 Typical causes:
@@ -77,8 +77,8 @@ A timeout occurs when `RetrieveResult()` waits for an image, but no image arrive
 with camera.RetrieveResult(
     1000,
     pylon.TimeoutHandling_ThrowException
-) as result:
-    image = result.Array.copy()
+) as grab_result:
+    image = grab_result.Array
 ```
 
 Typical causes:
@@ -129,10 +129,10 @@ Use this when the camera is still running, but individual frames may fail.
 
 ```Python
 with camera.RetrieveResult(2000) as result:
-    if result.GrabSucceeded():
-        process(result.Array.copy())
+    if grab_result.GrabSucceeded():
+        process(grab_result.Array)
     else:
-        log_error(result.ErrorDescription)
+        log_error(grab_result.ErrorDescription)
 ```
 
 This approach is useful when occasional frame loss is acceptable. It keeps the acquisition loop alive and avoids stopping the whole system for one bad image.
@@ -155,8 +155,8 @@ try:
         2000,
         pylon.TimeoutHandling_ThrowException
     ) as result:
-        if result.GrabSucceeded():
-            process(result.Array.copy())
+        if grab_result.GrabSucceeded():
+            process(grab_result.Array)
 
 except Exception as e:
     print("Error:", e)
@@ -174,8 +174,6 @@ A recovery loop combines error detection with automatic recovery.
 import time
 
 with pylon.InstantCamera(pylon.FirstFound) as camera:
-    camera.Open()
-
     while True:
         try:
             if not camera.IsGrabbing():
@@ -184,13 +182,13 @@ with pylon.InstantCamera(pylon.FirstFound) as camera:
             with camera.RetrieveResult(
                 2000,
                 pylon.TimeoutHandling_ThrowException
-            ) as result:
+            ) as grab_result:
 
-                if result.GrabSucceeded():
-                    image = result.Array.copy()
+                if grab_result.GrabSucceeded():
+                    image = grab_result.Array
                     process(image)
                 else:
-                    log_error(result.ErrorDescription)
+                    log_error(grab_result.ErrorDescription)
 
         except Exception as e:
             log_error(f"Acquisition error: {e}")
@@ -270,8 +268,8 @@ For production systems, reconnect logic is often implemented at a higher level t
 Using `with` for grab results is essential.
 
 ```Python
-with camera.RetrieveResult(...) as result:
-    image = result.Array.copy()
+with camera.RetrieveResult(...) as grab_result:
+    image = grab_result.Array
 ```
 
 This ensures that the grab result is released even if an exception occurs inside the block.

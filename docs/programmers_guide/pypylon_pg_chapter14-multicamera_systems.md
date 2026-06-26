@@ -33,8 +33,8 @@ Working with multiple cameras introduces several challenges:
 Each camera must be uniquely identified, typically by its serial number.
 
 ```python
-for d in devices:
-    print(d.tSerialNumber)
+for device_info in device_info_list:
+    print(device_info.tSerialNumber)
 ```
 
 Mapping example:
@@ -54,12 +54,12 @@ Avoid using indices such as `devices[0]`, because enumeration order is not stabl
 from pypylon import pylon
 
 factory = pylon.TlFactory.GetInstance()
-devices = factory.EnumerateDevices()
+device_info_list = factory.EnumerateDevices()
 
 cameras = []
 
-for device in devices:
-    camera = pylon.InstantCamera(factory.CreateDevice(device))
+for device_info in device_info_list:
+    camera = pylon.InstantCamera(factory.CreateDevice(device_info))
     camera.Open()
     cameras.append(camera)
 ```
@@ -180,9 +180,9 @@ def process(image):
     print(image.shape)
 
 factory = pylon.TlFactory.GetInstance()
-devices = factory.EnumerateDevices()
+device_info_list = factory.EnumerateDevices()
 
-cameras = [pylon.InstantCamera(factory.CreateDevice(device)) for device in devices]
+cameras = [pylon.InstantCamera(factory.CreateDevice(device_info)) for device_info in device_info_list]
 
 for camera in cameras:
     camera.Open()
@@ -191,9 +191,9 @@ for camera in cameras:
 while any(camera.IsGrabbing() for camera in cameras):
     for camera in cameras:
         if camera.IsGrabbing():
-            with camera.RetrieveResult(1000) as result:
-                if result.GrabSucceeded():
-                    image = result.Array.copy()
+            with camera.RetrieveResult(1000) as grab_result:
+                if grab_result.GrabSucceeded():
+                    image = grab_result.Array
                     # Do processing on image here, e.g. call a function.
                     process(image)
 ```
@@ -216,12 +216,12 @@ COUNT_OF_IMAGES_TO_GRAB = 100
 RETRIEVE_TIMEOUT_MS = 5000
 
 factory = pylon.TlFactory.GetInstance()
-devices = factory.EnumerateDevices()
+device_info_list = factory.EnumerateDevices()
 
-with pylon.InstantCameraArray(len(devices)) as cameras:
+with pylon.InstantCameraArray(len(device_info_list)) as cameras:
 
     for i, camera in enumerate(cameras):
-        camera.Attach(factory.CreateDevice(devices[i]))
+        camera.Attach(factory.CreateDevice(device_info_list[i]))
         print("Using device:", camera.DeviceInfo.ModelName)
 
     cameras.StartGrabbing()
@@ -233,16 +233,16 @@ with pylon.InstantCameraArray(len(devices)) as cameras:
         with cameras.RetrieveResult(
             RETRIEVE_TIMEOUT_MS,
             pylon.TimeoutHandling_ThrowException
-        ) as result:
+        ) as grab_result:
 
-            if result.GrabSucceeded():
-                cam_idx = result.GetCameraContext()
+            if grab_result.GrabSucceeded():
+                cam_idx = grab_result.GetCameraContext()
                 print(f"Camera {cam_idx}: {cameras[cam_idx].DeviceInfo.ModelName}")
-                image = result.Array.copy()
+                image = grab_result.Array
                 # Do processing on image here, e.g. call a function.
 		process(image)
             else:
-                print("Error:", result.ErrorDescription)
+                print("Error:", grab_result.ErrorDescription)
 ```
 
 ---
@@ -252,9 +252,9 @@ with pylon.InstantCameraArray(len(devices)) as cameras:
 Compared to manual looping, this approach provides:
 
 - single acquisition loop for all cameras
-- automatic camera context tracking (`GetCameraContext()`)
+- automatic camera context tracking (`camera.CameraContext`)
 - simpler synchronization handling
-- more efficient thread usage
+- more efficient thread usage~~~~
 
 Conceptually:
 

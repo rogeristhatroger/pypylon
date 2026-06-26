@@ -31,18 +31,15 @@ Camera → pypylon → NumPy Array → OpenCV → Display / Processing
 import cv2
 from pypylon import pylon
 
-factory = pylon.TlFactory.GetInstance()
-
 with pylon.InstantCamera(pylon.FirstFound) as camera:
-    camera.Open()
     camera.StartGrabbingMax(1)
 
-    with camera.RetrieveResult(5000) as result:
-        if result.GrabSucceeded():
-            img = result.Array.copy()
+    with camera.RetrieveResult(5000) as grab_result:
+        if grab_result.GrabSucceeded():
+            image = grab_result.Array
 
             # Display using OpenCV
-            cv2.imshow("image", img)
+            cv2.imshow("image", image)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
 ```
@@ -61,9 +58,9 @@ OpenCV expects images in **BGR format**, while cameras may output:
 
 ```Python
 converter = pylon.ImageFormatConverter()
-converter.OutputPixelFormat = pylon.PixelType_BGR8packed
+converter.OutputPixelFormat.Value = pylon.PixelType_BGR8packed
 
-img = converter.Convert(result).GetArray()
+image = converter.Convert(grab_result).GetArray()
 ```
 
 ---
@@ -74,18 +71,15 @@ img = converter.Convert(result).GetArray()
 import cv2
 from pypylon import pylon
 
-factory = pylon.TlFactory.GetInstance()
-
 with pylon.InstantCamera(pylon.FirstFound) as camera:
-    camera.Open()
     camera.StartGrabbing(pylon.GrabStrategy_LatestImageOnly)
 
     while camera.IsGrabbing():
-        with camera.RetrieveResult(5000) as result:
-            if result.GrabSucceeded():
-                img = result.Array.copy()
+        with camera.RetrieveResult(5000) as grab_result:
+            if grab_result.GrabSucceeded():
+                image = grab_result.Array
 
-                cv2.imshow("Live", img)
+                cv2.imshow("Live", image)
 
                 if cv2.waitKey(1) == 27:  # ESC to exit
                     break
@@ -100,25 +94,25 @@ with pylon.InstantCamera(pylon.FirstFound) as camera:
 ### Grayscale Conversion
 
 ```Python
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 ```
 
 ### Edge Detection
 
 ```Python
-edges = cv2.Canny(img, 50, 150)
+edges = cv2.Canny(image, 50, 150)
 ```
 
 ### Blur / Filtering
 
 ```Python
-blur = cv2.GaussianBlur(img, (5, 5), 0)
+blur = cv2.GaussianBlur(image, (5, 5), 0)
 ```
 
 ### Drawing Overlays
 
 ```Python
-cv2.rectangle(img, (50, 50), (200, 200), (0, 255, 0), 2)
+cv2.rectangle(image, (50, 50), (200, 200), (0, 255, 0), 2)
 ```
 
 ---
@@ -143,35 +137,32 @@ import cv2
 from pypylon import pylon
 import numpy as np
 
-factory = pylon.TlFactory.GetInstance()
-
 with pylon.InstantCamera(pylon.FirstFound) as camera:
-    camera.Open()
     camera.StartGrabbing(pylon.GrabStrategy_LatestImageOnly)
 
     while camera.IsGrabbing():
-        with camera.RetrieveResult(5000) as result:
-            if result.GrabSucceeded():
-                img = result.Array.copy()
+        with camera.RetrieveResult(5000) as grab_result:
+            if grab_result.GrabSucceeded():
+                image = grab_result.Array
 
                 # Define ROI coordinates
                 y1, y2 = 100, 200
                 x1, x2 = 200, 300
 
                 # Extract ROI
-                roi = img[y1:y2, x1:x2]
+                roi = image[y1:y2, x1:x2]
 
                 # Compute statistics
                 mean = np.mean(roi)
 
                 # Draw rectangle around ROI
-                cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
                 if mean > 100:
-                    cv2.putText(img, "Bright Region", (50, 50),
+                    cv2.putText(image, "Bright Region", (50, 50),
                                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-                cv2.imshow("Live", img)
+                cv2.imshow("Live", image)
 
                 if cv2.waitKey(1) == 27:
                     break

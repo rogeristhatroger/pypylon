@@ -1,6 +1,6 @@
 # pypylon Programmer’s Guide
 
-## For Basler Industrial Cameras Using Python
+## For Basler Machine Vision Products Using Python
 
 ---
 

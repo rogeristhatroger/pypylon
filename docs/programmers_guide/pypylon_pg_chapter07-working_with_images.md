@@ -6,7 +6,7 @@ This chapter explains how image data is represented in pypylon, how to safely ac
 
 ## Image Representation
 
-In pypylon, images are exposed as **NumPy arrays**, which makes them directly usable in scientific and machine vision workflows.
+In pypylon, images are exposed, e.g., as **NumPy arrays**, which makes them directly usable in scientific and machine vision workflows.
 
 Typical flow:
 
@@ -18,22 +18,27 @@ Camera → GrabResult → Buffer → NumPy Array
 
 ## Accessing Image Data
 
-```Python
-img = result.Array.copy()
-```
+It is essential to know when to copy the data from the grab result and when not to. Copying to much wastes time and copying to few can lead to crashes or incorrect pixel data.
 
-### Why .copy() is Important
+| Code                | Description | Need a Copy? | Save without Copy |
+| .Array              | Creates a copy | **No**, no need to call copy. | ✅ |
+| .GetMemoryView()    | Creates a memory view | **Yes**, copy nessesary. | ❌ |
+| .GetArrayZeroCopy() | Creates a NumPy array | **Yes**, Copy nessesary. | ❌ |
 
-- `result.Array` is a **view into an internal buffer**
-- The buffer is released when leaving the `with` block
-- Accessing the array afterward can lead to invalid memory access
+
+- `grab_result.Array` is a copy of the internal buffer
+- `grab_result.GetMemoryView()` is a **view into an internal buffer** (except for pixel type that return True for pylon.IsPacked(grab_result.PixelType))
+- `grab_result.GetArrayZeroCopy()` is a **view into an internal buffer** providing a NumPy array without copying (except for pixel type that return True for pylon.IsPacked(grab_result.PixelType))
+- The grab result buffer is released when leaving the `with` block or `grab_result.Release()` is called
+- Accessing the using memory views array afterward. can lead to invalid memory access
+
 
 ✅ Correct usage:
 
 ```Python
-with camera.RetrieveResult(5000) as result:
-    if result.GrabSucceeded():
-        img = result.Array.copy()
+with camera.RetrieveResult(5000) as grab_result:
+    if grab_result.GrabSucceeded():
+        image = grab_result.Array
 ```
 
 ---
@@ -50,7 +55,7 @@ The shape of the array depends on the pixel format:
 You can inspect the shape directly:
 
 ```Python
-print(img.shape)
+print(image.shape)
 ```
 
 ---
@@ -63,9 +68,9 @@ Example: converting to BGR (OpenCV-compatible)
 
 ```Python
 converter = pylon.ImageFormatConverter()
-converter.OutputPixelFormat = pylon.PixelType_BGR8packed
+converter.OutputPixelFormat.Value = pylon.PixelType_BGR8packed
 
-img = converter.Convert(result).GetArray()
+image = converter.Convert(grab_result).GetArray()
 ```
 
 ### Why Conversion Is Needed
@@ -82,13 +87,16 @@ img = converter.Convert(result).GetArray()
 ### 1. Using Data After Buffer Release
 
 ```Python
-with camera.RetrieveResult(...) as result:
-    img = result.Array
+with camera.RetrieveResult(...) as grab_result:
+    image = grab_result.Array # NumPy array
+    memory_view = grab_result.GetMemoryView()
+    with grab_result.GetArrayZeroCopy() as zero_copy_array:
+        ... process zero_copy_array (NumPy array) ...
 
-# ❌ Unsafe: img may now reference invalid memory
+# ❌ Unsafe: `memory_view` may now reference invalid memory
 ```
 
-✅ Always use `.copy()` if needed outside the block.
++✅ Always use `result.Array` if needed outside the block or keep the `grab_result` alive.
 
 ---
 
@@ -122,14 +130,14 @@ Because images are NumPy arrays, they can be used directly with:
 ```Python
 import cv2
 
-cv2.imshow("image", img)
+cv2.imshow("image", image)
 cv2.waitKey(1)
 ```
 
 ### NumPy Operations
 
 ```Python
-mean = img.mean()
+mean = image.mean()
 ```
 
 ### AI / ML Frameworks
@@ -172,19 +180,18 @@ from pypylon import pylon
 factory = pylon.TlFactory.GetInstance()
 
 with pylon.InstantCamera(pylon.FirstFound) as camera:
-    camera.Open()
 
     camera.StartGrabbingMax(100)
 
     while camera.IsGrabbing():
-        with camera.RetrieveResult(5000) as result:
-            if result.GrabSucceeded():
-                img = result.Array.copy()
+        with camera.RetrieveResult(5000) as grab_result:
+            if grab_result.GrabSucceeded():
+                image = grab_result.Array
 
-                if img.ndim == 3:
-                    gray = img.mean(axis=2)
+                if image.ndim == 3:
+                    gray = image.mean(axis=2)
                 else:
-                    gray = img
+                    gray = image
 
                 norm = gray / 255.0
 
@@ -204,7 +211,7 @@ with pylon.InstantCamera(pylon.FirstFound) as camera:
 ### Grayscale Conversion
 
 ```Python
-gray = img.mean(axis=2)
+gray = image.mean(axis=2)
 ```
 
 ### Normalization

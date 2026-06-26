@@ -10,7 +10,6 @@ Always ensure that camera resources are properly acquired and released.
 
 ```Python
 with pylon.InstantCamera(pylon.FirstFound) as camera:
-    camera.Open()
     # use camera
 ```
 
@@ -19,21 +18,6 @@ Benefits:
 - automatic cleanup
 - exception safety
 - prevents resource leaks
-
----
-
-## Image Handling
-
-Always copy image data before leaving the grab result scope:
-
-```Python
-img = result.Array.copy()
-```
-
-Reason:
-
-- `result.Array` references temporary memory
-- becomes invalid after `with` block exits
 
 ---
 
@@ -128,10 +112,10 @@ Guidelines:
 ### Always Check Grab Success
 
 ```Python
-if result.GrabSucceeded():
-    process(result.Array.copy())
+if grab_result.GrabSucceeded():
+    process(grab_result.Array)
 else:
-    log_error(result.ErrorDescription)
+    log_error(grab_result.ErrorDescription)
 ```
 
 ---

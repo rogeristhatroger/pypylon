@@ -45,10 +45,10 @@ Example:
 
 ```python
 while camera.IsGrabbing():
-    with camera.RetrieveResult(5000) as result:
-        if result.GrabSucceeded():
-            img = result.Array.copy()
-            process(img)
+    with camera.RetrieveResult(5000) as grab_result:
+        if grab_result.GrabSucceeded():
+            image = grab_result.Array
+            process(image)
 ```
 
 ### Limitations
@@ -72,7 +72,9 @@ Acquisition Thread → Queue → Worker Thread(s)
 
 ---
 
-## Example Implementation
+## Example Implementation using an own Thread
+
+Node: You can use the grab loop thread provided by the InstantCamera (see the grab_using_grab_loop_thread sample), but here is a custom implementation for demonstration:
 
 ```python
 import threading
@@ -82,38 +84,34 @@ from pypylon import pylon
 def process(image):
     print(image.shape)
 
-q = queue.Queue(maxsize=10)
+image_queue = queue.Queue(maxsize=10)
 
 # Producer thread
 def grab_loop(camera):
     while camera.IsGrabbing():
-        with camera.RetrieveResult(5000) as result:
-            if result.GrabSucceeded():
-                img = result.Array.copy()
-                q.put(img)
+        with camera.RetrieveResult(5000) as grab_result:
+            if grab_result.GrabSucceeded():
+                image = grab_result.Array
+                image_queue.put(image)
 
 # Consumer thread
 def process_loop():
     while True:
-        img = q.get()
-        process(img)
-        q.task_done()
-
-# Setup
-factory = pylon.TlFactory.GetInstance()
+        image = image_queue.get()
+        process(image)
+        image_queue.task_done()
 
 with pylon.InstantCamera(pylon.FirstFound) as camera:
-    camera.Open()
     camera.StartGrabbing()
 
-    t1 = threading.Thread(target=grab_loop, args=(camera,))
-    t2 = threading.Thread(target=process_loop)
+    grab_thread = threading.Thread(target=grab_loop, args=(camera,))
+    processing_thread = threading.Thread(target=process_loop)
 
-    t1.start()
-    t2.start()
+    grab_thread.start()
+    processing_thread.start()
 
-    t1.join()
-    q.join()
+    grab_thread.join()
+    image_queue.join()
 ```
 
 ---
@@ -149,7 +147,7 @@ OneByOne + logging → analysis systems
 ## Thread Safety Considerations
 
 - avoid sharing mutable data without locks
-- copy images before passing to other threads
+- copy images before passing to other threads, e.g. by using the Array function.
 - use `queue.Queue` for safe communication
 
 ---

@@ -25,16 +25,12 @@ The example below performs exactly these steps once, which makes it ideal for:
 ```Python
 from pypylon import pylon
 
-factory = pylon.TlFactory.GetInstance()
-
 with pylon.InstantCamera(pylon.FirstFound) as camera:
-    camera.Open()
-
     camera.StartGrabbingMax(1)
 
-    with camera.RetrieveResult(5000) as result:
-        if result.GrabSucceeded():
-            image = result.Array.copy()
+    with camera.RetrieveResult(5000) as grab_result:
+        if grab_result.GrabSucceeded():
+            image = grab_result.Array
             print(image.shape)
 ```
 
@@ -42,23 +38,8 @@ with pylon.InstantCamera(pylon.FirstFound) as camera:
 
 ## Step-by-Step Explanation
 
-### 1. Access the Factory
 
-```Python
-factory = pylon.TlFactory.GetInstance()
-```
-
-The **transport layer factory** is the entry point into the pylon ecosystem. It is responsible for:
-
-- discovering cameras
-- creating device instances
-- abstracting the underlying transport (USB, GigE, etc.)
-
-Think of it as a *device manager*.
-
----
-
-### 2. Create and Manage the Camera
+### 1. Create and Manage the Camera
 
 ```Python
 with pylon.InstantCamera(pylon.FirstFound) as camera:
@@ -67,6 +48,7 @@ with pylon.InstantCamera(pylon.FirstFound) as camera:
 This line does two important things:
 
 - selects the **first available camera**
+- it uses the transport layer factory to create a pylon device object
 - wraps it in an `InstantCamera` object for easy use
 
 `InstantCamera`
@@ -78,8 +60,20 @@ Using `with` ensures that:
 
 ---
 
-### 3. Open the Camera
+### 2. Start Acquisition
 
+```Python
+camera.StartGrabbingMax(1)
+```
+
+This opens the camera, if it is not allready open, starts the acquisition engine and tells the camera to:
+
+- acquire exactly **one frame**
+- then stop automatically
+
+This is ideal for testing because it avoids infinite loops.
+
+The camera can also be opened beforehand with a call to Open.
 ```Python
 camera.Open()
 ```
@@ -91,25 +85,10 @@ Opening establishes the connection and transitions the camera into a state where
 
 ---
 
-### 4. Start Acquisition
+### 3. Retrieve the Grab Result
 
 ```Python
-camera.StartGrabbingMax(1)
-```
-
-This starts the acquisition engine and tells the camera to:
-
-- acquire exactly **one frame**
-- then stop automatically
-
-This is ideal for testing because it avoids infinite loops.
-
----
-
-### 5. Retrieve the Result
-
-```Python
-with camera.RetrieveResult(5000) as result:
+with camera.RetrieveResult(5000) as grab_result:
 ```
 
 This call blocks until:
@@ -121,37 +100,31 @@ Internally, you are pulling an image from a **buffer queue**.
 
 ---
 
-### 6. Validate the Grab
+### 4. Validate the Grab
 
 ```Python
-if result.GrabSucceeded():
+if grab_result.GrabSucceeded():
 ```
 
-Even if a result is returned, the acquisition may have failed (e.g. transport errors). Always check success before using the data.
+Even if a grab result is returned, the acquisition may have failed (e.g. transport errors). Always check success before using the data.
 
 ---
 
-### 7. Copy the Image Data
+### 5. Lifetime of the Image Data
+
+Grab results use buffers from a buffer pool. When you access `grab_result.Array`, you get a copy of the grab result buffer data.
+Alternatively, you can use GetMemoryView() or GetArrayZeroCopy() to access the data without copying.
+
+The buffer from the grab result becomes invalid after leaving the `with` block because the `grab_result` is released and we need to make a copy if we need to use the pixel data outside the with block.
+The Array function creates a copy of the pixel data.
 
 ```Python
-image = result.Array.copy()
+image = grab_result.Array
 ```
-
-This is **critical**:
-
-- `result.Array` points to a temporary buffer
-
-`result.Array`
-
-- the memory becomes invalid after leaving the `with` block
-
-`with`
-
-Copying ensures the image remains valid.
 
 ---
 
-### 8. Use the Image
+### 6. Use the Image
 
 ```Python
 print(image.shape)
@@ -169,9 +142,9 @@ This simply confirms that:
 ```PlainText
 Camera (hardware)
       ↓
-Transport layer (USB/GigE)
-      ↓
 pylon driver + buffers
+      ↓
+Transport layer (USB/GigE)
       ↓
 RetrieveResult()
       ↓
@@ -189,13 +162,13 @@ Buffers sit in between and decouple both worlds.
 
 ## Key Takeaways
 
-- Always open the camera explicitly
 - Always check `GrabSucceeded()`
 
 `GrabSucceeded()`
 
-- Always copy image data before leaving the result scope
-- Use `StartGrabbingMax(1)` for simple tests
+- Always copy image data before leaving the result scope or releasing the grab result, e.g. with help of the Array function.
+
+- Use `StartGrabbingMax(1)` for simple tests You can use `GrabOne(5000)` alternatively.
 
 `StartGrabbingMax(1)`
 
