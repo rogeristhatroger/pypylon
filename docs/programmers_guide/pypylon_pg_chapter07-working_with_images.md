@@ -73,6 +73,53 @@ converter.OutputPixelFormat.Value = pylon.PixelType_BGR8packed
 image = converter.Convert(grab_result).GetArray()
 ```
 
+> **Note:** On `ImageFormatConverter`, `OutputPixelFormat` is a plain
+> attribute that holds a pixel-type value, not a parameter node. Assign it
+> directly (`converter.OutputPixelFormat = pylon.PixelType_BGR8packed`); it has
+> no `.Value` accessor.
+
+### Converting Directly into a NumPy Array (`ConvertToArray`)
+
+`converter.Convert(src)` returns a `PylonImage`, and reading its pixels with
+`.Array` (or `.GetArray()`) makes an **additional copy** of the converted
+buffer. When you only need the result as a NumPy array, use
+`converter.ConvertToArray(src)` instead: it pre-allocates a NumPy array with the
+correct shape and dtype and lets the converter write the converted pixels
+**directly into that array**, avoiding the extra copy.
+
+```Python
+converter = pylon.ImageFormatConverter()
+converter.OutputPixelFormat = pylon.PixelType_BGR8packed
+
+# Equivalent result to converter.Convert(grab_result).Array, but without the extra copy.
+image = converter.ConvertToArray(grab_result)
+```
+
+`ConvertToArray` accepts the same source types as `Convert` (a grab result, a
+`PylonImage`, a data component, or any `IImage`), and the resulting array's
+shape and dtype reflect the `OutputPixelFormat`:
+
+- `PixelType_Mono8` → `(height, width)`, `uint8`
+- `PixelType_Mono16` → `(height, width)`, `uint16`
+- `PixelType_RGB8packed` / `PixelType_BGR8packed` → `(height, width, 3)`, `uint8`
+
+A bit-packed output format (one for which `pylon.IsPacked(pixel_type)` is True)
+has no unambiguous NumPy shape/dtype, so `ConvertToArray` raises `ValueError`
+for it by default. Pass `raw=True` to obtain the converted bytes as a flat
+`uint8` array instead:
+
+```Python
+# raw=True returns a flat uint8 array of the converted bytes,
+# which is also how to handle bit-packed output formats.
+raw_bytes = converter.ConvertToArray(grab_result, raw=True)
+```
+
+| Approach | Result | Extra copy? |
+| --- | --- | --- |
+| `converter.Convert(src).Array` | NumPy array via intermediate `PylonImage` | Yes |
+| `converter.ConvertToArray(src)` | NumPy array written in place | No |
+| `converter.ConvertToArray(src, raw=True)` | Flat `uint8` array (also for packed formats) | No |
+
 ### Why Conversion Is Needed
 
 - Cameras often output raw or Bayer formats
