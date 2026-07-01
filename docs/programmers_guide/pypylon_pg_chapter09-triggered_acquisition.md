@@ -30,7 +30,7 @@ Use triggered acquisition when:
 
 Without triggering the camera runs freely and frames may miss the relevant moment.
 
-With triggering an external event triggers the camera which results in an capturing the object at the exacty right moment.
+With triggering, an external event triggers the camera, which captures the object at exactly the right moment.
 
 This ensures that:
 
@@ -55,13 +55,13 @@ This ensures that:
 Trigger → Exposure → Readout → Transfer → App
 ```
 
-The **trigger** lets the camera start an **exposure** that is than **read out** from the sensor, being preprocessed, **transfered** to the host and then passed on to the **application**.
+The **trigger** lets the camera start an **exposure** that is then **read out** from the sensor, preprocessed, **transferred** to the host and then passed on to the **application**.
 
 ---
 
 ## Software Trigger
 
-A **software trigger** lets you start an **exposure** via a software call instead of an external hardware event. This might me interessting when the source is not a hardware event but a state change of the computing system. This might not be as precise as a hardware trigger but well enough for the problem and easier than connecting an output from the computing system to the camera or cameras.
+A **software trigger** lets you start an **exposure** via a software call instead of an external hardware event. This can be interesting when the source is not a hardware event but a state change of the computing system. This might not be as precise as a hardware trigger but well enough for the problem and easier than connecting an output from the computing system to the camera or cameras.
 
 ```python
 camera.TriggerSelector.Value = "FrameStart"
@@ -85,7 +85,7 @@ def process(image):
 
 with pylon.InstantCamera(pylon.FirstFound) as camera:
 
-    # Open is nessesary before accessing the parameters.
+    # Open is necessary before accessing the parameters.
     camera.Open()
 
     # Enable trigger mode
@@ -113,7 +113,7 @@ with pylon.InstantCamera(pylon.FirstFound) as camera:
 
 ## Hardware Trigger
 
-If a **software trigger** is not precise enough for the problem or an hardware signal is allready available it might be nessesary or easier to use a **hardware trigger**. In this case, **depending on the camera model** there are one or more inputs available that can act as a **trigger input**. A **rising edge** or **falling edge** can be used to trigger an event like **start of exposure** of the camera.
+If a **software trigger** is not precise enough for the problem or a hardware signal is already available it might be necessary or easier to use a **hardware trigger**. In this case, **depending on the camera model** there are one or more inputs available that can act as a **trigger input**. A **rising edge** or **falling edge** can be used to trigger an event like **start of exposure** of the camera.
 
 ```python
 camera.TriggerSource.Value = "Line1"
@@ -135,7 +135,7 @@ def process(image):
 
 with pylon.InstantCamera(pylon.FirstFound) as camera:
 
-    # Open is nessesary before accessing the parameters.
+    # Open is necessary before accessing the parameters.
     camera.Open()
 
     # Configure hardware trigger

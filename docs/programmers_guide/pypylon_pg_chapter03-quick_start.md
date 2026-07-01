@@ -66,7 +66,7 @@ Using `with` ensures that:
 camera.StartGrabbingMax(1)
 ```
 
-This opens the camera, if it is not allready open, starts the acquisition engine and tells the camera to:
+This opens the camera, if it is not already open, starts the acquisition engine and tells the camera to:
 
 - acquire exactly **one frame**
 - then stop automatically
@@ -78,7 +78,7 @@ The camera can also be opened beforehand with a call to Open.
 camera.Open()
 ```
 
-Opening establishes the connection and transitions the camera into a state where:
+Opening creates the connection and puts the camera into a state where:
 
 - parameters can be configured
 - acquisition can be started

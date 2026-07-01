@@ -18,19 +18,18 @@ Camera → GrabResult → Buffer → NumPy Array
 
 ## Accessing Image Data
 
-It is essential to know when to copy the data from the grab result and when not to. Copying to much wastes time and copying to few can lead to crashes or incorrect pixel data.
 
-| Code                | Description | Need a Copy? | Save without Copy |
-| .Array              | Creates a copy | **No**, no need to call copy. | ✅ |
-| .GetMemoryView()    | Creates a memory view | **Yes**, copy nessesary. | ❌ |
-| .GetArrayZeroCopy() | Creates a NumPy array | **Yes**, Copy nessesary. | ❌ |
-
-
+It is essential to know when to copy the data from the grab result and when not to. Copying too much wastes time, while copying too little can lead to crashes or incorrect pixel data.
+| Code                  | Description               | Copy required? |
+| --------------------- | ------------------------- | ---------------------------------------------- |
+| `.Array`              | Returns a NumPy copy      | No — already a copy                            |
+| `.GetMemoryView()`    | Returns a buffer view     | Yes                                            |
+| `.GetArrayZeroCopy()` | Returns a zero-copy array | Yes                                            |
 - `grab_result.Array` is a copy of the internal buffer
-- `grab_result.GetMemoryView()` is a **view into an internal buffer** (except for pixel type that return True for pylon.IsPacked(grab_result.PixelType))
-- `grab_result.GetArrayZeroCopy()` is a **view into an internal buffer** providing a NumPy array without copying (except for pixel type that return True for pylon.IsPacked(grab_result.PixelType))
+- `grab_result.GetMemoryView()` is a **view into an internal buffer** (except for pixel types where `pylon.IsPacked(grab_result.PixelType)` is True)
+- `grab_result.GetArrayZeroCopy()` is a **view into an internal buffer** providing a NumPy array without copying (except for pixel types where `pylon.IsPacked(grab_result.PixelType)` is True)
 - The grab result buffer is released when leaving the `with` block or `grab_result.Release()` is called
-- Accessing the using memory views array afterward. can lead to invalid memory access
+- Accessing a memory view or zero-copy array afterward can lead to invalid memory access
 
 
 ✅ Correct usage:
@@ -68,7 +67,7 @@ Example: converting to BGR (OpenCV-compatible)
 
 ```Python
 converter = pylon.ImageFormatConverter()
-converter.OutputPixelFormat.Value = pylon.PixelType_BGR8packed
+converter.OutputPixelFormat = pylon.PixelType_BGR8packed
 
 image = converter.Convert(grab_result).GetArray()
 ```
@@ -223,9 +222,6 @@ The following example demonstrates how to perform a small but realistic image pr
 import numpy as np
 from pypylon import pylon
 
-# Create camera
-factory = pylon.TlFactory.GetInstance()
-
 with pylon.InstantCamera(pylon.FirstFound) as camera:
 
     camera.StartGrabbingMax(100)
@@ -234,6 +230,8 @@ with pylon.InstantCamera(pylon.FirstFound) as camera:
         with camera.RetrieveResult(5000) as grab_result:
             if grab_result.GrabSucceeded():
                 image = grab_result.Array
+
+                # Do something with the image data
 
                 if image.ndim == 3:
                     gray = image.mean(axis=2)

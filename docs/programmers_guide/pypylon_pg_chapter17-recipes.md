@@ -84,7 +84,7 @@ camera.Gain.Value = 5
 
 ## Set ROI - Region Of Interest
 
-In some cases it makes sense to limit the full resolution of the sensor to a smaller subregion, e.g. for higher framerate. This subregion is called the "Region Of Interest". It is cropped from the full resolution by the camera. This reduces the amount of data to be transmitted and computed and thus results in a higher framerate of the overal system.
+In some cases it makes sense to limit the full resolution of the sensor to a smaller subregion, e.g. for a higher frame rate. This subregion is called the "Region Of Interest". It is cropped from the full resolution by the camera. This reduces the amount of data to be transmitted and computed and thus results in a higher framerate of the overal system.
 The four most important parameters of the ROI are the Width, Height, OffsetX and OffsetY.
 Width + OffsetX can not exceed MaxWidth and Height + OffsetY can not exceed MaxHeight.
 
@@ -124,7 +124,7 @@ camera.StartGrabbing()
 
 ```Python
 converter = pylon.ImageFormatConverter()
-converter.OutputPixelFormat.Value = pylon.PixelType_BGR8packed
+converter.OutputPixelFormat = pylon.PixelType_BGR8packed
 
 image = converter.Convert(grab_result).GetArray()
 ```
@@ -133,7 +133,7 @@ image = converter.Convert(grab_result).GetArray()
 
 ## Display Image with OpenCV
 
-Note: pylon provides the pylonDisplay image function alternatively~~~~.
+Note: pylon provides the pylonDisplay image function alternatively.
 
 
 ```Python
@@ -196,7 +196,7 @@ with pylon.InstantCameraArray(camera_count) as cameras:
             if grab_result.GrabSucceeded():
 
                 # Identify source camera
-                camera_index = grab_result.GetCameraContext()
+                camera_index = grab_result.CameraContext
                 camera_name = cameras[camera_index].DeviceInfo.ModelName
 
                 # Access image data (GenDC-safe)

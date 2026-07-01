@@ -72,9 +72,9 @@ Acquisition Thread → Queue → Worker Thread(s)
 
 ---
 
-## Example Implementation using an own Thread
+## Example Implementation Using a Custom Thread
 
-Node: You can use the grab loop thread provided by the InstantCamera (see the grab_using_grab_loop_thread sample), but here is a custom implementation for demonstration:
+Note: You can use the grab loop thread provided by the InstantCamera (see the grab_using_grab_loop_thread sample), but here is a custom implementation for demonstration:
 
 ```python
 import threading

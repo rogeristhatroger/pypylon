@@ -58,7 +58,7 @@ OpenCV expects images in **BGR format**, while cameras may output:
 
 ```Python
 converter = pylon.ImageFormatConverter()
-converter.OutputPixelFormat.Value = pylon.PixelType_BGR8packed
+converter.OutputPixelFormat = pylon.PixelType_BGR8packed
 
 image = converter.Convert(grab_result).GetArray()
 ```

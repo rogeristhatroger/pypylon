@@ -4,7 +4,8 @@
 
 Install the pylon software suite from Basler together with installing pypylon and required supplementary packages, e.g. for 3D cameras.
 
-Note: The pypylon wheel packages contains a copy of the pylon C++ runtimes and vTools. It runs out of the box for transport layers that do not need drivers installed.
+Note: The pypylon wheel package already includes the pylon C++ runtimes and vTools. It works immediately for transport layers that don’t require any extra drivers.
+
 
 Recommended components:
 

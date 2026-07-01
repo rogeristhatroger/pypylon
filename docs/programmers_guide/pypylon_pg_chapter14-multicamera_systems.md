@@ -34,7 +34,7 @@ Each camera must be uniquely identified, typically by its serial number.
 
 ```python
 for device_info in device_info_list:
-    print(device_info.tSerialNumber)
+    print(device_info.GetSerialNumber())
 ```
 
 Mapping example:
@@ -236,11 +236,11 @@ with pylon.InstantCameraArray(len(device_info_list)) as cameras:
         ) as grab_result:
 
             if grab_result.GrabSucceeded():
-                cam_idx = grab_result.GetCameraContext()
+                cam_idx = grab_result.CameraContext
                 print(f"Camera {cam_idx}: {cameras[cam_idx].DeviceInfo.ModelName}")
                 image = grab_result.Array
                 # Do processing on image here, e.g. call a function.
-		process(image)
+                process(image)
             else:
                 print("Error:", grab_result.ErrorDescription)
 ```
@@ -254,7 +254,7 @@ Compared to manual looping, this approach provides:
 - single acquisition loop for all cameras
 - automatic camera context tracking (`camera.CameraContext`)
 - simpler synchronization handling
-- more efficient thread usage~~~~
+- more efficient thread usage
 
 Conceptually:
 
