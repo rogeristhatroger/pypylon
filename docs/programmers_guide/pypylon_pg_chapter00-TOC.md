@@ -23,7 +23,6 @@
 15. Best Practices
 16. Troubleshooting
 17. Recipes
-18. Appendix
 
 ---
 
