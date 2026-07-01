@@ -1,5 +1,5 @@
-Version 26.6rc1
-    - Date 2026-06-24
+Version 26.6
+    - Date 2026-07-01
     - Updated to pylon Software Suite 26.6.2 on all platforms, which includes
       pylon C++ SDK 12.2.0 and pylon Data Processing C++ SDK 5.0.0.
     - All changes try to keep backwards compatibility with previous pypylon versions,
@@ -68,7 +68,9 @@ Version 26.6rc1
       pylon.ConfigurationHelper.DisableAllTriggers(cam.NodeMap).
     - Added missing methods to the image decompressor class, e.g. GetCompressionDescriptor.
     - WaitObject now supports waiting for multiple objects at the same time and returns the index of the object
-      that was signaled, e.g.: signaled, index = container.WaitForAny(SIGNAL_WAIT_TIMEOUT_MS, True)
+      that was signaled, e.g.: signaled, index = container.WaitForAny(SIGNAL_WAIT_TIMEOUT_MS, True).
+    - Added support for python 3.14.
+    - Added initial Programmer's Guide for pypylon.
 
 Version 26.5.0
     - Date 2026-05-26

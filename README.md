@@ -15,12 +15,12 @@ Background information about usage of pypylon, programming samples and jupyter n
 [![Build Status](https://github.com/basler/pypylon/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/basler/pypylon/actions/workflows/main.yml)
 
 # Getting Started
-> **Coming soon:** A detailed pypylon Programmer's Guide will be available [here](https://github.com/basler/pypylon/blob/master/docs/programmers_guide).
+> A detailed pypylon Programmer's Guide is available [here](https://github.com/basler/pypylon/blob/master/docs/programmers_guide).
 
  * Install [pylon](https://www.baslerweb.com/pylon)
    This is strongly recommended but not mandatory. See [known issues](#known-issues) for further details.
  * Install pypylon: ```pip3 install pypylon```
-   For more installation options and the supported systems please read the [Installation](#Installation) paragraph.
+   For more installation options and the supported systems please read the [Installation](#installation) paragraph.
  * Look at [samples/pylon/grab/grab.py](https://github.com/basler/pypylon/blob/master/samples/pylon/grab/grab.py) or use the following snippet:
 
 ```python
@@ -146,15 +146,15 @@ To install pypylon open your favourite terminal and run:
 
 ```pip3 install pypylon```
 
-The following versions are available on pypi:
+Prebuilt pypylon wheels on PyPI are available for the Python versions and platforms listed below:
 
- |                | 3.9 | 3.10 | 3.11 | 3.12 | 3.13 |
- |----------------|-----|------|------|------|------|
- | Windows 64bit  | x   | x    |  x   |  x   |  x   |
- | Linux x86_64*  | x   | x    |  x   |  x   |  x   |
- | Linux aarch64* | x   | x    |  x   |  x   |  x   |
- | macOS x86_64** | x   | x    |  x   |  x   |  x   |
- | macOS arm64**  | x   | x    |  x   |  x   |  x   |
+ |                | 3.9 | 3.10 | 3.11 | 3.12 | 3.13 | 3.14 |
+ |----------------|-----|------|------|------|------|------|
+ | Windows 64bit  | x   | x    |  x   |  x   |  x   |  x   |
+ | Linux x86_64*  | x   | x    |  x   |  x   |  x   |  x   |
+ | Linux aarch64* | x   | x    |  x   |  x   |  x   |  x   |
+ | macOS x86_64** | x   | x    |  x   |  x   |  x   |  x   |
+ | macOS arm64**  | x   | x    |  x   |  x   |  x   |  x   |
 
 
 > Additional Notes on binary packages:
@@ -189,7 +189,7 @@ If pylon SDK is not installed in a default location you have to specify the loca
 
 Pull requests to pypylon are very welcome. To help you getting started with pypylon improvements, here are some hints:
 
-If you use an AI coding assistant, see [AGENTS.md](AGENTS.md) for the repository map, build/test commands, and coding-style references.
+If you use an AI coding assistant, see [AGENTS.md](https://github.com/basler/pypylon/blob/master/AGENTS.md) for the repository map, build/test commands, and coding-style references.
 
 ## Starting Development
 ```console

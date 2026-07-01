@@ -64,8 +64,9 @@ if [ $BUILD_DISTRO = "debian" ]; then
         cp3_11) BASE_IMAGE32="python:3.11.3-buster";   BASE_IMAGE64="python:3.11.3-bullseye" ;;
         cp3_12) 				       BASE_IMAGE64="python:3.12.4-bullseye" ;;
         cp3_13) 				       BASE_IMAGE64="python:3.13.0-bullseye" ;;
+        cp3_14) 				       BASE_IMAGE64="python:3.14.0-bullseye" ;;
         *)
-        echo "Unsupported abi '$ABI_TAG'. Supported tags: cp36m, cp37m, cp38, cp39, cp3_10, cp3_11, cp3_12, cp3_13"
+        echo "Unsupported abi '$ABI_TAG'. Supported tags: cp36m, cp37m, cp38, cp39, cp3_10, cp3_11, cp3_12, cp3_13, cp3_14"
         exit 1
     esac
 else
