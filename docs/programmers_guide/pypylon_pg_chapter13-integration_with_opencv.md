@@ -56,11 +56,14 @@ OpenCV expects images in **BGR format**, while cameras may output:
 
 ### Convert to OpenCV-Compatible Format
 
+For a live loop, prefer `converter.ConvertToArray(grab_result)`: it writes the
+converted pixels directly into a pre-allocated NumPy array and avoids the extra
+copy of `converter.Convert(grab_result).Array` (see Chapter 7).
+
 ```Python
 converter = pylon.ImageFormatConverter()
 converter.OutputPixelFormat = pylon.PixelType_BGR8packed
-
-image = converter.Convert(grab_result).GetArray()
+image = converter.ConvertToArray(grab_result)
 ```
 
 ---
